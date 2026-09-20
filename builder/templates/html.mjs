@@ -72,7 +72,10 @@ function navbar(cfg) {
 function hero(cfg, img) {
   const h = cfg.home.hero;
   const lines = h.titleLines.map((l) => `<span>${esc(l)}</span>`).join('');
-  const stats = h.stats.map((s) => `<div class="stat"><dt>${esc(s.value)}</dt><dd>${esc(s.label)}</dd></div>`).join('');
+  // las cifras son opcionales: con la lista vacia, el bloque no se dibuja
+  const stats = (h.stats || []).length
+    ? `<dl class="hero-stats">${h.stats.map((s) => `<div class="stat"><dt>${esc(s.value)}</dt><dd>${esc(s.label)}</dd></div>`).join('')}</dl>`
+    : '';
   const sec = h.secondaryCta.href === 'whatsapp' ? waLink(cfg) : href(h.secondaryCta.href);
   const target = h.secondaryCta.href === 'whatsapp' ? ' target="_blank" rel="noopener"' : '';
   return `<section class="hero" id="inicio">
@@ -86,7 +89,7 @@ function hero(cfg, img) {
 <a class="btn btn-primary" href="${esc(href(h.primaryCta.href))}">${esc(h.primaryCta.label)}</a>
 <a class="btn btn-ghost" href="${esc(sec)}"${target}>${esc(h.secondaryCta.label)}</a>
 </div>
-<dl class="hero-stats">${stats}</dl>
+${stats}
 </div>
 ${heroImagen(cfg, img)}
 </div></section>`;
@@ -110,6 +113,8 @@ function heroImagen(cfg, img) {
 }
 
 function perks(cfg) {
+  // igual que las cifras: sin entradas, la franja no aparece
+  if (!(cfg.home.perks || []).length) return '';
   const items = cfg.home.perks.map((p) =>
     `<article class="perk"><span class="perk-icon" aria-hidden="true">${esc(p.icon)}</span><h3>${esc(p.title)}</h3><p>${esc(p.desc)}</p></article>`).join('');
   return `<section class="perks section"><div class="perks-grid container">${items}</div></section>`;

@@ -135,29 +135,13 @@ export const config = {
       imageFit: 'logo', // 'logo' = sin marco | 'foto' = recuadro con borde
       primaryCta: { label: 'Ver Menú', href: '#menu' },
       secondaryCta: { label: 'Pedir por WhatsApp', href: 'whatsapp' },
-      stats: [
-        { value: '2009', label: 'Activos desde' },
-        { value: '+85', label: 'Platos en carta' },
-        { value: '30cm', label: 'Pizza de 8 pedazos' },
-      ],
+      // Cifras bajo el titulo. Con la lista vacia no se muestran.
+      // Para volver a activarlas: { value: '2009', label: 'Activos desde' }
+      stats: [],
     },
-    perks: [
-      {
-        icon: '🔥',
-        title: 'Todo a la parrilla',
-        desc: 'Chuzos, pinchos y asados hechos al momento sobre la brasa.',
-      },
-      {
-        icon: '🍕',
-        title: 'Pizza de 30 cm',
-        desc: 'Ocho pedazos para dos personas, con 15 sabores y 13 adicionales.',
-      },
-      {
-        icon: '👥',
-        title: 'Para compartir',
-        desc: 'Picadas y salchipapas en tamaños que alcanzan hasta para cinco.',
-      },
-    ],
+    // Franja de tres ventajas con icono. Con la lista vacia no aparece.
+    // Para volver a activarla: { icon: '', title: '', desc: '' }
+    perks: [],
     about: {
       eyebrow: 'Nuestra historia',
       title: 'Más que un deleite, una verdadera sensación',
