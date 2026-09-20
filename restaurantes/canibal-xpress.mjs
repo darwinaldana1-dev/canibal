@@ -112,10 +112,10 @@ export const config = {
       // El texto que ve el cliente se arma solo con estos datos.
       horarios: {
         dom: [['18:00', '23:30']],
-        lun: [['18:00', '22:30']],
+        lun: [['18:00', '23:30']],
         mar: [], // cerrado
-        mie: [['18:00', '22:30']],
-        jue: [['18:00', '22:30']],
+        mie: [['18:00', '23:30']],
+        jue: [['18:00', '23:30']],
         vie: [['18:00', '23:30']],
         sab: [['18:00', '23:30']],
       },
