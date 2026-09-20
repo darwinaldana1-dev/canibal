@@ -217,8 +217,9 @@ p{text-wrap:pretty}
 .card:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 .card:hover{transform:translateY(-4px);border-color:var(--bd-accent);box-shadow:0 14px 40px rgb(0 0 0 / 45%)}
 .card:hover .card-img img{transform:scale(1.06)}
-.card-img{position:relative;aspect-ratio:4/3;overflow:hidden;background:var(--s2);display:grid;place-items:center}
-.card-img img{width:100%;height:100%;object-fit:cover;transition:transform var(--t-med)}
+.card-img{position:relative;aspect-ratio:1/1;overflow:hidden;background:var(--s2);display:grid;place-items:center}
+.card-img.con-foto::before{content:'';position:absolute;inset:-12%;background:var(--foto) center/cover no-repeat;filter:blur(22px) brightness(.5) saturate(1.1)}
+.card-img img{position:relative;z-index:1;width:100%;height:100%;object-fit:contain;transition:transform var(--t-med)}
 .card-img .ph{width:100%;height:100%;display:grid;place-items:center;background:linear-gradient(135deg,var(--s2),var(--s3));color:var(--accent);font-family:var(--f-display);font-size:3rem;opacity:.5}
 .card-tags{position:absolute;top:.6rem;left:.6rem;display:flex;flex-wrap:wrap;gap:.3rem}
 .card-tags .tag{background:rgb(0 0 0 / 72%);backdrop-filter:blur(4px)}
@@ -239,11 +240,12 @@ p{text-wrap:pretty}
 .modal-close:hover{background:var(--accent);color:#0a0a0a}
 /* min-height:0 y overflow evitan que la foto imponga su altura natural
    y rompa la proporcion 16:9 dentro del modal */
-.modal-hero{position:relative;aspect-ratio:16/9;flex-shrink:0;min-height:0;overflow:hidden;background:var(--s2);display:grid;place-items:center}
-.modal-hero img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.modal-hero{position:relative;aspect-ratio:1/1;max-height:46dvh;flex-shrink:0;min-height:0;overflow:hidden;background:var(--s2);display:grid;place-items:center}
+.modal-hero.con-foto::before{content:'';position:absolute;inset:-12%;background:var(--foto) center/cover no-repeat;filter:blur(26px) brightness(.45) saturate(1.1)}
+.modal-hero img{position:relative;z-index:1;width:100%;height:100%;object-fit:contain}
 .modal-hero .ph{width:100%;height:100%;display:grid;place-items:center;background:linear-gradient(135deg,var(--s2),var(--s3));color:var(--accent);font-family:var(--f-display);font-size:4rem;opacity:.5}
-.modal-grad{position:absolute;inset:0;background:linear-gradient(to top,var(--s1) 2%,transparent 65%)}
-.modal-hero-info{position:absolute;inset:auto 0 0;display:flex;align-items:flex-end;justify-content:space-between;gap:1rem;padding:1rem 1.25rem}
+.modal-grad{position:absolute;inset:0;z-index:2;background:linear-gradient(to top,var(--s1) 0,rgb(0 0 0 / 55%) 22%,transparent 48%)}
+.modal-hero-info{z-index:3;position:absolute;inset:auto 0 0;display:flex;align-items:flex-end;justify-content:space-between;gap:1rem;padding:1rem 1.25rem}
 .modal-hero-info h3{font-size:clamp(1.2rem,4vw,1.6rem)}
 .modal-hero-info b{flex-shrink:0;font-family:var(--f-head);font-size:1.2rem;color:var(--accent)}
 .modal-body{flex:1;overflow-y:auto;padding:1rem 1.25rem;display:grid;gap:1.5rem;align-content:start}
@@ -285,7 +287,7 @@ p{text-wrap:pretty}
 .drawer-list{flex:1;overflow-y:auto;padding:1rem 1.25rem;display:grid;gap:1rem;align-content:start}
 .ci{display:flex;gap:.85rem;padding-bottom:1rem;border-bottom:1px solid var(--bd)}
 .ci-img{flex-shrink:0;display:grid;place-items:center;width:62px;height:62px;border-radius:var(--r-md);overflow:hidden;background:var(--s3);color:var(--accent);font-family:var(--f-display);font-size:1.5rem}
-.ci-img img{width:100%;height:100%;object-fit:cover}
+.ci-img img{width:100%;height:100%;object-fit:contain}
 .ci-info{flex:1;min-width:0;display:grid;gap:.35rem}
 .ci-name{font-size:.9rem;font-weight:700;line-height:1.3;font-family:var(--f-head)}
 .ci-name em{font-style:normal;color:var(--tx3);font-weight:500}

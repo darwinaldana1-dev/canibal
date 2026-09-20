@@ -277,7 +277,9 @@ function openProduct(id) {
       : '<div class="ph" aria-hidden="true">' + esc(p.n.charAt(0)) + '</div>';
 
     return '<button class="modal-close" data-close aria-label="Cerrar">×</button>' +
-      '<div class="modal-hero">' + img + '<div class="modal-grad"></div>' +
+      // la misma foto difuminada de fondo: se ve entera y sin franjas vacias
+      '<div class="modal-hero' + (foto ? ' con-foto" style="--foto:url(&quot;' + esc(foto) + '&quot;)' : '') + '">' +
+      img + '<div class="modal-grad"></div>' +
       '<div class="modal-hero-info"><h3>' + esc(p.n) + '</h3><b>' + money(base()) + '</b></div></div>' +
       '<div class="modal-body">' +
       (p.d ? '<p class="modal-desc">' + esc(p.d) + '</p>' : '') +

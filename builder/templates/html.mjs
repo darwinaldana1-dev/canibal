@@ -141,8 +141,10 @@ function tarjeta(p, cfg, img) {
   const desde = p.tamanios?.length ? Math.min(...p.tamanios.map((t) => t.precio)) : p.precio;
   const elegir = Boolean(p.tamanios?.length || p.grupos?.length);
   const tags = (p.etiquetas || []).map((t) => `<span class="tag">${esc(t)}</span>`).join('');
+  // la misma foto, difuminada de fondo, rellena los lados sin recortar nada
+  const foto = img(p.imagenUrl);
   return `<article class="card" data-id="${esc(p.id)}" tabindex="0" role="button" aria-label="Ver ${esc(p.nombre)}">
-<div class="card-img">${media(img, p.imagenUrl, p.nombre, p.nombre.charAt(0))}${tags ? `<div class="card-tags">${tags}</div>` : ''}</div>
+<div class="card-img${foto ? ' con-foto" style="--foto:url(&quot;' + esc(foto) + '&quot;)' : ''}">${media(img, p.imagenUrl, p.nombre, p.nombre.charAt(0))}${tags ? `<div class="card-tags">${tags}</div>` : ''}</div>
 <div class="card-body"><h4 class="card-name">${esc(p.nombre)}</h4>
 ${p.descripcion ? `<p class="card-desc">${esc(p.descripcion)}</p>` : ''}
 <div class="card-foot"><span class="card-price">${p.tamanios?.length ? '<em>Desde </em>' : ''}${money(desde, cfg)}</span>
