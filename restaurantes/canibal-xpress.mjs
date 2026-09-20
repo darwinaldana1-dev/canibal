@@ -188,7 +188,7 @@ export const config = {
         {
           icon: '💳',
           title: 'Cualquier método de pago',
-          desc: 'Efectivo, Nequi, Daviplata, tarjeta o transferencia.',
+          desc: 'Efectivo, tarjeta o transferencia.',
         },
         {
           icon: '📞',
@@ -216,7 +216,8 @@ export const config = {
   checkout: {
     // 'whatsapp' abre WhatsApp con el pedido armado | 'api' envia a /api/pedido
     mode: 'whatsapp',
-    metodosPago: ['Efectivo', 'Nequi', 'Daviplata', 'Tarjeta', 'Transferencia'],
+    // Sin nombres de bancos: solo el medio. El primero queda preseleccionado.
+    metodosPago: ['Efectivo', 'Tarjeta', 'Transferencia'],
     pideDireccion: true,
     permiteRecoger: true,
   },
