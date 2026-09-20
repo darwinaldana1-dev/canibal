@@ -1,0 +1,7 @@
+# Sitios generados: se reconstruyen con "npm run build"
+# docs/ SI se versiona, porque es lo que publica GitHub Pages.
+sites/
+
+# Sistema
+.DS_Store
+Thumbs.db

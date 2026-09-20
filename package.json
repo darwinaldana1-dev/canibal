@@ -1,0 +1,17 @@
+{
+  "name": "generador-paginas-restaurantes",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Genera paginas estaticas de restaurante (index.html, styles.css, app.js) desde un archivo de datos por restaurante. Sin dependencias.",
+  "engines": {
+    "node": ">=18"
+  },
+  "scripts": {
+    "build": "node builder/build.mjs",
+    "build:todos": "node builder/build.mjs --todos",
+    "serve": "node builder/serve.mjs",
+    "optimizar": "powershell -NoProfile -ExecutionPolicy Bypass -File builder/optimizar.ps1",
+    "publicar": "node builder/publicar.mjs"
+  }
+}
