@@ -273,7 +273,10 @@ function openProduct(id) {
       '<div class="modal-hero">' + img + '<div class="modal-grad"></div>' +
       '<div class="modal-hero-info"><h3>' + esc(p.n) + '</h3><b>' + money(base()) + '</b></div></div>' +
       '<div class="modal-body">' +
-      (p.d ? '<p class="modal-desc">' + esc(p.d) + '</p>' : '') + tamHtml + gruposHtml +
+      (p.d ? '<p class="modal-desc">' + esc(p.d) + '</p>' : '') +
+      // "Que lleva": texto largo del producto, si el restaurante lo cargo
+      (p.ing ? '<section class="group"><h4>Qué lleva</h4><p class="modal-lleva">' + esc(p.ing).replace(/\n+/g, '</p><p class="modal-lleva">') + '</p></section>' : '') +
+      tamHtml + gruposHtml +
       '<section class="group"><h4>Nota para la cocina <span class="pill pill-opt">Opcional</span></h4>' +
       '<textarea class="ta" data-f="nota" rows="2" maxlength="200" placeholder="Ej: sin cebolla, salsa aparte…">' + esc(nota) + '</textarea></section>' +
       '</div>' +
@@ -326,15 +329,33 @@ function openProduct(id) {
 }
 
 /* ============ clic en tarjetas ============ */
-$('#menu-body').addEventListener('click', function (e) {
-  var btn = e.target.closest('.card-add');
-  var card = e.target.closest('.card');
-  if (!btn && !card) return;
-  var id = (btn || card).getAttribute('data-id');
+/*
+ * Tocar la tarjeta (la foto o el texto) abre la ficha del producto.
+ * El boton "+" o "Elegir" va directo a lo suyo: agregar, o pedir las
+ * opciones cuando el producto tiene tamaños o adicionales.
+ * Va en el documento para que sirva igual en el menu y en los destacados.
+ */
+function agregarDirecto(id) {
   var p = ITEMS[id];
   if (!p) return;
   if (p.t || p.g) return openProduct(id);
   addToCart({ id: id, n: p.n, img: p.img, precio: p.p, cant: 1, ops: [] });
+}
+
+document.addEventListener('click', function (e) {
+  var btn = e.target.closest('.card-add');
+  if (btn) return agregarDirecto(btn.getAttribute('data-id'));
+  var card = e.target.closest('.card');
+  if (card && ITEMS[card.getAttribute('data-id')]) openProduct(card.getAttribute('data-id'));
+});
+
+// la tarjeta se puede abrir con el teclado
+document.addEventListener('keydown', function (e) {
+  if (e.key !== 'Enter' && e.key !== ' ') return;
+  var card = e.target.closest && e.target.closest('.card');
+  if (!card || e.target.closest('.card-add')) return;
+  e.preventDefault();
+  if (ITEMS[card.getAttribute('data-id')]) openProduct(card.getAttribute('data-id'));
 });
 
 /* ============ busqueda ============ */

@@ -120,16 +120,6 @@ p{text-wrap:pretty}
 .sec-head{display:grid;gap:.35rem;justify-items:center;text-align:center;margin-bottom:clamp(2rem,5vw,3rem)}
 .sec-lead{max-width:52ch;color:var(--tx2);font-size:.95rem}
 .feat-grid{display:grid;gap:1.25rem;grid-template-columns:repeat(auto-fit,minmax(min(100%,290px),1fr))}
-.feat{display:flex;flex-direction:column;overflow:hidden;background:var(--s1);border:1px solid var(--bd);border-radius:var(--r-lg);transition:transform var(--t-fast),border-color var(--t-fast)}
-.feat:hover{transform:translateY(-5px);border-color:var(--bd-accent)}
-.feat-img{aspect-ratio:4/3;display:grid;place-items:center;overflow:hidden;background:linear-gradient(135deg,var(--s2),var(--s3))}
-.feat-img img{width:100%;height:100%;object-fit:cover;transition:transform var(--t-med)}
-.feat:hover .feat-img img{transform:scale(1.06)}
-.feat-img .ph{font-family:var(--f-display);font-size:4rem;color:var(--accent);opacity:.4}
-.feat-body{display:grid;gap:.4rem;padding:1rem 1.1rem 1.25rem;flex:1;align-content:start}
-.feat-body h3{font-size:1.05rem}
-.feat-body p{color:var(--tx2);font-size:.85rem;line-height:1.5}
-.feat-price{margin-top:auto;padding-top:.4rem;font-family:var(--f-head);font-size:1.15rem;font-weight:800;color:var(--accent)}
 .feat-cta{display:grid;justify-items:center;margin-top:clamp(2rem,5vw,3rem)}
 
 /* ---------- nosotros ---------- */
@@ -206,6 +196,7 @@ p{text-wrap:pretty}
 
 /* ---------- tarjeta de producto ---------- */
 .card{display:flex;flex-direction:column;overflow:hidden;background:var(--s1);border:1px solid var(--bd);border-radius:var(--r-lg);cursor:pointer;text-align:left;transition:transform var(--t-fast),border-color var(--t-fast),box-shadow var(--t-fast)}
+.card:focus-visible{outline:2px solid var(--accent);outline-offset:3px}
 .card:hover{transform:translateY(-4px);border-color:var(--bd-accent);box-shadow:0 14px 40px rgb(0 0 0 / 45%)}
 .card:hover .card-img img{transform:scale(1.06)}
 .card-img{position:relative;aspect-ratio:4/3;overflow:hidden;background:var(--s2);display:grid;place-items:center}
@@ -238,6 +229,8 @@ p{text-wrap:pretty}
 .modal-hero-info h3{font-size:clamp(1.2rem,4vw,1.6rem)}
 .modal-hero-info b{flex-shrink:0;font-family:var(--f-head);font-size:1.2rem;color:var(--accent)}
 .modal-body{flex:1;overflow-y:auto;padding:1rem 1.25rem;display:grid;gap:1.5rem;align-content:start}
+.modal-lleva{color:var(--tx2);font-size:.88rem;line-height:1.6;margin-bottom:.5rem}
+.modal-lleva:last-child{margin-bottom:0}
 .modal-desc{color:var(--tx2);font-size:.88rem;line-height:1.55}
 .group{display:grid;gap:.65rem}
 .group h4{display:flex;align-items:center;gap:.6rem;font-size:.95rem;font-weight:700;font-family:var(--f-head)}

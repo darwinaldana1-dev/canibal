@@ -233,7 +233,20 @@ export const config = {
  * Reglas del template:
  *  - `tamanios` -> el producto abre el selector de tamaño
  *  - `grupos`   -> el producto abre el modal de personalizacion
- *  - sin ninguno de los dos -> entra al carrito de un clic
+ *  - el boton "+" agrega de una; tocar la tarjeta abre la ficha
+ *
+ * QUE LLEVA CADA PRODUCTO
+ * Agrega `ingredientes` al producto y en la ficha aparece un bloque
+ * titulado "Qué lleva". Si el campo no esta, el bloque no se muestra.
+ *
+ *   ingredientes: 'Carne de res 150g, queso cheddar, lechuga y tomate.',
+ *
+ * Para varios parrafos, separa con un salto de linea:
+ *
+ *   ingredientes: 'Primer parrafo.\n\nSegundo parrafo.',
+ *
+ * `descripcion` es la linea corta que se ve en la tarjeta;
+ * `ingredientes` es el texto largo que solo se ve al abrir la ficha.
  */
 
 
@@ -313,6 +326,8 @@ export const menu = {
             'Jamón, chorizo, butifarra, pollo, tocineta, peperoni, salami, maíz, pimentón y cebolla.',
           precio: 49000,
           categoriaId: CAT.pizzas,
+          // pendiente: texto de lo que lleva, aparece como 'Qué lleva' en la ficha
+          ingredientes: '',
           etiquetas: ['La más cargada'],
           orden: 14,
           disponible: true,

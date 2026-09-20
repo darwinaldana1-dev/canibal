@@ -120,17 +120,32 @@ function perks(cfg) {
   return `<section class="perks section"><div class="perks-grid container">${items}</div></section>`;
 }
 
+/**
+ * Tarjeta de producto. La misma en el menu y en los destacados, para que
+ * en los dos lados se comporte igual: tocarla abre la ficha del producto
+ * y el boton la agrega al carrito.
+ */
+function tarjeta(p, cfg, img) {
+  const desde = p.tamanios?.length ? Math.min(...p.tamanios.map((t) => t.precio)) : p.precio;
+  const elegir = Boolean(p.tamanios?.length || p.grupos?.length);
+  const tags = (p.etiquetas || []).map((t) => `<span class="tag">${esc(t)}</span>`).join('');
+  return `<article class="card" data-id="${esc(p.id)}" tabindex="0" role="button" aria-label="Ver ${esc(p.nombre)}">
+<div class="card-img">${media(img, p.imagenUrl, p.nombre, p.nombre.charAt(0))}${tags ? `<div class="card-tags">${tags}</div>` : ''}</div>
+<div class="card-body"><h4 class="card-name">${esc(p.nombre)}</h4>
+${p.descripcion ? `<p class="card-desc">${esc(p.descripcion)}</p>` : ''}
+<div class="card-foot"><span class="card-price">${p.tamanios?.length ? '<em>Desde </em>' : ''}${money(desde, cfg)}</span>
+<button class="card-add${elegir ? '' : ' card-add-plus'}" data-id="${esc(p.id)}" aria-label="${elegir ? 'Elegir opciones de' : 'Agregar'} ${esc(p.nombre)}">${elegir ? 'Elegir' : '+'}</button></div>
+</div></article>`;
+}
+
 function featured(cfg, productos, img) {
   if (!productos.length) return '';
-  const cards = productos.map((p) => `<article class="feat">
-<div class="feat-img">${media(img, p.imagenUrl, p.nombre, p.nombre.charAt(0))}</div>
-<div class="feat-body"><h3>${esc(p.nombre)}</h3><p>${esc(p.descripcion)}</p>
-<span class="feat-price">${money(p.precio, cfg)}</span></div></article>`).join('');
+  const cards = productos.map((p) => tarjeta(p, cfg, img)).join('');
   return `<section class="section" id="destacados"><div class="container">
 <header class="sec-head"><span class="eyebrow">Los favoritos</span>
 <h2 class="sec-title">Lo más <span class="accent">pedido</span></h2>
 <p class="sec-lead">Los platos que la gente repite. Si es tu primera vez, empieza por aquí.</p></header>
-<div class="feat-grid">${cards}</div>
+<div class="feat-grid" id="destacados-grid">${cards}</div>
 <div class="feat-cta"><a class="btn btn-primary" href="#menu">Ver menú completo</a></div>
 </div></section>`;
 }
@@ -200,18 +215,7 @@ function menuSection(cfg, menu, img) {
     `<button class="tab" data-tab="${slug(b.categoria.nombre)}">${b.categoria.emoji ? esc(b.categoria.emoji) + ' ' : ''}${esc(b.categoria.nombre)}</button>`).join('');
 
   const bloques = menu.categorias.map((b) => {
-    const cards = b.items.map((p) => {
-      const desde = p.tamanios?.length ? Math.min(...p.tamanios.map((t) => t.precio)) : p.precio;
-      const modal = Boolean(p.tamanios?.length || p.grupos?.length);
-      const tags = (p.etiquetas || []).map((t) => `<span class="tag">${esc(t)}</span>`).join('');
-      return `<article class="card" data-id="${esc(p.id)}">
-<div class="card-img">${media(img, p.imagenUrl, p.nombre, p.nombre.charAt(0))}${tags ? `<div class="card-tags">${tags}</div>` : ''}</div>
-<div class="card-body"><h4 class="card-name">${esc(p.nombre)}</h4>
-${p.descripcion ? `<p class="card-desc">${esc(p.descripcion)}</p>` : ''}
-<div class="card-foot"><span class="card-price">${p.tamanios?.length ? '<em>Desde </em>' : ''}${money(desde, cfg)}</span>
-<button class="card-add${modal ? '' : ' card-add-plus'}" data-id="${esc(p.id)}" aria-label="${modal ? 'Elegir opciones de' : 'Agregar'} ${esc(p.nombre)}">${modal ? 'Elegir' : '+'}</button></div>
-</div></article>`;
-    }).join('');
+    const cards = b.items.map((p) => tarjeta(p, cfg, img)).join('');
 
     return `<section class="cat-block" id="${slug(b.categoria.nombre)}">
 <div class="cat-head"><h3>${b.categoria.emoji ? esc(b.categoria.emoji) + ' ' : ''}${esc(b.categoria.nombre)}</h3>
@@ -318,6 +322,7 @@ function menuPayload(cfg, menu, img) {
       const src = img(p.imagenUrl);
       if (src) o.img = src;
       if (p.descripcion) o.d = p.descripcion;
+      if (p.ingredientes) o.ing = p.ingredientes; // texto largo: "Qué lleva"
       if (p.tamanios?.length) o.t = p.tamanios.map((t) => {
         const st = { n: t.nombre, c: t.codigo || '', p: t.precio, pr: t.porciones || 0 };
         const si = img(t.imagenUrl);      // cada tamaño puede tener su propia foto
@@ -352,9 +357,15 @@ export function buildHtml(cfg, menu, imagenes = SIN_IMAGENES) {
   const img = (u) => (u ? imagenes.url(u) : null);
   img.size = (src) => imagenes.size(src);
 
+  // Destacados: los marcados con destacado:true, o los primeros del menu.
+  // Entre ellos van primero los que tienen foto, porque esta seccion entra
+  // por los ojos y una tarjeta sin foto desaprovecha el lugar.
   const todos = menu.categorias.flatMap((c) => c.items);
   const marcados = todos.filter((p) => p.destacado);
-  const destacados = (marcados.length ? marcados : todos).slice(0, 3);
+  const destacados = (marcados.length ? marcados : todos)
+    .slice()
+    .sort((a, b) => Number(Boolean(img(b.imagenUrl))) - Number(Boolean(img(a.imagenUrl))))
+    .slice(0, 3);
 
   const favicon = img(cfg.brand.favicon);
   const og = img(cfg.brand.ogImage);
