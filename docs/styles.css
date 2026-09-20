@@ -157,7 +157,7 @@ p{text-wrap:pretty}
 .menu-sede{color:var(--tx3);font-size:.82rem}
 .search-wrap{position:relative;max-width:480px;margin-inline:auto}
 .search-wrap svg{position:absolute;left:1rem;top:50%;transform:translateY(-50%);color:var(--tx3);pointer-events:none}
-.search{width:100%;padding:.85rem 2.75rem;border-radius:var(--r-full);background:var(--s1);border:1px solid var(--bd);color:var(--tx);font-size:.9rem;transition:border-color var(--t-fast)}
+.search{width:100%;padding:.85rem 2.75rem;border-radius:var(--r-full);background:var(--s1);border:1px solid var(--bd);color:var(--tx);font-size:16px;transition:border-color var(--t-fast)}
 .search::placeholder{color:var(--tx3)}
 .search:focus{border-color:var(--accent);outline:none}
 .search::-webkit-search-cancel-button{display:none}
@@ -245,7 +245,7 @@ p{text-wrap:pretty}
 .opt-name{display:grid;gap:.1rem;font-size:.85rem;font-weight:600}
 .opt-name em{font-style:normal;font-size:.7rem;font-weight:400;color:var(--tx3)}
 .opt-price{flex-shrink:0;font-size:.8rem;font-weight:700;color:var(--accent)}
-.ta,.inp{width:100%;padding:.72rem .88rem;border-radius:var(--r-md);background:var(--s2);border:1px solid var(--bd);color:var(--tx);font-size:.86rem;resize:vertical}
+.ta,.inp{width:100%;padding:.72rem .88rem;border-radius:var(--r-md);background:var(--s2);border:1px solid var(--bd);color:var(--tx);font-size:16px;resize:vertical}
 .ta::placeholder,.inp::placeholder{color:var(--tx3)}
 .ta:focus,.inp:focus{border-color:var(--accent);outline:none}
 .modal-foot{flex-shrink:0;display:flex;align-items:center;gap:.75rem;padding:.9rem 1.25rem calc(.9rem + env(safe-area-inset-bottom));background:var(--s2);border-top:1px solid var(--bd)}
@@ -366,6 +366,9 @@ p{text-wrap:pretty}
 }
 @media (min-width:760px){.perks-grid{grid-template-columns:repeat(3,1fr)}}
 @media (min-width:900px){
+/* en escritorio no existe el zoom al enfocar: cabe la letra compacta */
+.search{font-size:.92rem}
+.ta,.inp{font-size:.9rem}
 .nav-links{display:flex}
 .nav-cta{display:inline-flex}
 .burger,.mobile-menu{display:none}
