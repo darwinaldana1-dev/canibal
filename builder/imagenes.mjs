@@ -115,7 +115,7 @@ export async function prepararImagenes({ raiz, dirRestaurante, config, menu }) {
    */
   const raiz1 = (t0) => {
     let t = t0.length > 3 && t0.endsWith('s') ? t0.slice(0, -1) : t0;
-    if (t.length > 4 && (t.endsWith('o') || t.endsWith('a'))) t = t.slice(0, -1);
+    if (t.length > 4 && (t.endsWith('o') || t.endsWith('a') || t.endsWith('e'))) t = t.slice(0, -1);
     return t;
   };
   const palabras = (s) => clave(s).split(' ').filter((t) => t && !STOP.has(t)).map(raiz1);
