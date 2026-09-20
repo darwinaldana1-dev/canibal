@@ -176,13 +176,18 @@ export async function prepararImagenes({ raiz, dirRestaurante, config, menu }) {
       const cands = productos.map((x) => {
         const suyas = palabras(x.p.nombre);
         if (!suyas.length) return null;
-        const comunes = suyas.filter((w) => tokens.includes(w)).length;
+        // el nombre con su categoria adelante, para archivos como
+        // "Salchipapa ranchera.png" cuando el producto se llama solo "Ranchera"
+        const conCat = palabras(`${x.cat} ${x.p.nombre}`);
+        const cabe = (lista) => lista.length && lista.every((w) => tokens.includes(w));
+        // gana el nombre mas largo que quepa entero en el del archivo
+        const dentro = cabe(conCat) ? conCat : cabe(suyas) ? suyas : null;
         return {
           p: x.p,
           largo: suyas.length,
-          comunes,
-          adelante: comunes === suyas.length,                          // el producto cabe en el archivo
-          atras: tokens.length > 0 && tokens.every((w) => suyas.includes(w)), // el archivo cabe en el producto
+          comunes: dentro ? dentro.length : suyas.filter((w) => tokens.includes(w)).length,
+          adelante: Boolean(dentro),                                    // el producto cabe en el archivo
+          atras: tokens.length > 0 && tokens.every((w) => conCat.includes(w)), // el archivo cabe en el producto
         };
       }).filter(Boolean);
 
