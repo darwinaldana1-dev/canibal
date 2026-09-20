@@ -107,7 +107,17 @@ export async function prepararImagenes({ raiz, dirRestaurante, config, menu }) {
    * ("Salchipapa Canibal 2P" = la de 2 personas).
    */
   const STOP = new Set(['de', 'del', 'la', 'el', 'los', 'las', 'con', 'y', 'a', 'al', 'en', 'para']);
-  const raiz1 = (t) => (t.length > 3 && t.endsWith('s') ? t.slice(0, -1) : t);
+  /*
+   * Raiz de la palabra: quita el plural y la vocal de genero, para que
+   * "ranchero" y "ranchera" cuenten como la misma. Sin esto, un archivo
+   * llamado "pollo ranchero" terminaba en el producto de pollo a secas.
+   * Solo en palabras largas, para no destrozar las cortas.
+   */
+  const raiz1 = (t0) => {
+    let t = t0.length > 3 && t0.endsWith('s') ? t0.slice(0, -1) : t0;
+    if (t.length > 4 && (t.endsWith('o') || t.endsWith('a'))) t = t.slice(0, -1);
+    return t;
+  };
   const palabras = (s) => clave(s).split(' ').filter((t) => t && !STOP.has(t)).map(raiz1);
 
   const productos = menu.categorias.flatMap((b) => b.items.map((p) => ({ p, cat: b.categoria.nombre })));
@@ -153,15 +163,47 @@ export async function prepararImagenes({ raiz, dirRestaurante, config, menu }) {
     // 2. por id exacto
     if (!prod) prod = porId.get(clave(nombre)) || null;
 
-    // 3. por palabras: gana el producto cuyo nombre aporte mas palabras
+    /*
+     * 3. por palabras. Vale en los dos sentidos:
+     *    - el nombre del producto cabe entero en el del archivo
+     *      ("Salchipapa Canibal 2P.png" -> Salchipapa Caníbal)
+     *    - o el del archivo cabe entero en el del producto
+     *      ("mazorca pollo ranchera.png" -> Mazorca desgranada pollo ranchera)
+     * Gana el que comparta mas palabras. Si empatan, se reporta la duda
+     * en vez de elegir al azar.
+     */
     if (!prod) {
-      let mejor = [], puntos = 0;
-      for (const x of productos) {
+      const cands = productos.map((x) => {
         const suyas = palabras(x.p.nombre);
-        if (!suyas.length || !suyas.every((w) => tokens.includes(w))) continue;
-        if (suyas.length > puntos) { puntos = suyas.length; mejor = [x.p]; }
-        else if (suyas.length === puntos) mejor.push(x.p);
+        if (!suyas.length) return null;
+        const comunes = suyas.filter((w) => tokens.includes(w)).length;
+        return {
+          p: x.p,
+          largo: suyas.length,
+          comunes,
+          adelante: comunes === suyas.length,                          // el producto cabe en el archivo
+          atras: tokens.length > 0 && tokens.every((w) => suyas.includes(w)), // el archivo cabe en el producto
+        };
+      }).filter(Boolean);
+
+      // gana uno solo, o no gana ninguno y se reporta la duda
+      const unico = (lista, mejorQue) => {
+        let top = null, empate = [];
+        for (const c of lista) {
+          if (!top || mejorQue(c, top)) { top = c; empate = [c]; }
+          else if (!mejorQue(top, c)) empate.push(c);
+        }
+        return { top, empate };
+      };
+
+      // primero los que traen el nombre completo del producto: gana el mas especifico
+      let r = unico(cands.filter((c) => c.adelante), (a, b) => a.comunes > b.comunes);
+      // si empatan, se prueba al reves: el producto cuyo nombre sobre menos
+      if (r.empate.length !== 1) {
+        const atras = unico(cands.filter((c) => c.atras), (a, b) => a.largo < b.largo);
+        if (atras.empate.length === 1) r = atras;
       }
+      const mejor = r.empate.length === 1 ? [r.top.p] : r.empate.map((c) => c.p);
       if (mejor.length === 1) prod = mejor[0];
       else if (mejor.length > 1) dudosos = mejor;
     }

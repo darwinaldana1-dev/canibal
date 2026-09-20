@@ -36,7 +36,8 @@ function revisar(cfg, img) {
 
   if (!sede) avisos.push('no hay ninguna sede activa');
   if (sede && !sede.ciudad) avisos.push('falta la ciudad de la sede');
-  if (sede && !sede.horario) avisos.push('falta el horario de atención');
+  const conHorario = sede && (sede.horario || Object.values(sede.horarios || {}).some((d) => d.length));
+  if (sede && !conHorario) avisos.push('falta el horario de atención');
   if (sede && !sede.mapsUrl) avisos.push('falta el enlace de Google Maps');
   if (sede && !sede.tarifaDomicilio) avisos.push('la tarifa de domicilio está en cero');
   if (!cfg.contact.whatsapp) avisos.push('falta el número de WhatsApp');
