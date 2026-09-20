@@ -76,8 +76,12 @@ function hero(cfg, img) {
   const stats = (h.stats || []).length
     ? `<dl class="hero-stats">${h.stats.map((s) => `<div class="stat"><dt>${esc(s.value)}</dt><dd>${esc(s.label)}</dd></div>`).join('')}</dl>`
     : '';
-  const sec = h.secondaryCta.href === 'whatsapp' ? waLink(cfg) : href(h.secondaryCta.href);
-  const target = h.secondaryCta.href === 'whatsapp' ? ' target="_blank" rel="noopener"' : '';
+  // el boton secundario es opcional: sin etiqueta, no se dibuja
+  const sec = h.secondaryCta?.href === 'whatsapp' ? waLink(cfg) : href(h.secondaryCta?.href);
+  const target = h.secondaryCta?.href === 'whatsapp' ? ' target="_blank" rel="noopener"' : '';
+  const secBtn = h.secondaryCta?.label
+    ? `<a class="btn btn-ghost" href="${esc(sec)}"${target}>${esc(h.secondaryCta.label)}</a>`
+    : '';
   return `<section class="hero" id="inicio">
 <div class="hero-glow" aria-hidden="true"></div>
 <div class="hero-inner container">
@@ -87,7 +91,7 @@ function hero(cfg, img) {
 <p class="hero-desc">${esc(h.description)}</p>
 <div class="hero-actions">
 <a class="btn btn-primary" href="${esc(href(h.primaryCta.href))}">${esc(h.primaryCta.label)}</a>
-<a class="btn btn-ghost" href="${esc(sec)}"${target}>${esc(h.secondaryCta.label)}</a>
+${secBtn}
 </div>
 ${stats}
 </div>
@@ -171,7 +175,7 @@ function delivery(cfg) {
   return `<section class="delivery section" id="domicilios"><div class="delivery-inner container">
 <div class="delivery-text"><span class="eyebrow">${esc(d.eyebrow)}</span>
 <h2 class="sec-title">${esc(d.title)} <span class="accent">${esc(d.titleAccent)}</span></h2>
-<a class="btn btn-wa" href="${waLink(cfg)}" target="_blank" rel="noopener">Pedir por WhatsApp</a></div>
+${d.cta?.label ? `<a class="btn btn-primary" href="${esc(href(d.cta.href))}">${esc(d.cta.label)}</a>` : ''}</div>
 <div class="info-cards">${cards}</div></div></section>`;
 }
 
@@ -276,14 +280,22 @@ ${cfg.footer.credit?.label ? `<a href="${esc(cfg.footer.credit.href)}" target="_
 }
 
 function shells(cfg) {
+  /*
+   * Boton flotante de WhatsApp. Apagado por defecto: es un atajo para
+   * escribir sin pasar por el carrito, y el pedido llega sin detalle.
+   * Se enciende con contact.botonFlotante = true.
+   */
+  const fab = cfg.contact.botonFlotante === true
+    ? `<a class="wa-fab" id="wa-fab" href="${waLink(cfg)}" target="_blank" rel="noopener" aria-label="WhatsApp">
+<svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.5 14.4c-.3-.2-1.8-.9-2-1s-.5-.2-.7.1-.8 1-.9 1.2-.3.2-.6.1a8 8 0 0 1-4-3.5c-.3-.5.3-.5.8-1.5.1-.2 0-.4 0-.5l-1-2.3c-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4a3.3 3.3 0 0 0-1 2.4 5.7 5.7 0 0 0 1.2 3 13 13 0 0 0 5 4.4c1.9.7 2.6.8 3.5.7.6-.1 1.8-.7 2-1.4s.3-1.3.2-1.4zM12 2a10 10 0 0 0-8.6 15L2 22l5.1-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2z"/></svg></a>`
+    : '';
   return `<div class="backdrop" id="backdrop"></div>
 <aside class="drawer" id="drawer" aria-label="Carrito"><div class="drawer-head">
 <div><h2>Tu pedido</h2><p id="drawer-count">0 productos</p></div>
 <button class="x-btn" id="cart-close" aria-label="Cerrar carrito">×</button></div>
 <div id="drawer-content"></div></aside>
 <div id="modal-root"></div>
-<a class="wa-fab" id="wa-fab" href="${waLink(cfg)}" target="_blank" rel="noopener" aria-label="WhatsApp">
-<svg width="26" height="26" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M17.5 14.4c-.3-.2-1.8-.9-2-1s-.5-.2-.7.1-.8 1-.9 1.2-.3.2-.6.1a8 8 0 0 1-4-3.5c-.3-.5.3-.5.8-1.5.1-.2 0-.4 0-.5l-1-2.3c-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4a3.3 3.3 0 0 0-1 2.4 5.7 5.7 0 0 0 1.2 3 13 13 0 0 0 5 4.4c1.9.7 2.6.8 3.5.7.6-.1 1.8-.7 2-1.4s.3-1.3.2-1.4zM12 2a10 10 0 0 0-8.6 15L2 22l5.1-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2z"/></svg></a>
+${fab}
 <button class="cart-bar" id="cart-bar" hidden><b id="bar-count">0</b><span>Ver pedido</span><i id="bar-total"></i></button>`;
 }
 

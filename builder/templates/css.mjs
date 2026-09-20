@@ -22,6 +22,7 @@ export function buildCss(cfg) {
 --bd:rgb(255 255 255 / 7%);
 --f-display:${t.fontDisplay};--f-head:${t.fontHeading};--f-body:${t.fontBody};
 --container:1280px;--gutter:clamp(1rem,4vw,2rem);--sec-py:clamp(3.5rem,8vw,6rem);--nav-h:72px;--tabs-h:66px;
+--fab-gap:${cfg.contact.botonFlotante === true ? 'calc(54px + .75rem)' : '0px'};
 --r-sm:8px;--r-md:14px;--r-lg:20px;--r-xl:32px;--r-full:9999px;
 --ease:cubic-bezier(.16,1,.3,1);--t-fast:.18s cubic-bezier(.4,0,.2,1);--t-med:.35s var(--ease);
 color-scheme:${t.mode};
@@ -325,7 +326,7 @@ p{text-wrap:pretty}
 /* ---------- flotantes ---------- */
 .wa-fab{position:fixed;right:max(1rem,env(safe-area-inset-right));bottom:max(1rem,env(safe-area-inset-bottom));z-index:200;display:grid;place-items:center;width:54px;height:54px;border-radius:var(--r-full);background:#25d366;color:#06251a;box-shadow:0 8px 28px rgb(37 211 102 / 35%);transition:transform var(--t-fast)}
 .wa-fab:hover{transform:translateY(-3px) scale(1.04)}
-.cart-bar{position:fixed;left:max(1rem,env(safe-area-inset-left));right:calc(max(1rem,env(safe-area-inset-right)) + 54px + .75rem);bottom:max(1rem,env(safe-area-inset-bottom));z-index:200;display:flex;align-items:center;gap:.85rem;padding:.75rem 1rem .75rem .75rem;border-radius:var(--r-full);background:var(--accent);color:#0a0a0a;box-shadow:0 10px 34px var(--glow);animation:fadeUp .3s var(--ease)}
+.cart-bar{position:fixed;left:max(1rem,env(safe-area-inset-left));right:calc(max(1rem,env(safe-area-inset-right)) + var(--fab-gap));bottom:max(1rem,env(safe-area-inset-bottom));z-index:200;display:flex;align-items:center;gap:.85rem;padding:.75rem 1rem .75rem .75rem;border-radius:var(--r-full);background:var(--accent);color:#0a0a0a;box-shadow:0 10px 34px var(--glow);animation:fadeUp .3s var(--ease)}
 .cart-bar:hover{transform:translateY(-3px)}
 .cart-bar i{margin-left:auto}
 .cart-bar b{display:grid;place-items:center;min-width:28px;height:28px;padding-inline:6px;border-radius:var(--r-full);background:rgb(0 0 0 / 22%);font-size:.8rem}

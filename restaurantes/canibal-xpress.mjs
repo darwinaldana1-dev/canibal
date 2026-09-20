@@ -89,6 +89,10 @@ export const config = {
     instagram: 'https://instagram.com/canibalxpress',
     facebook: '', // REVISAR: confirmar si tienen Facebook
     tiktok: '',
+    // Boton flotante de WhatsApp. Apagado a proposito: es un atajo para
+    // escribir sin armar el pedido, y asi llega sin productos ni total.
+    // El cliente pasa por el carrito y llega a WhatsApp con todo listo.
+    botonFlotante: false,
   },
 
   // ---------- SEDES ----------
@@ -134,7 +138,9 @@ export const config = {
       image: 'Logo/logo-web.png',
       imageFit: 'logo', // 'logo' = sin marco | 'foto' = recuadro con borde
       primaryCta: { label: 'Ver Menú', href: '#menu' },
-      secondaryCta: { label: 'Pedir por WhatsApp', href: 'whatsapp' },
+      // Boton secundario. Sin etiqueta no aparece, para dejar un solo
+      // camino: ver el menu y armar el pedido en el carrito.
+      secondaryCta: { label: '', href: '' },
       // Cifras bajo el titulo. Con la lista vacia no se muestran.
       // Para volver a activarlas: { value: '2009', label: 'Activos desde' }
       stats: [],
@@ -157,11 +163,13 @@ export const config = {
       eyebrow: 'Domicilios',
       title: 'Te lo llevamos',
       titleAccent: 'caliente',
+      // Lleva al menu, no a WhatsApp: el pedido se arma en el carrito
+      cta: { label: 'Hacer mi pedido', href: '#menu' },
       cards: [
         {
           icon: '🛵',
           title: 'Domicilios disponibles',
-          desc: 'Pide por WhatsApp y te lo despachamos desde Betania.',
+          desc: 'Arma tu pedido en el menú y te lo despachamos desde Betania.',
         },
         {
           icon: '💳',
