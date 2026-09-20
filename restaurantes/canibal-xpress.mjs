@@ -106,7 +106,21 @@ export const config = {
       barrio: 'Betania',
       telefono: '3023024133',
       whatsapp: '573023024133',
-      horario: 'Lunes a Domingo', // REVISAR: confirmar horas de apertura y cierre
+      // Horario de atencion. Cada dia lleva sus franjas en formato 24 horas.
+      // Lista vacia = cerrado ese dia. Se pueden poner dos franjas si algun
+      // dia cierran al mediodia: mie: [['12:00','15:00'], ['18:00','22:30']]
+      // El texto que ve el cliente se arma solo con estos datos.
+      horarios: {
+        dom: [['18:00', '23:30']],
+        lun: [['18:00', '22:30']],
+        mar: [], // cerrado
+        mie: [['18:00', '22:30']],
+        jue: [['18:00', '22:30']],
+        vie: [['18:00', '23:30']],
+        sab: [['18:00', '23:30']],
+      },
+      // Dias sueltos cerrados, para festivos o cierres puntuales (AAAA-MM-DD)
+      cerradoEn: [],
       lat: 0, // REVISAR: coordenadas para el mapa
       lng: 0,
       mapsUrl: '', // REVISAR: enlace de Google Maps del local

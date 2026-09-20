@@ -208,6 +208,10 @@ p{text-wrap:pretty}
 .empty{display:grid;justify-items:center;gap:.6rem;padding-block:clamp(3rem,12vw,6rem);text-align:center}
 .empty span{font-size:2.5rem}
 
+/* aviso de fuera de horario */
+.cerrado{margin:0 auto 1.25rem;max-width:640px;padding:.85rem 1.1rem;border-radius:var(--r-md);background:var(--glow-soft);border:1px solid var(--bd-accent);color:var(--tx);font-size:.88rem;line-height:1.5;text-align:center}
+.cerrado-nota{color:var(--accent);font-size:.78rem;line-height:1.45;text-align:center}
+
 /* ---------- tarjeta de producto ---------- */
 .card{display:flex;flex-direction:column;overflow:hidden;background:var(--s1);border:1px solid var(--bd);border-radius:var(--r-lg);cursor:pointer;text-align:left;transition:transform var(--t-fast),border-color var(--t-fast),box-shadow var(--t-fast)}
 .card:focus-visible{outline:2px solid var(--accent);outline-offset:3px}

@@ -110,11 +110,15 @@ function render() {
       '</div></article>';
   }).join('');
 
+  // fuera de horario el pedido no se puede enviar, pero el carrito se guarda
+  var e = estado();
   box.innerHTML = '<div class="drawer-list">' + list +
     '<button class="link-btn" id="clear-cart" style="justify-self:start">Vaciar carrito</button></div>' +
     '<div class="drawer-foot"><div class="total-row"><span>Subtotal</span><b>' + money(sub) + '</b></div>' +
-    (CFG.envio > 0 ? '<p class="hint">El domicilio se suma en el siguiente paso.</p>' : '') +
-    '<button class="btn btn-primary btn-block" id="go-checkout">Continuar con el pedido</button></div>';
+    (e.abierto && CFG.envio > 0 ? '<p class="hint">El domicilio se suma en el siguiente paso.</p>' : '') +
+    (e.abierto ? '' : '<p class="cerrado-nota">' + esc(e.corto) + '. Tu pedido queda guardado.</p>') +
+    '<button class="btn btn-primary btn-block" id="go-checkout"' + (e.abierto ? '' : ' disabled') + '>' +
+    (e.abierto ? 'Continuar con el pedido' : 'Cerrado ahora') + '</button></div>';
 }
 
 function lockBody(on) { document.body.style.overflow = on ? 'hidden' : ''; }
@@ -635,6 +639,108 @@ function setMenu(open) {
 burger.addEventListener('click', function () { setMenu(!mobile.classList.contains('open')); });
 mobile.addEventListener('click', function (e) { if (e.target.closest('a')) setMenu(false); });
 
+/* ============ horario ============
+ * Decide si el local esta recibiendo pedidos ahora.
+ *
+ * La hora se lee en la zona del restaurante, no en la del telefono: si el
+ * cliente tiene mal el reloj o esta viajando, el horario igual se respeta.
+ * Sin horario cargado, la pagina recibe pedidos siempre.
+ */
+var HOR = CFG.horario;
+var DIAS_EN = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+var DIAS_ES = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'];
+
+function horaLocal() {
+  var d = new Date();
+  try {
+    var partes = {};
+    new Intl.DateTimeFormat('en-US', {
+      timeZone: HOR.tz, weekday: 'short', hour: '2-digit', minute: '2-digit', hourCycle: 'h23',
+    }).formatToParts(d).forEach(function (p) { partes[p.type] = p.value; });
+    var i = DIAS_EN.indexOf(partes.weekday);
+    if (i >= 0) return { dia: i, min: Number(partes.hour) * 60 + Number(partes.minute), fecha: fechaISO(d) };
+  } catch (e) { /* navegador sin zonas horarias: se usa la hora del equipo */ }
+  return { dia: d.getDay(), min: d.getHours() * 60 + d.getMinutes(), fecha: fechaISO(d) };
+}
+
+function fechaISO(d) {
+  try {
+    return new Intl.DateTimeFormat('en-CA', { timeZone: HOR.tz, year: 'numeric', month: '2-digit', day: '2-digit' }).format(d);
+  } catch (e) { return ''; }
+}
+
+function cerradoHoy(fecha) {
+  return (HOR.cerradoEn || []).indexOf(fecha) !== -1;
+}
+
+function franjas(dia) { return (HOR.dias && HOR.dias[dia]) || []; }
+
+function estaAbierto(t) {
+  if (!cerradoHoy(t.fecha)) {
+    var hoy = franjas(t.dia);
+    for (var i = 0; i < hoy.length; i++) {
+      var r = hoy[i];
+      // si el cierre es menor que la apertura, la franja cruza la medianoche
+      if (r[1] > r[0] ? (t.min >= r[0] && t.min < r[1]) : t.min >= r[0]) return true;
+    }
+  }
+  // franja de ayer que sigue abierta despues de medianoche
+  var ayer = franjas((t.dia + 6) % 7);
+  for (var j = 0; j < ayer.length; j++) {
+    if (ayer[j][1] <= ayer[j][0] && t.min < ayer[j][1]) return true;
+  }
+  return false;
+}
+
+function hhmm(min) {
+  var h = Math.floor(min / 60) % 24, m = min % 60;
+  return (h % 12 || 12) + ':' + (m < 10 ? '0' + m : m) + ' ' + (h < 12 ? 'am' : 'pm');
+}
+
+/** Cuando vuelve a abrir, en palabras: "hoy a las 6:00 pm" */
+function proximaApertura(t) {
+  for (var d = 0; d < 8; d++) {
+    var dia = (t.dia + d) % 7;
+    var lista = franjas(dia);
+    for (var i = 0; i < lista.length; i++) {
+      var ini = lista[i][0];
+      if (d === 0 && ini <= t.min) continue;
+      var cuando = d === 0 ? 'hoy' : d === 1 ? 'mañana' : 'el ' + DIAS_ES[dia];
+      return cuando + ' a las ' + hhmm(ini);
+    }
+  }
+  return '';
+}
+
+function estado() {
+  if (!HOR || !HOR.dias) return { abierto: true };
+  var t = horaLocal();
+  if (estaAbierto(t)) return { abierto: true };
+  var prox = proximaApertura(t);
+  return {
+    abierto: false,
+    corto: prox ? 'Abrimos ' + prox : 'Cerrado por ahora',
+    largo: prox
+      ? 'Ahora estamos cerrados. Abrimos ' + prox + '. Puedes armar tu pedido y enviarlo cuando abramos.'
+      : 'Ahora estamos cerrados.',
+  };
+}
+
+var ultimoAbierto = null;
+function revisarHorario(inicial) {
+  var e = estado();
+  var aviso = $('#cerrado');
+  if (aviso) {
+    aviso.hidden = e.abierto;
+    if (!e.abierto) aviso.textContent = e.largo;
+  }
+  if (e.abierto === ultimoAbierto) return;
+  ultimoAbierto = e.abierto;
+  if (inicial) return;                        // al arrancar, render() ya viene
+  render();                                   // el carrito cambia de mensaje
+  if (root.querySelector('#send')) updateModal(checkoutHtml()); // pedido abierto
+}
+
 /* ============ checkout ============ */
 var datos = {
   nombre: '', tel: '', entrega: CFG.direccion ? 'domicilio' : 'recoger',
@@ -643,7 +749,8 @@ var datos = {
 
 function envio() { return datos.entrega === 'domicilio' ? (CFG.envio || 0) : 0; }
 function valido() {
-  return datos.nombre.trim().length >= 3 &&
+  return estado().abierto &&
+    datos.nombre.trim().length >= 3 &&
     datos.tel.replace(/\D/g, '').length >= 7 &&
     (datos.entrega === 'recoger' || (datos.dir.trim().length >= 5 && datos.barrio.trim().length >= 3));
 }
@@ -676,6 +783,7 @@ function pedidoTexto() {
 function checkoutHtml() {
   var total = subtotal() + envio();
   var ok = valido();
+  var e = estado();
 
   var toggle = (CFG.recoger && CFG.direccion)
     ? '<div class="toggle"><button data-e="domicilio" class="' + (datos.entrega === 'domicilio' ? 'active' : '') + '">\u{1F6F5} Domicilio</button>' +
@@ -711,9 +819,11 @@ function checkoutHtml() {
     dirFields + pagos +
     '<label class="field"><span>Notas del pedido <em>opcional</em></span><textarea class="ta" rows="2" maxlength="300" data-f="notas" placeholder="Algo más que debamos saber">' + esc(datos.notas) + '</textarea></label>' +
     resumen + '</div>' +
-    '<div class="drawer-foot"><button class="btn btn-wa btn-block" id="send"' + (ok ? '' : ' disabled') + '>' +
-    'Enviar por WhatsApp · ' + money(total) + '</button>' +
-    '<p class="hint" id="send-hint"' + (ok ? ' hidden' : '') + '>Completa los campos con * para continuar.</p></div>';
+    '<div class="drawer-foot">' +
+    (e.abierto ? '' : '<p class="cerrado-nota">' + esc(e.corto) + '. Tu pedido queda guardado.</p>') +
+    '<button class="btn btn-wa btn-block" id="send"' + (ok ? '' : ' disabled') + '>' +
+    (e.abierto ? 'Enviar por WhatsApp · ' + money(total) : 'Cerrado ahora') + '</button>' +
+    '<p class="hint" id="send-hint"' + (ok || !e.abierto ? ' hidden' : '') + '>Completa los campos con * para continuar.</p></div>';
 }
 
 function openCheckout() {
@@ -753,5 +863,8 @@ function openCheckout() {
 }
 
 /* ============ arranque ============ */
+revisarHorario(true);   // deja el aviso puesto antes del primer dibujado
 render();
+// si la pagina queda abierta, el estado se actualiza solo a la hora de abrir
+setInterval(function () { revisarHorario(); }, 30000);
 })();

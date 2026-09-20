@@ -132,6 +132,31 @@ página se ve terminada desde el primer día.
 
 ---
 
+## Horario de atención
+
+Cada sede lleva sus franjas por día en el campo `horarios`, en formato de 24
+horas. Un día con la lista vacía está cerrado. Se pueden poner dos franjas si
+algún día cierran al mediodía.
+
+Fuera de horario, la página muestra un aviso con la hora de apertura y bloquea
+el envío del pedido. El cliente puede seguir viendo la carta y armando el
+carrito, que queda guardado para cuando abran.
+
+La hora se lee en la zona del restaurante, no en la del teléfono del cliente,
+así que un reloj mal puesto o un visitante en otro país no rompen el horario.
+Si la página queda abierta, el estado se actualiza solo a la hora de apertura.
+
+El texto del horario que ve el cliente se arma con esas mismas franjas, igual
+que los datos que lee Google, así que no pueden contradecirse.
+
+Para festivos o cierres puntuales, agrega la fecha a `cerradoEn` sin tocar el
+horario normal.
+
+Es un freno, no un candado: la página no tiene servidor, así que alguien con
+conocimientos técnicos podría saltárselo.
+
+---
+
 ## Cómo se comporta el menú
 
 - Un producto con `tamanios` abre el selector de tamaño.

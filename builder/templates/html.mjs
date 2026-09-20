@@ -1,5 +1,13 @@
 /** Genera el index.html completo, con el menu ya renderizado. */
 
+import { aDatos, aResumen, aSchema } from '../horario.mjs';
+
+/** Texto del horario: el escrito a mano, o el que se arma con las franjas */
+function horarioTexto(sede) {
+  if (!sede) return '';
+  return sede.horario || aResumen(aDatos(sede.horarios));
+}
+
 const esc = (s = '') =>
   String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
@@ -189,7 +197,7 @@ function contacto(cfg) {
     // el telefono lleva un enlace construido con valores escapados
     const filas = [
       ['📍', esc([s.direccion, s.ciudad].filter(Boolean).join(', '))],
-      s.horario ? ['🕒', esc(s.horario)] : null,
+      horarioTexto(s) ? ['🕒', esc(horarioTexto(s))] : null,
       s.telefono ? ['📞', `<a href="tel:${esc(s.telefono)}">${esc(s.telefono)}</a>`] : null,
     ].filter(Boolean);
 
@@ -231,7 +239,8 @@ ${b.categoria.descripcion ? `<p class="cat-desc">${esc(b.categoria.descripcion)}
 
   return `<section class="menu-sec" id="menu"><div class="container">
 <header class="menu-head"><span class="eyebrow">Nuestra carta</span><h2 class="display">Menú</h2>
-${sede ? `<p class="menu-sede">${esc(sede.nombre)} · ${esc(sede.direccion)}${sede.horario ? ' · ' + esc(sede.horario) : ''}</p>` : ''}</header>
+${sede ? `<p class="menu-sede">${esc(sede.nombre)} · ${esc(sede.direccion)}${horarioTexto(sede) ? ' · ' + esc(horarioTexto(sede)) : ''}</p>` : ''}</header>
+<div class="cerrado" id="cerrado" hidden></div>
 ${cfg.menu.enableSearch ? `<div class="search-wrap">
 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
 <input class="search" id="search" type="search" placeholder="Buscar en el menú…" aria-label="Buscar en el menú">
@@ -267,7 +276,7 @@ function footer(cfg) {
 <div class="foot-group"><h3>Navegación</h3><ul class="foot-list">
 ${cfg.nav.map((l) => `<li><a href="${esc(href(l.href))}">${esc(l.label)}</a></li>`).join('')}</ul></div>
 <div class="foot-group"><h3>${sedes.length > 1 ? 'Sedes' : 'Dónde estamos'}</h3><ul class="foot-list">
-${sedes.map((s) => `<li><span class="foot-txt">${esc(s.direccion)}</span>${s.horario ? `<span class="foot-txt">${esc(s.horario)}</span>` : ''}</li>`).join('')}</ul></div>
+${sedes.map((s) => `<li><span class="foot-txt">${esc(s.direccion)}</span>${horarioTexto(s) ? `<span class="foot-txt">${esc(horarioTexto(s))}</span>` : ''}</li>`).join('')}</ul></div>
 <div class="foot-group"><h3>Contacto</h3><ul class="foot-list">
 <li><a href="tel:${esc(c.phone)}">${esc(c.phone)}</a></li>
 ${c.email ? `<li><a href="mailto:${esc(c.email)}">${esc(c.email)}</a></li>` : ''}
@@ -319,7 +328,9 @@ function jsonLd(cfg, img) {
       addressLocality: sede.ciudad || sede.barrio,
       addressCountry: 'CO',
     };
-    if (sede.horario) data.openingHours = sede.horario;
+    const hs = aSchema(aDatos(sede.horarios));
+    if (hs.length) data.openingHours = hs;
+    else if (sede.horario) data.openingHours = sede.horario;
     if (sede.lat && sede.lng) data.geo = { '@type': 'GeoCoordinates', latitude: sede.lat, longitude: sede.lng };
   }
   return `<script type="application/ld+json">${JSON.stringify(data)}</script>`;
@@ -360,6 +371,7 @@ function menuPayload(cfg, menu, img) {
       direccion: cfg.checkout.pideDireccion,
       envio: sede.tarifaDomicilio || 0,
       marca: cfg.brand.name,
+      horario: sede.horarios ? { tz: cfg.zonaHoraria || 'America/Bogota', dias: aDatos(sede.horarios), cerradoEn: sede.cerradoEn || [] } : null,
       sede: sede.nombre || '',
     },
   };
