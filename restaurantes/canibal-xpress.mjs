@@ -313,6 +313,37 @@ const adicionalesPizza = {
   ],
 };
 
+/*
+ * Sabores de bebida. Son obligatorios y no cambian el precio: el cliente
+ * elige uno y queda anotado en el pedido que llega por WhatsApp.
+ */
+const saboresPostobon = {
+  id: 'grp_sabor_postobon',
+  titulo: 'Elige el sabor',
+  min: 1,
+  max: 1,
+  opciones: [
+    { id: 'pb_kola', nombre: 'Kola', precio: 0, incluida: true },
+    { id: 'pb_manzana', nombre: 'Manzana', precio: 0 },
+    { id: 'pb_naranja', nombre: 'Naranja', precio: 0 },
+    { id: 'pb_uva', nombre: 'Uva', precio: 0 },
+    { id: 'pb_colombiana', nombre: 'Colombiana', precio: 0 },
+  ],
+};
+
+const saboresHit = {
+  id: 'grp_sabor_hit',
+  titulo: 'Elige el sabor',
+  min: 1,
+  max: 1,
+  opciones: [
+    { id: 'hit_mora', nombre: 'Mora', precio: 0, incluida: true },
+    { id: 'hit_mango', nombre: 'Mango', precio: 0 },
+    { id: 'hit_tropical', nombre: 'Tropical', precio: 0 },
+    { id: 'hit_naranja_pina', nombre: 'Naranja piña', precio: 0 },
+  ],
+};
+
 export const menu = {
   actualizadoEn: '2026-09-17',
   tamanios: [],
@@ -590,12 +621,12 @@ export const menu = {
       categoria: { id: CAT.bebidas, nombre: 'Bebidas', orden: 13, emoji: '🥤' },
       items: [
         { id: 'bd1', nombre: 'Agua botella cristal', descripcion: 'Agua sin gas.', precio: 2500, categoriaId: CAT.bebidas, etiquetas: [], orden: 0, disponible: true },
-        { id: 'bd2', nombre: 'Agua saborizada personal', descripcion: 'Agua saborizada.', precio: 3000, categoriaId: CAT.bebidas, etiquetas: [], orden: 1, disponible: true },
-        { id: 'bd3', nombre: 'Postobón personal', descripcion: 'Gaseosa personal.', precio: 4000, categoriaId: CAT.bebidas, etiquetas: [], orden: 2, disponible: true },
+        { id: 'bd2', nombre: 'Agua saborizada personal', descripcion: 'Agua saborizada sabor manzana.', precio: 3000, categoriaId: CAT.bebidas, etiquetas: [], orden: 1, disponible: true },
+        { id: 'bd3', nombre: 'Postobón personal', descripcion: 'Gaseosa personal. Elige el sabor.', precio: 4000, categoriaId: CAT.bebidas, etiquetas: [], orden: 2, disponible: true, grupos: [saboresPostobon] },
         { id: 'bd4', nombre: 'Coca-Cola personal', descripcion: 'Gaseosa personal.', precio: 4500, categoriaId: CAT.bebidas, etiquetas: [], orden: 3, disponible: true },
-        { id: 'bd5', nombre: 'Jugo Hit personal', descripcion: 'Jugo personal.', precio: 4500, categoriaId: CAT.bebidas, etiquetas: [], orden: 4, disponible: true },
-        { id: 'bd6', nombre: 'Postobón econolitro', descripcion: 'Gaseosa para compartir.', precio: 5500, categoriaId: CAT.bebidas, etiquetas: [], orden: 5, disponible: true },
-        { id: 'bd7', nombre: 'Postobón 1.25 L', descripcion: 'Gaseosa familiar.', precio: 7000, categoriaId: CAT.bebidas, etiquetas: [], orden: 6, disponible: true },
+        { id: 'bd5', nombre: 'Jugo Hit personal', descripcion: 'Jugo personal. Elige el sabor.', precio: 4500, categoriaId: CAT.bebidas, etiquetas: [], orden: 4, disponible: true, grupos: [saboresHit] },
+        { id: 'bd6', nombre: 'Postobón econolitro', descripcion: 'Gaseosa para compartir. Elige el sabor.', precio: 5500, categoriaId: CAT.bebidas, etiquetas: [], orden: 5, disponible: true, grupos: [saboresPostobon] },
+        { id: 'bd7', nombre: 'Postobón 1.25 L', descripcion: 'Gaseosa familiar. Elige el sabor.', precio: 7000, categoriaId: CAT.bebidas, etiquetas: [], orden: 6, disponible: true, grupos: [saboresPostobon] },
         { id: 'bd8', nombre: 'Coca-Cola 1.25 L', descripcion: 'Gaseosa familiar.', precio: 9000, categoriaId: CAT.bebidas, etiquetas: [], orden: 7, disponible: true },
       ],
     },
