@@ -355,7 +355,7 @@ function menuPayload(cfg, menu, img) {
         return st;
       });
       if (p.grupos?.length) o.g = p.grupos.map((g) => ({
-        id: g.id, t: g.titulo, min: g.min, max: g.max,
+        id: g.id, t: g.titulo, min: g.min, max: g.max, rep: g.reparto ? 1 : undefined,
         o: g.opciones.map((x) => ({ id: x.id, n: x.nombre, p: x.precio, inc: x.incluida ? 1 : 0 })),
       }));
       items[p.id] = o;

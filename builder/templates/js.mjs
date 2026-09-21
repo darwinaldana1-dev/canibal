@@ -252,10 +252,19 @@ function openProduct(id) {
   if (!p) return;
   var tamIdx = 0, cant = 1, nota = '';
   var sel = {};
+  // grupo "reparto": varias unidades repartidas entre sabores (2 Uva + 1 Kola)
+  var rg = (p.g || []).filter(function (g) { return g.rep; })[0];
+  var cuenta = {};
   (p.g || []).forEach(function (g) {
     var inc = g.o.filter(function (o) { return o.inc; });
+    if (g === rg) { cuenta[(inc[0] || g.o[0]).id] = 1; sel[g.id] = []; return; }
     sel[g.id] = inc.length ? inc.slice(0, g.max) : (g.min > 0 ? [g.o[0]] : []);
   });
+  function unidades() {
+    return Object.keys(cuenta).reduce(function (s, k) { return s + cuenta[k]; }, 0);
+  }
+  // miniaturas en los tamaños solo si alguno tiene su propia foto
+  var tamFotos = p.t && p.t.some(function (t) { return t.img; });
 
   function base() { return p.t ? p.t[tamIdx].p : p.p; }
   function fotoActual() { return (p.t && p.t[tamIdx].img) || p.img || ''; }
@@ -265,21 +274,41 @@ function openProduct(id) {
     return s;
   }
   function falta() {
-    return (p.g || []).filter(function (g) { return (sel[g.id] || []).length < g.min; });
+    return (p.g || []).filter(function (g) {
+      return g === rg ? unidades() < 1 : (sel[g.id] || []).length < g.min;
+    });
   }
 
   function html() {
     var unit = base() + extras(), total = unit * cant, f = falta();
+    if (rg) total = rg.o.reduce(function (s, o) { return s + (cuenta[o.id] || 0) * (unit + o.p); }, 0);
 
     var tamHtml = p.t ? '<section class="group"><h4>Elige el tamaño <span class="pill pill-req">Obligatorio</span></h4>' +
       '<div class="opt-grid">' + p.t.map(function (t, i) {
-        return '<button class="opt' + (i === tamIdx ? ' active' : '') + '" data-tam="' + i + '" aria-pressed="' + (i === tamIdx) + '">' +
+        var mini = tamFotos ? (t.img || p.img) : '';
+        return '<button class="opt' + (tamFotos ? ' opt-foto' : '') + (i === tamIdx ? ' active' : '') + '" data-tam="' + i + '" aria-pressed="' + (i === tamIdx) + '">' +
+          (tamFotos ? '<span class="opt-thumb">' + (mini ? '<img src="' + esc(mini) + '" alt="" loading="lazy">' : '') + '</span>' : '') +
           '<span class="opt-name">' + esc(t.n) + (t.c ? ' ' + esc(t.c) : '') +
           (t.pr ? '<em>' + t.pr + (t.pr === 1 ? ' persona' : ' personas') + '</em>' : '') + '</span>' +
           '<span class="opt-price">' + money(t.p) + '</span></button>';
       }).join('') + '</div></section>' : '';
 
     var gruposHtml = (p.g || []).map(function (g) {
+      if (g === rg) {
+        var n = unidades();
+        return '<section class="group"><h4>' + esc(g.t) + ' <span class="pill pill-req">Obligatorio</span>' +
+          (n ? '<span class="pill pill-opt">' + n + (n === 1 ? ' unidad' : ' unidades') + '</span>' : '') + '</h4>' +
+          '<p class="group-hint">Puedes mezclar sabores: suma las que quieras de cada uno.</p>' +
+          '<div class="opt-grid">' + g.o.map(function (o) {
+            var c = cuenta[o.id] || 0;
+            return '<div class="opt opt-rep' + (c ? ' active' : '') + '" data-sabor="' + esc(o.id) + '">' +
+              '<span class="opt-name">' + esc(o.n) + (o.p > 0 ? '<em>+' + money(o.p) + '</em>' : '') + '</span>' +
+              '<span class="qty qty-sm">' +
+              '<button data-rg="-1" data-o="' + esc(o.id) + '" aria-label="Quitar ' + esc(o.n) + '"' + (c ? '' : ' disabled') + '>−</button>' +
+              '<span aria-live="polite">' + c + '</span>' +
+              '<button data-rg="1" data-o="' + esc(o.id) + '" aria-label="Agregar ' + esc(o.n) + '">+</button></span></div>';
+          }).join('') + '</div></section>';
+      }
       var cur = sel[g.id] || [], lleno = cur.length >= g.max;
       return '<section class="group"><h4>' + esc(g.t) +
         (g.min > 0 ? '<span class="pill pill-req">Obligatorio</span>'
@@ -314,11 +343,11 @@ function openProduct(id) {
       '<section class="group"><h4>Nota para la cocina <span class="pill pill-opt">Opcional</span></h4>' +
       '<textarea class="ta" data-f="nota" rows="2" maxlength="200" placeholder="Ej: sin cebolla, salsa aparte…">' + esc(nota) + '</textarea></section>' +
       '</div>' +
-      '<div class="modal-foot"><div class="qty">' +
+      '<div class="modal-foot">' + (rg ? '' : '<div class="qty">' +
       '<button data-c="-1" aria-label="Quitar uno">−</button><span aria-live="polite">' + cant + '</span>' +
-      '<button data-c="1" aria-label="Agregar uno">+</button></div>' +
+      '<button data-c="1" aria-label="Agregar uno">+</button></div>') +
       '<button class="btn btn-primary" id="p-add" style="flex:1"' + (f.length ? ' disabled' : '') + '>' +
-      (f.length ? 'Elige ' + esc(f[0].t.toLowerCase()) : 'Agregar · ' + money(total)) + '</button></div>';
+      (f.length ? (f[0] === rg ? 'Elige al menos un sabor' : /^elige/i.test(f[0].t) ? esc(f[0].t) : 'Elige ' + esc(f[0].t.toLowerCase())) : 'Agregar ' + (rg ? unidades() + ' ' : '') + '· ' + money(total)) + '</button></div>';
   }
 
   openModal(html(), {
@@ -330,6 +359,12 @@ function openProduct(id) {
       if (!b || b.disabled) return;
 
       if (b.hasAttribute('data-tam')) { tamIdx = Number(b.getAttribute('data-tam')); return updateModal(html()); }
+      if (b.hasAttribute('data-rg')) {
+        var oid = b.getAttribute('data-o');
+        cuenta[oid] = Math.max(0, (cuenta[oid] || 0) + Number(b.getAttribute('data-rg')));
+        if (!cuenta[oid]) delete cuenta[oid];
+        return updateModal(html());
+      }
       if (b.hasAttribute('data-c')) { cant = Math.max(1, cant + Number(b.getAttribute('data-c'))); return updateModal(html()); }
 
       var gid = b.getAttribute('data-g');
@@ -351,11 +386,20 @@ function openProduct(id) {
           (sel[g.id] || []).forEach(function (o) { ops.push({ n: o.n, p: o.p }); });
         });
         var t = p.t ? p.t[tamIdx] : null;
-        closeModal();
-        addToCart({
+        var linea = {
           id: id, n: p.n, img: fotoActual(), precio: base() + extras(), cant: cant,
           tam: t ? (t.n + (t.c ? ' ' + t.c : '')) : undefined,
           ops: ops, nota: nota.trim() || undefined
+        };
+        closeModal();
+        if (!rg) return addToCart(linea);
+        // una linea por sabor: "Postobón personal · Uva x2" y "· Kola x1"
+        rg.o.forEach(function (o) {
+          if (!cuenta[o.id]) return;
+          addToCart(Object.assign({}, linea, {
+            precio: linea.precio + o.p, cant: cuenta[o.id],
+            ops: [{ n: o.n, p: o.p }].concat(ops)
+          }));
         });
       }
     }

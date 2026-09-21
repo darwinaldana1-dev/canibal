@@ -331,14 +331,16 @@ const adicionalesPizza = {
 };
 
 /*
- * Sabores de bebida. Son obligatorios y no cambian el precio: el cliente
- * elige uno y queda anotado en el pedido que llega por WhatsApp.
+ * Sabores de bebida. Son obligatorios y no cambian el precio. Con
+ * 'reparto' el cliente pide varias unidades y las reparte entre sabores
+ * (ej: 2 Uva + 1 Kola); cada sabor llega como una linea del pedido.
  */
 const saboresPostobon = {
   id: 'grp_sabor_postobon',
   titulo: 'Elige el sabor',
   min: 1,
   max: 1,
+  reparto: true,
   opciones: [
     { id: 'pb_kola', nombre: 'Kola', precio: 0, incluida: true },
     { id: 'pb_manzana', nombre: 'Manzana', precio: 0 },
@@ -353,6 +355,7 @@ const saboresHit = {
   titulo: 'Elige el sabor',
   min: 1,
   max: 1,
+  reparto: true,
   opciones: [
     { id: 'hit_mora', nombre: 'Mora', precio: 0, incluida: true },
     { id: 'hit_mango', nombre: 'Mango', precio: 0 },
