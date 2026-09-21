@@ -166,7 +166,10 @@ p{text-wrap:pretty}
 .search-clear:hover{background:var(--accent);color:#0a0a0a}
 .tabs-wrap{position:sticky;top:var(--nav-h);z-index:20;margin-block:1.5rem;padding-block:.75rem;background:var(--bg);border-block:1px solid var(--bd)}
 .tabs{display:flex;gap:.5rem}
-.tab{display:inline-flex;align-items:center;gap:.35rem;flex-shrink:0;padding:.55rem 1.1rem;border-radius:var(--r-full);border:1px solid var(--bd);background:var(--s2);color:var(--tx2);font-family:var(--f-head);font-size:.78rem;font-weight:600;transition:all var(--t-fast)}
+/* La pestaña activa cambia sin transicion: animarla mientras se hace scroll
+   obligaba a repintar la pagina en cada cuadro y el cambio de categoria
+   se sentia trabado. */
+.tab{display:inline-flex;align-items:center;gap:.35rem;flex-shrink:0;padding:.55rem 1.1rem;border-radius:var(--r-full);border:1px solid var(--bd);background:var(--s2);color:var(--tx2);font-family:var(--f-head);font-size:.78rem;font-weight:600}
 .tab:hover{color:var(--tx);border-color:var(--accent)}
 .tab.active{background:var(--accent);border-color:var(--accent);color:#0a0a0a;box-shadow:0 4px 16px var(--glow)}
 /* El documento ya aplica scroll-padding-top = nav + 1rem, y los dos margenes se
