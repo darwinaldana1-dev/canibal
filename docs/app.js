@@ -203,21 +203,23 @@ function openModal(html, controller) {
   ctrl = controller || null;
   root.innerHTML = '<div class="overlay" data-overlay><div class="modal" role="dialog" aria-modal="true">' + html + '</div></div>';
   lockBody(true);
+  colapsarHero();
   var first = root.querySelector('[data-close]');
   if (first) first.focus({ preventScroll: true });
 }
 function updateModal(html) {
   var modal = root.querySelector('.modal');
   if (!modal) return;
-  var body = modal.querySelector('.modal-body');
+  var body = modal.querySelector('.modal-scroll, .modal-body');
   var y = body ? body.scrollTop : 0;
   var active = document.activeElement;
   var activeKey = active && active.getAttribute ? (active.getAttribute('data-f') || active.id) : null;
 
   modal.innerHTML = html;
 
-  var nb = modal.querySelector('.modal-body');
+  var nb = modal.querySelector('.modal-scroll, .modal-body');
   if (nb) nb.scrollTop = y;
+  colapsarHero();
   // devuelve el foco al campo que se estaba editando
   if (activeKey) {
     var again = modal.querySelector('[data-f="' + activeKey + '"]') || document.getElementById(activeKey);
@@ -229,6 +231,41 @@ function closeModal() {
   root.innerHTML = '';
   if (!drawer.classList.contains('open')) lockBody(false);
 }
+
+/*
+ * Foto que se encoge: en la ficha del producto, la foto y las opciones
+ * comparten un solo scroll. La foto es sticky con top negativo, asi que al
+ * bajar se va escondiendo hasta dejar una franja de HERO_MIN px con el
+ * nombre y el precio. Dentro de esa franja la imagen se escala para seguir
+ * viendose entera. Solo se usan transform: no hay reflujo en cada cuadro.
+ */
+var HERO_MIN = 150;
+var heroPend = false;
+function colapsarHero() {
+  heroPend = false;
+  var sc = root.querySelector('.modal-scroll');
+  var hero = sc && sc.querySelector('.modal-hero');
+  if (!hero) return;
+  var h0 = hero.offsetHeight;
+  var rango = Math.max(0, h0 - Math.min(HERO_MIN, h0));
+  var c = Math.max(0, Math.min(sc.scrollTop, rango));
+  var p = rango ? c / rango : 0;
+  var info = hero.querySelector('.modal-hero-info');
+  var ih = info ? info.offsetHeight : 0;
+  // lecturas arriba, escrituras abajo
+  hero.style.top = -rango + 'px';
+  var foto = hero.querySelector('img, .ph');
+  if (foto) foto.style.transform = c ? 'translateY(' + c + 'px) scale(' + ((h0 - c - ih * p) / h0) + ')' : '';
+  var grad = hero.querySelector('.modal-grad');
+  if (grad) grad.style.transform = c ? 'translateY(' + c + 'px) scaleY(' + ((h0 - c) / h0) + ')' : '';
+  hero.classList.toggle('encogido', p > 0.98);
+}
+// scroll no burbujea: se escucha en captura sobre el contenedor fijo
+root.addEventListener('scroll', function (e) {
+  if (heroPend || !e.target.classList || !e.target.classList.contains('modal-scroll')) return;
+  heroPend = true;
+  requestAnimationFrame(colapsarHero);
+}, true);
 
 root.addEventListener('click', function (e) {
   if (e.target.hasAttribute('data-overlay') || e.target.closest('[data-close]')) return closeModal();
@@ -328,6 +365,7 @@ function openProduct(id, tamInicial) {
       : '<div class="ph" aria-hidden="true">' + esc(p.n.charAt(0)) + '</div>';
 
     return '<button class="modal-close" data-close aria-label="Cerrar">×</button>' +
+      '<div class="modal-scroll">' +
       // la misma foto difuminada de fondo: se ve entera y sin franjas vacias
       '<div class="modal-hero' + (foto ? ' con-foto" style="--foto:url(&quot;' + esc(foto) + '&quot;)' : '') + '">' +
       img + '<div class="modal-grad"></div>' +
@@ -339,7 +377,7 @@ function openProduct(id, tamInicial) {
       tamHtml + gruposHtml +
       '<section class="group"><h4>Nota para la cocina <span class="pill pill-opt">Opcional</span></h4>' +
       '<textarea class="ta" data-f="nota" rows="2" maxlength="200" placeholder="Ej: sin cebolla, salsa aparte…">' + esc(nota) + '</textarea></section>' +
-      '</div>' +
+      '</div></div>' +
       '<div class="modal-foot">' + (rg ? '' : '<div class="qty">' +
       '<button data-c="-1" aria-label="Quitar uno">−</button><span aria-live="polite">' + cant + '</span>' +
       '<button data-c="1" aria-label="Agregar uno">+</button></div>') +
