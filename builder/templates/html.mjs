@@ -208,9 +208,8 @@ function contacto(cfg) {
 <dl class="sede-info">${filas.map(([i, v]) =>
       `<div class="sede-row"><dt aria-hidden="true">${i}</dt><dd>${v}</dd></div>`).join('')}</dl>
 <div class="sede-acts">
-<a class="btn btn-wa btn-sm" href="${waLink(cfg, null, s.whatsapp)}" target="_blank" rel="noopener">WhatsApp</a>
+<a class="btn btn-primary btn-sm" href="#menu">Ver menú</a>
 ${s.mapsUrl ? `<a class="btn btn-ghost btn-sm" href="${esc(s.mapsUrl)}" target="_blank" rel="noopener">Cómo llegar</a>` : ''}
-<a class="btn btn-ghost btn-sm" href="#menu">Ver menú</a>
 </div></article>`;
   }).join('');
 
