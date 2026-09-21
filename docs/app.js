@@ -124,6 +124,9 @@ function render() {
 
   // fuera de horario el pedido no se puede enviar, pero el carrito se guarda
   var e = estado();
+  // la fila de bebidas conserva su posicion al redibujar el carrito
+  var fila = box.querySelector('.sug-row');
+  var filaX = fila ? fila.scrollLeft : 0;
   box.innerHTML = '<div class="drawer-list">' + list +
     '<button class="link-btn" id="clear-cart" style="justify-self:start">Vaciar carrito</button></div>' +
     sugerencias() +
@@ -132,17 +135,19 @@ function render() {
     (e.abierto ? '' : '<p class="cerrado-nota">' + esc(e.corto) + '. Tu pedido queda guardado.</p>') +
     '<button class="btn btn-primary btn-block" id="go-checkout"' + (e.abierto ? '' : ' disabled') + '>' +
     (e.abierto ? 'Continuar con el pedido' : 'Cerrado ahora') + '</button></div>';
+  if (filaX) { fila = box.querySelector('.sug-row'); if (fila) fila.scrollLeft = filaX; }
 }
 
 /*
- * Sugerencias dentro del carrito: productos de la categoria configurada
- * que el cliente todavia no lleva. Si ya los tiene todos, no aparece nada.
+ * Sugerencias dentro del carrito: los productos de la categoria configurada.
+ * Quedan fijas aunque ya esten en el carrito, para poder pedir otro sabor u
+ * otra unidad; las que ya lleva muestran cuantas.
  */
 function sugerencias() {
   if (!CFG.sug || !CFG.sug.ids.length) return '';
   var dentro = {};
-  cart.forEach(function (i) { dentro[i.id] = true; });
-  var faltan = CFG.sug.ids.filter(function (id) { return !dentro[id] && ITEMS[id]; });
+  cart.forEach(function (i) { dentro[i.id] = (dentro[i.id] || 0) + i.cant; });
+  var faltan = CFG.sug.ids.filter(function (id) { return ITEMS[id]; });
   if (!faltan.length) return '';
 
   return '<div class="sug"><h3>' + esc(CFG.sug.titulo) + '</h3><div class="sug-row">' +
@@ -151,8 +156,9 @@ function sugerencias() {
       var foto = p.img
         ? '<img src="' + esc(p.img) + '" alt="" loading="lazy">'
         : '<span aria-hidden="true">' + esc(p.n.charAt(0)) + '</span>';
-      return '<button class="sug-item" data-id="' + esc(id) + '" aria-label="Agregar ' + esc(p.n) + '">' +
-        '<span class="sug-foto">' + foto + '</span>' +
+      var n = dentro[id] || 0;
+      return '<button class="sug-item' + (n ? ' en-carrito' : '') + '" data-id="' + esc(id) + '" aria-label="Agregar ' + esc(p.n) + (n ? ' (llevas ' + n + ')' : '') + '">' +
+        '<span class="sug-foto">' + foto + (n ? '<b class="sug-n">' + n + '</b>' : '') + '</span>' +
         '<span class="sug-nombre">' + esc(p.n) + '</span>' +
         '<span class="sug-precio">' + money(p.p) + '</span></button>';
     }).join('') + '</div></div>';

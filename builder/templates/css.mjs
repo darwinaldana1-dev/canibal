@@ -337,6 +337,8 @@ p{text-wrap:pretty}
 .sug-foto img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain}
 .sug-foto span{font-family:var(--f-display);font-size:1.5rem;color:var(--accent);opacity:.5}
 .sug-nombre{font-size:.7rem;line-height:1.25;color:var(--tx);display:-webkit-box;-webkit-line-clamp:2;line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.sug-item.en-carrito{border-color:var(--bd-accent)}
+.sug-n{position:absolute;top:.25rem;right:.25rem;z-index:1;min-width:20px;height:20px;padding-inline:5px;display:grid;place-items:center;border-radius:var(--r-full);background:var(--accent);color:#0a0a0a;font-size:.68rem;font-weight:700}
 .sug-precio{font-size:.72rem;font-weight:700;color:var(--accent)}
 
 .drawer-foot{flex:0 0 auto;display:grid;gap:.6rem;padding:1.1rem 1.25rem calc(1.1rem + env(safe-area-inset-bottom));background:var(--s2);border-top:1px solid var(--bd)}
