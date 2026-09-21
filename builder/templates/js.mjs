@@ -4,6 +4,18 @@ export function buildJs() {
   return String.raw`(function () {
 'use strict';
 
+/*
+ * Al abrir la pagina siempre arranca arriba, en el logo: ni el navegador
+ * restaura la posicion anterior ni un #seccion guardado en la URL la mueve.
+ */
+if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+if (location.hash && history.replaceState) history.replaceState(null, '', location.pathname + location.search);
+window.scrollTo(0, 0);
+var userScrolled = false;
+['touchstart', 'wheel', 'keydown'].forEach(function (t) {
+  window.addEventListener(t, function () { userScrolled = true; }, { passive: true, once: true });
+});
+
 /* ============ datos ============ */
 var DATA = JSON.parse(document.getElementById('menu-data').textContent);
 var ITEMS = DATA.items;
@@ -149,11 +161,19 @@ function sugerencias() {
     }).join('') + '</div></div>';
 }
 
-function lockBody(on) { document.body.style.overflow = on ? 'hidden' : ''; }
-function openCart() { drawer.classList.add('open'); backdrop.classList.add('open'); lockBody(true); }
+/*
+ * El scroll de la pagina se bloquea solo mientras hay una ventana o el
+ * carrito abiertos. No se lleva la cuenta de quien bloqueo: se mira el
+ * estado real cada vez, asi nunca queda trabado por un cierre fuera de orden.
+ */
+function syncLock() {
+  var on = !!root.firstChild || drawer.classList.contains('open');
+  document.body.style.overflow = on ? 'hidden' : '';
+}
+function openCart() { drawer.classList.add('open'); backdrop.classList.add('open'); syncLock(); }
 function closeCart() {
   drawer.classList.remove('open'); backdrop.classList.remove('open');
-  if (!root.firstChild) lockBody(false);
+  syncLock();
 }
 
 $('#cart-open').addEventListener('click', openCart);
@@ -205,7 +225,7 @@ var ctrl = null; // { click: fn, input: fn } del modal activo
 function openModal(html, controller) {
   ctrl = controller || null;
   root.innerHTML = '<div class="overlay" data-overlay><div class="modal" role="dialog" aria-modal="true">' + html + '</div></div>';
-  lockBody(true);
+  syncLock();
   colapsarHero();
   var first = root.querySelector('[data-close]');
   if (first) first.focus({ preventScroll: true });
@@ -231,8 +251,12 @@ function updateModal(html) {
 }
 function closeModal() {
   ctrl = null;
+  // frena la inercia antes de quitar la ventana: en iPhone, borrar un
+  // elemento que todavia se desliza puede dejar la pagina sin responder
+  var sc = root.querySelector('.modal-scroll, .modal-body');
+  if (sc) sc.style.overflow = 'hidden';
   root.innerHTML = '';
-  if (!drawer.classList.contains('open')) lockBody(false);
+  syncLock();
 }
 
 /*
@@ -979,6 +1003,17 @@ function openCheckout() {
 /* ============ arranque ============ */
 revisarHorario(true);   // deja el aviso puesto antes del primer dibujado
 render();
+syncLock();
+// al volver de WhatsApp o de otra app la pagina puede venir de la cache
+// del navegador: se revisa el bloqueo y, si la pagina se reabre, va arriba
+window.addEventListener('pageshow', function (e) {
+  syncLock();
+  if (e.persisted && !root.firstChild && !drawer.classList.contains('open')) window.scrollTo(0, 0);
+});
+window.addEventListener('load', function () {
+  if (!root.firstChild && window.scrollY > 0 && !userScrolled) window.scrollTo(0, 0);
+});
+document.addEventListener('visibilitychange', syncLock);
 // si la pagina queda abierta, el estado se actualiza solo a la hora de abrir
 setInterval(function () { revisarHorario(); }, 30000);
 })();
