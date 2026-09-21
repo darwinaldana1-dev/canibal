@@ -362,6 +362,12 @@ function menuPayload(cfg, menu, img) {
     }
   }
   const sede = cfg.sedes.find((s) => s.activa) || {};
+
+  // Sugerencias del carrito: los productos de la categoria elegida
+  const sug = cfg.carrito?.sugerir?.categoria
+    ? menu.categorias.find((b) => b.categoria.nombre === cfg.carrito.sugerir.categoria)
+    : null;
+
   return {
     items,
     cfg: {
@@ -373,6 +379,10 @@ function menuPayload(cfg, menu, img) {
       direccion: cfg.checkout.pideDireccion,
       envio: sede.tarifaDomicilio || 0,
       marca: cfg.brand.name,
+      sug: sug ? {
+        titulo: cfg.carrito.sugerir.titulo || '',
+        ids: sug.items.filter((p) => p.disponible !== false).slice(0, cfg.carrito.sugerir.max || 8).map((p) => p.id),
+      } : null,
       horario: sede.horarios ? { tz: cfg.zonaHoraria || 'America/Bogota', dias: aDatos(sede.horarios), cerradoEn: sede.cerradoEn || [] } : null,
       sede: sede.nombre || '',
     },

@@ -114,11 +114,36 @@ function render() {
   var e = estado();
   box.innerHTML = '<div class="drawer-list">' + list +
     '<button class="link-btn" id="clear-cart" style="justify-self:start">Vaciar carrito</button></div>' +
+    sugerencias() +
     '<div class="drawer-foot"><div class="total-row"><span>Subtotal</span><b>' + money(sub) + '</b></div>' +
     (e.abierto && CFG.envio > 0 ? '<p class="hint">El domicilio se suma en el siguiente paso.</p>' : '') +
     (e.abierto ? '' : '<p class="cerrado-nota">' + esc(e.corto) + '. Tu pedido queda guardado.</p>') +
     '<button class="btn btn-primary btn-block" id="go-checkout"' + (e.abierto ? '' : ' disabled') + '>' +
     (e.abierto ? 'Continuar con el pedido' : 'Cerrado ahora') + '</button></div>';
+}
+
+/*
+ * Sugerencias dentro del carrito: productos de la categoria configurada
+ * que el cliente todavia no lleva. Si ya los tiene todos, no aparece nada.
+ */
+function sugerencias() {
+  if (!CFG.sug || !CFG.sug.ids.length) return '';
+  var dentro = {};
+  cart.forEach(function (i) { dentro[i.id] = true; });
+  var faltan = CFG.sug.ids.filter(function (id) { return !dentro[id] && ITEMS[id]; });
+  if (!faltan.length) return '';
+
+  return '<div class="sug"><h3>' + esc(CFG.sug.titulo) + '</h3><div class="sug-row">' +
+    faltan.map(function (id) {
+      var p = ITEMS[id];
+      var foto = p.img
+        ? '<img src="' + esc(p.img) + '" alt="" loading="lazy">'
+        : '<span aria-hidden="true">' + esc(p.n.charAt(0)) + '</span>';
+      return '<button class="sug-item" data-id="' + esc(id) + '" aria-label="Agregar ' + esc(p.n) + '">' +
+        '<span class="sug-foto">' + foto + '</span>' +
+        '<span class="sug-nombre">' + esc(p.n) + '</span>' +
+        '<span class="sug-precio">' + money(p.p) + '</span></button>';
+    }).join('') + '</div></div>';
 }
 
 function lockBody(on) { document.body.style.overflow = on ? 'hidden' : ''; }
@@ -349,7 +374,8 @@ function agregarDirecto(id) {
 }
 
 document.addEventListener('click', function (e) {
-  var btn = e.target.closest('.card-add');
+  // el boton de la tarjeta y la sugerencia del carrito hacen lo mismo
+  var btn = e.target.closest('.card-add, .sug-item');
   if (btn) return agregarDirecto(btn.getAttribute('data-id'));
   var card = e.target.closest('.card');
   if (card && ITEMS[card.getAttribute('data-id')]) openProduct(card.getAttribute('data-id'));

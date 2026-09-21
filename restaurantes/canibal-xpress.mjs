@@ -212,6 +212,13 @@ export const config = {
     locale: 'es-CO',
   },
 
+  // ---------- CARRITO ----------
+  carrito: {
+    // Sugerencias dentro del carrito: productos de esta categoria que el
+    // cliente todavia no lleva. Deja categoria en null para no sugerir nada.
+    sugerir: { categoria: 'Bebidas', titulo: '¿Algo para tomar?', max: 8 },
+  },
+
   // ---------- CHECKOUT ----------
   checkout: {
     // 'whatsapp' abre WhatsApp con el pedido armado | 'api' envia a /api/pedido
