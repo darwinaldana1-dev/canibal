@@ -244,10 +244,10 @@ document.addEventListener('keydown', function (e) {
 });
 
 /* ============ modal de producto ============ */
-function openProduct(id) {
+function openProduct(id, tamInicial) {
   var p = ITEMS[id];
   if (!p) return;
-  var tamIdx = 0, cant = 1, nota = '';
+  var tamIdx = (p.t && p.t[tamInicial]) ? Number(tamInicial) : 0, cant = 1, nota = '';
   var sel = {};
   // grupo "reparto": varias unidades repartidas entre sabores (2 Uva + 1 Kola)
   var rg = (p.g || []).filter(function (g) { return g.rep; })[0];
@@ -419,6 +419,9 @@ function agregarDirecto(id) {
 
 document.addEventListener('click', function (e) {
   // el boton de la tarjeta y la sugerencia del carrito hacen lo mismo
+  // un tamaño de la tarjeta abre la ficha con ese tamaño ya elegido
+  var tam = e.target.closest('.card-tam');
+  if (tam) return openProduct(tam.getAttribute('data-id'), tam.getAttribute('data-tam'));
   var btn = e.target.closest('.card-add, .sug-item');
   if (btn) return agregarDirecto(btn.getAttribute('data-id'));
   var card = e.target.closest('.card');
@@ -429,7 +432,7 @@ document.addEventListener('click', function (e) {
 document.addEventListener('keydown', function (e) {
   if (e.key !== 'Enter' && e.key !== ' ') return;
   var card = e.target.closest && e.target.closest('.card');
-  if (!card || e.target.closest('.card-add')) return;
+  if (!card || e.target.closest('.card-add, .card-tam')) return;
   e.preventDefault();
   if (ITEMS[card.getAttribute('data-id')]) openProduct(card.getAttribute('data-id'));
 });

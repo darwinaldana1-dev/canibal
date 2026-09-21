@@ -147,6 +147,7 @@ function tarjeta(p, cfg, img) {
 <div class="card-img${foto ? ' con-foto" style="--foto:url(&quot;' + esc(foto) + '&quot;)' : ''}">${media(img, p.imagenUrl, p.nombre, p.nombre.charAt(0))}${tags ? `<div class="card-tags">${tags}</div>` : ''}</div>
 <div class="card-body"><h4 class="card-name">${esc(p.nombre)}</h4>
 ${p.descripcion ? `<p class="card-desc">${esc(p.descripcion)}</p>` : ''}
+${p.tamanios?.length ? `<ul class="card-tams">${p.tamanios.map((t, i) => `<li><button class="card-tam" data-id="${esc(p.id)}" data-tam="${i}" aria-label="Elegir ${esc(p.nombre)} ${esc(t.nombre)}"><span>${esc(t.nombre)}${t.codigo ? ' ' + esc(t.codigo) : ''}</span><b>${money(t.precio, cfg)}</b></button></li>`).join('')}</ul>` : ''}
 <div class="card-foot"><span class="card-price">${p.tamanios?.length ? '<em>Desde </em>' : ''}${money(desde, cfg)}</span>
 <button class="card-add${elegir ? '' : ' card-add-plus'}" data-id="${esc(p.id)}" aria-label="${elegir ? 'Elegir opciones de' : 'Agregar'} ${esc(p.nombre)}">${elegir ? 'Elegir' : '+'}</button></div>
 </div></article>`;
