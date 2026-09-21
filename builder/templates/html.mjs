@@ -154,13 +154,14 @@ ${p.descripcion ? `<p class="card-desc">${esc(p.descripcion)}</p>` : ''}
 
 function featured(cfg, productos, img) {
   if (!productos.length) return '';
+  const d = cfg.home.destacados || {};
   const cards = productos.map((p) => tarjeta(p, cfg, img)).join('');
   return `<section class="section" id="destacados"><div class="container">
-<header class="sec-head"><span class="eyebrow">Los favoritos</span>
-<h2 class="sec-title">Lo más <span class="accent">pedido</span></h2>
-<p class="sec-lead">Los platos que la gente repite. Si es tu primera vez, empieza por aquí.</p></header>
+<header class="sec-head"><span class="eyebrow">${esc(d.eyebrow || 'La casa recomienda')}</span>
+<h2 class="sec-title">${esc(d.title || 'Nuestros')} <span class="accent">${esc(d.titleAccent || 'recomendados')}</span></h2>
+${d.lead ? `<p class="sec-lead">${esc(d.lead)}</p>` : ''}</header>
 <div class="feat-grid" id="destacados-grid">${cards}</div>
-<div class="feat-cta"><a class="btn btn-primary" href="#menu">Ver menú completo</a></div>
+<div class="feat-cta"><a class="btn btn-primary" href="${esc(href(d.cta?.href || '#menu'))}">${esc(d.cta?.label || 'Ver menú completo')}</a></div>
 </div></section>`;
 }
 

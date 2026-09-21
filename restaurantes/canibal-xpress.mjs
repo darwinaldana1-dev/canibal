@@ -162,6 +162,16 @@ export const config = {
     // Franja de tres ventajas con icono. Con la lista vacia no aparece.
     // Para volver a activarla: { icon: '', title: '', desc: '' }
     perks: [],
+    // Seccion de recomendados. Los productos que salen aqui son los que
+    // llevan "destacado: true" en la carta, en el orden de la carta.
+    // No sale de ventas reales: la pagina no registra pedidos.
+    destacados: {
+      eyebrow: 'La casa recomienda',
+      title: 'Nuestros',
+      titleAccent: 'recomendados',
+      lead: 'Si es tu primera vez, empieza por aquí.',
+      cta: { label: 'Ver menú completo', href: '#menu' },
+    },
     about: {
       eyebrow: 'Nuestra historia',
       title: 'Más que un deleite, una verdadera sensación',
@@ -373,7 +383,7 @@ export const menu = {
         { id: 'pz5', nombre: 'Hawaiana', descripcion: 'Jamón, piña y queso mozarella.', precio: 24000, categoriaId: CAT.pizzas, etiquetas: [], orden: 4, disponible: true, grupos: [adicionalesPizza] },
         { id: 'pz6', nombre: 'Jamón y queso', descripcion: 'Jamón y doble queso mozarella.', precio: 25000, categoriaId: CAT.pizzas, etiquetas: [], orden: 5, disponible: true, grupos: [adicionalesPizza] },
         { id: 'pz7', nombre: 'Chorizo', descripcion: 'Chorizo, queso mozarella y salsa de la casa.', precio: 26000, categoriaId: CAT.pizzas, etiquetas: [], orden: 6, disponible: true, grupos: [adicionalesPizza] },
-        { id: 'pz8', nombre: 'Peperoni', descripcion: 'Peperoni y queso mozarella.', precio: 26000, categoriaId: CAT.pizzas, etiquetas: [], orden: 7, disponible: true, destacado: true, grupos: [adicionalesPizza] },
+        { id: 'pz8', nombre: 'Peperoni', descripcion: 'Peperoni y queso mozarella.', precio: 26000, categoriaId: CAT.pizzas, etiquetas: [], orden: 7, disponible: true, grupos: [adicionalesPizza] },
         { id: 'pz9', nombre: 'Pollo con pimentón', descripcion: 'Pollo desmechado, pimentón y queso mozarella.', precio: 26000, categoriaId: CAT.pizzas, etiquetas: [], orden: 8, disponible: true, grupos: [adicionalesPizza] },
         { id: 'pz10', nombre: 'Pollo con champiñón', descripcion: 'Pollo desmechado, champiñones y queso mozarella.', precio: 26000, categoriaId: CAT.pizzas, etiquetas: [], orden: 9, disponible: true, grupos: [adicionalesPizza] },
         { id: 'pz11', nombre: 'Con bocadillo', descripcion: 'Bocadillo y queso mozarella, el dulce de la casa.', precio: 26000, categoriaId: CAT.pizzas, etiquetas: [], orden: 10, disponible: true, grupos: [adicionalesPizza] },
@@ -392,7 +402,6 @@ export const menu = {
           etiquetas: ['La más cargada'],
           orden: 14,
           disponible: true,
-          destacado: true,
           grupos: [adicionalesPizza],
         },
       ],
@@ -445,7 +454,6 @@ export const menu = {
           etiquetas: ['Para compartir'],
           orden: 11,
           disponible: true,
-          destacado: true,
           tamanios: [
             { nombre: 'Personal', precio: 22000, porciones: 1 },
             { nombre: 'Mediana', precio: 35000, porciones: 2 },
