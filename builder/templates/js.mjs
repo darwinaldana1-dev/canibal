@@ -413,31 +413,28 @@ function openProduct(id, tamInicial) {
  * opciones cuando el producto tiene tamaños o adicionales.
  * Va en el documento para que sirva igual en el menu y en los destacados.
  */
-function agregarDirecto(id) {
+function agregarDirecto(id, tam) {
   var p = ITEMS[id];
   if (!p) return;
-  if (p.t || p.g) return openProduct(id);
+  if (p.t || p.g) return openProduct(id, tam);
   addToCart({ id: id, n: p.n, img: p.img, precio: p.p, cant: 1, ops: [] });
 }
 
 document.addEventListener('click', function (e) {
   // el boton de la tarjeta y la sugerencia del carrito hacen lo mismo
-  // un tamaño de la tarjeta abre la ficha con ese tamaño ya elegido
-  var tam = e.target.closest('.card-tam');
-  if (tam) return openProduct(tam.getAttribute('data-id'), tam.getAttribute('data-tam'));
   var btn = e.target.closest('.card-add, .sug-item');
-  if (btn) return agregarDirecto(btn.getAttribute('data-id'));
+  if (btn) return agregarDirecto(btn.getAttribute('data-id'), btn.getAttribute('data-tam'));
   var card = e.target.closest('.card');
-  if (card && ITEMS[card.getAttribute('data-id')]) openProduct(card.getAttribute('data-id'));
+  if (card && ITEMS[card.getAttribute('data-id')]) openProduct(card.getAttribute('data-id'), card.getAttribute('data-tam'));
 });
 
 // la tarjeta se puede abrir con el teclado
 document.addEventListener('keydown', function (e) {
   if (e.key !== 'Enter' && e.key !== ' ') return;
   var card = e.target.closest && e.target.closest('.card');
-  if (!card || e.target.closest('.card-add, .card-tam')) return;
+  if (!card || e.target.closest('.card-add')) return;
   e.preventDefault();
-  if (ITEMS[card.getAttribute('data-id')]) openProduct(card.getAttribute('data-id'));
+  if (ITEMS[card.getAttribute('data-id')]) openProduct(card.getAttribute('data-id'), card.getAttribute('data-tam'));
 });
 
 /* ============ busqueda ============ */
@@ -455,7 +452,8 @@ if (search) {
       var vis = 0;
       $$('.card', block).forEach(function (card) {
         var p = ITEMS[card.getAttribute('data-id')] || {};
-        var hit = !q || norm(p.n + ' ' + (p.d || '')).indexOf(q) !== -1;
+        var nombre = ($('.card-name', card) || {}).textContent || p.n;
+        var hit = !q || norm(nombre + ' ' + (p.d || '')).indexOf(q) !== -1;
         card.hidden = !hit;
         if (hit) vis++;
       });

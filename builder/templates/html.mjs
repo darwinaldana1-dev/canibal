@@ -136,21 +136,36 @@ function perks(cfg) {
  * Tarjeta de producto. La misma en el menu y en los destacados, para que
  * en los dos lados se comporte igual: tocarla abre la ficha del producto
  * y el boton la agrega al carrito.
+ *
+ * Con `tam` la tarjeta es la de un solo tamaño (Salchipapa Caníbal Mediana):
+ * su nombre, su foto y su precio; al abrirla llega con ese tamaño elegido.
  */
-function tarjeta(p, cfg, img) {
-  const desde = p.tamanios?.length ? Math.min(...p.tamanios.map((t) => t.precio)) : p.precio;
+function tarjeta(p, cfg, img, tam) {
+  const t = tam == null ? null : p.tamanios[tam];
+  const nombre = t ? `${p.nombre} ${t.nombre}${t.codigo ? ' ' + t.codigo : ''}` : p.nombre;
+  const imagen = (t && img(t.imagenUrl) && t.imagenUrl) || p.imagenUrl;
+  const precio = t ? t.precio : p.tamanios?.length ? Math.min(...p.tamanios.map((x) => x.precio)) : p.precio;
+  const desde = !t && p.tamanios?.length;
   const elegir = Boolean(p.tamanios?.length || p.grupos?.length);
-  const tags = (p.etiquetas || []).map((t) => `<span class="tag">${esc(t)}</span>`).join('');
+  const tamAttr = t ? ` data-tam="${tam}"` : '';
+  const tags = (p.etiquetas || []).map((x) => `<span class="tag">${esc(x)}</span>`).join('');
   // la misma foto, difuminada de fondo, rellena los lados sin recortar nada
-  const foto = img(p.imagenUrl);
-  return `<article class="card" data-id="${esc(p.id)}" tabindex="0" role="button" aria-label="Ver ${esc(p.nombre)}">
-<div class="card-img${foto ? ' con-foto" style="--foto:url(&quot;' + esc(foto) + '&quot;)' : ''}">${media(img, p.imagenUrl, p.nombre, p.nombre.charAt(0))}${tags ? `<div class="card-tags">${tags}</div>` : ''}</div>
-<div class="card-body"><h4 class="card-name">${esc(p.nombre)}</h4>
+  const foto = img(imagen);
+  return `<article class="card" data-id="${esc(p.id)}"${tamAttr} tabindex="0" role="button" aria-label="Ver ${esc(nombre)}">
+<div class="card-img${foto ? ' con-foto" style="--foto:url(&quot;' + esc(foto) + '&quot;)' : ''}">${media(img, imagen, nombre, p.nombre.charAt(0))}${tags ? `<div class="card-tags">${tags}</div>` : ''}</div>
+<div class="card-body"><h4 class="card-name">${esc(nombre)}</h4>
+${t?.porciones ? `<p class="card-porc">${t.porciones} ${t.porciones === 1 ? 'persona' : 'personas'}</p>` : ''}
 ${p.descripcion ? `<p class="card-desc">${esc(p.descripcion)}</p>` : ''}
-${p.tamanios?.length ? `<ul class="card-tams">${p.tamanios.map((t, i) => `<li><button class="card-tam" data-id="${esc(p.id)}" data-tam="${i}" aria-label="Elegir ${esc(p.nombre)} ${esc(t.nombre)}"><span>${esc(t.nombre)}${t.codigo ? ' ' + esc(t.codigo) : ''}</span><b>${money(t.precio, cfg)}</b></button></li>`).join('')}</ul>` : ''}
-<div class="card-foot"><span class="card-price">${p.tamanios?.length ? '<em>Desde </em>' : ''}${money(desde, cfg)}</span>
-<button class="card-add${elegir ? '' : ' card-add-plus'}" data-id="${esc(p.id)}" aria-label="${elegir ? 'Elegir opciones de' : 'Agregar'} ${esc(p.nombre)}">${elegir ? 'Elegir' : '+'}</button></div>
+<div class="card-foot"><span class="card-price">${desde ? '<em>Desde </em>' : ''}${money(precio, cfg)}</span>
+<button class="card-add${elegir ? '' : ' card-add-plus'}" data-id="${esc(p.id)}"${tamAttr} aria-label="${elegir ? 'Elegir opciones de' : 'Agregar'} ${esc(nombre)}">${elegir ? 'Elegir' : '+'}</button></div>
 </div></article>`;
+}
+
+/** En el menu, cada tamaño va como su propia tarjeta */
+function tarjetasMenu(p, cfg, img) {
+  return p.tamanios?.length
+    ? p.tamanios.map((_, i) => tarjeta(p, cfg, img, i)).join('')
+    : tarjeta(p, cfg, img);
 }
 
 function featured(cfg, productos, img) {
@@ -230,11 +245,12 @@ function menuSection(cfg, menu, img) {
     `<button class="tab" data-tab="${slug(b.categoria.nombre)}">${b.categoria.emoji ? esc(b.categoria.emoji) + ' ' : ''}${esc(b.categoria.nombre)}</button>`).join('');
 
   const bloques = menu.categorias.map((b) => {
-    const cards = b.items.map((p) => tarjeta(p, cfg, img)).join('');
+    const cards = b.items.map((p) => tarjetasMenu(p, cfg, img)).join('');
+    const total = b.items.reduce((n, p) => n + (p.tamanios?.length || 1), 0);
 
     return `<section class="cat-block" id="${slug(b.categoria.nombre)}">
 <div class="cat-head"><h3>${b.categoria.emoji ? esc(b.categoria.emoji) + ' ' : ''}${esc(b.categoria.nombre)}</h3>
-<div class="cat-meta"><span class="cat-count">${b.items.length} ${b.items.length === 1 ? 'producto' : 'productos'}</span>
+<div class="cat-meta"><span class="cat-count">${total} ${total === 1 ? 'producto' : 'productos'}</span>
 <div class="row-nav"><button class="row-btn row-prev" data-dir="-1" aria-label="Ver anteriores de ${esc(b.categoria.nombre)}" disabled></button><button class="row-btn row-next" data-dir="1" aria-label="Ver más de ${esc(b.categoria.nombre)}"></button></div></div></div>
 ${b.categoria.descripcion ? `<p class="cat-desc">${esc(b.categoria.descripcion)}</p>` : ''}
 <div class="grid">${cards}</div></section>`;
