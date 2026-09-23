@@ -12,6 +12,7 @@
     "build:todos": "node builder/build.mjs --todos",
     "serve": "node builder/serve.mjs",
     "optimizar": "powershell -NoProfile -ExecutionPolicy Bypass -File builder/optimizar.ps1",
-    "publicar": "node builder/publicar.mjs"
+    "publicar": "node builder/publicar.mjs",
+    "actualizar": "node builder/actualizar.mjs"
   }
 }
