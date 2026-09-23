@@ -64,6 +64,45 @@ corriendo.
 | `npm run build <nombre>` | Genera un sitio |
 | `npm run build:todos` | Genera todos los de `restaurantes/` |
 | `npm run serve <nombre> [puerto]` | Previsualiza un sitio generado |
+| `npm run optimizar` | Achica las fotos de `Imagenes/` (solo Windows) |
+| `npm run publicar <nombre>` | Copia el sitio generado a `docs/` |
+| `npm run actualizar <nombre> ["mensaje"]` | Todo lo anterior y lo sube a GitHub |
+
+---
+
+## Cambiar fotos y actualizar la página publicada
+
+Para cambiar una foto no hace falta tocar código: basta con reemplazar el
+archivo y correr un comando.
+
+1. **Cambia la foto.** En `Imagenes/Productos/`, reemplaza el archivo por la
+   foto nueva **con el mismo nombre**. Para un producto que no tenía foto,
+   agrega el archivo con el nombre del producto tal como aparece en la carta
+   (por ejemplo, `pizza napolitana.png`). Sirven `.png`, `.jpg` y `.webp`.
+2. **Actualiza la página.** Doble clic en `Actualizar pagina.bat`, o en una
+   terminal dentro de la carpeta del proyecto:
+
+   ```bash
+   npm run actualizar canibal-xpress
+   ```
+
+3. **Espera 1 a 3 minutos** y recarga la página publicada.
+
+El comando optimiza las fotos nuevas, regenera el sitio, lo copia a `docs/` y
+sube el cambio a GitHub. Si no hay nada nuevo, lo dice y no sube nada.
+
+Mientras corre, avisa a qué producto quedó asociada cada foto:
+
+```
+ok  Napolitana <- Productos/pizza napolitana.png
+x   Productos/foto rara.png        (ninguna coincidencia)
+```
+
+Una línea con `x` significa que el nombre del archivo no se parece al de
+ningún producto: cámbiale el nombre o asígnala a mano en el bloque `fotos`
+del archivo del restaurante. Lo mismo aplica a los precios, nombres y
+descripciones: se editan en `restaurantes/<nombre>.mjs` y se publican con el
+mismo comando.
 
 ---
 
