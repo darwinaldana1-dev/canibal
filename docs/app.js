@@ -358,6 +358,7 @@ function openProduct(id, tamInicial) {
       }).join('') + '</div></section>' : '';
 
     var gruposHtml = (p.g || []).map(function (g) {
+      var conFoto = g.o.some(function (o) { return o.img; });
       if (g === rg) {
         var n = unidades();
         return '<section class="group"><h4>' + esc(g.t) + ' <span class="pill pill-req">Obligatorio</span>' +
@@ -365,7 +366,8 @@ function openProduct(id, tamInicial) {
           '<p class="group-hint">Puedes mezclar sabores: suma las que quieras de cada uno.</p>' +
           '<div class="opt-grid">' + g.o.map(function (o) {
             var c = cuenta[o.id] || 0;
-            return '<div class="opt opt-rep' + (c ? ' active' : '') + '" data-sabor="' + esc(o.id) + '">' +
+            return '<div class="opt opt-rep' + (conFoto ? ' opt-foto' : '') + (c ? ' active' : '') + '" data-sabor="' + esc(o.id) + '">' +
+              (conFoto ? '<span class="opt-thumb">' + (o.img ? '<img src="' + esc(o.img) + '" alt="" loading="lazy">' : '') + '</span>' : '') +
               '<span class="opt-name">' + esc(o.n) + (o.p > 0 ? '<em>+' + money(o.p) + '</em>' : '') + '</span>' +
               '<span class="qty qty-sm">' +
               '<button data-rg="-1" data-o="' + esc(o.id) + '" aria-label="Quitar ' + esc(o.n) + '"' + (c ? '' : ' disabled') + '>−</button>' +
@@ -381,8 +383,9 @@ function openProduct(id, tamInicial) {
         '<div class="opt-grid">' + g.o.map(function (o) {
           var on = cur.some(function (c) { return c.id === o.id; });
           var off = !on && lleno && g.max > 1;
-          return '<button class="opt' + (on ? ' active' : '') + '" data-g="' + esc(g.id) +
+          return '<button class="opt' + (conFoto ? ' opt-foto' : '') + (on ? ' active' : '') + '" data-g="' + esc(g.id) +
             '" data-o="' + esc(o.id) + '" aria-pressed="' + on + '"' + (off ? ' disabled' : '') + '>' +
+            (conFoto ? '<span class="opt-thumb">' + (o.img ? '<img src="' + esc(o.img) + '" alt="" loading="lazy">' : '') + '</span>' : '') +
             '<span class="opt-name">' + esc(o.n) + '</span>' +
             '<span class="opt-price">' + (o.p > 0 ? '+' + money(o.p) : 'Incluido') + '</span></button>';
         }).join('') + '</div></section>';

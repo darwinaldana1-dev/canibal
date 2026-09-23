@@ -138,8 +138,27 @@ export async function prepararImagenes({ raiz, dirRestaurante, config, menu }) {
     return null;
   }
 
-  const fotos = archivos.filter((f) => /(^|\/)productos\//i.test(f) && !/^web\//i.test(f) && EXT_FOTO.test(f));
   const asociadas = [], ambiguas = [], sinProducto = [], repetidas = [];
+
+  /* ---- fotos de las opciones (cada sabor de una bebida) ----
+   * Van escritas a mano en el menu, no se adivinan por el nombre, y se
+   * sacan de la lista para que no se las quede un producto.
+   */
+  const deOpciones = new Set();
+  for (const { p } of productos) {
+    for (const g of p.grupos || []) {
+      for (const o of g.opciones || []) {
+        if (!o.imagenUrl || /^(https?:)?\/\//.test(o.imagenUrl)) continue;
+        const rel = buscar(o.imagenUrl);
+        if (!rel) { sinProducto.push(`${o.imagenUrl} (no existe; es la foto de ${p.nombre} · ${o.nombre})`); o.imagenUrl = null; continue; }
+        o.imagenUrl = await registrar(rel);
+        deOpciones.add(rel);
+        asociadas.push(`${p.nombre} · ${o.nombre} <- ${rel}`);
+      }
+    }
+  }
+
+  const fotos = archivos.filter((f) => /(^|\/)productos\//i.test(f) && !/^web\//i.test(f) && EXT_FOTO.test(f) && !deOpciones.has(f));
   const yaTiene = new Map();
   const overrides = new Map(Object.entries(config.fotos || {}).map(([k, v]) => [clave(k), v]));
 
@@ -154,6 +173,8 @@ export async function prepararImagenes({ raiz, dirRestaurante, config, menu }) {
 
     // 1. excepciones declaradas en el config
     const fijo = overrides.get(clave(nombre));
+    // false = no usar este archivo (por ejemplo, la foto no corresponde)
+    if (fijo === false) continue;
     if (fijo) {
       const ref = typeof fijo === 'string' ? { producto: fijo } : fijo;
       prod = porId.get(clave(ref.producto)) || productos.find((x) => clave(x.p.nombre) === clave(ref.producto))?.p || null;

@@ -373,7 +373,7 @@ function menuPayload(cfg, menu, img) {
       });
       if (p.grupos?.length) o.g = p.grupos.map((g) => ({
         id: g.id, t: g.titulo, min: g.min, max: g.max, rep: g.reparto ? 1 : undefined,
-        o: g.opciones.map((x) => ({ id: x.id, n: x.nombre, p: x.precio, inc: x.incluida ? 1 : 0 })),
+        o: g.opciones.map((x) => ({ id: x.id, n: x.nombre, p: x.precio, inc: x.incluida ? 1 : 0, img: img(x.imagenUrl) || undefined })),
       }));
       items[p.id] = o;
     }

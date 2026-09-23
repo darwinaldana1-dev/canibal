@@ -41,6 +41,9 @@ export const config = {
     'Canibal grande': { producto: 'pr8', tamanio: 'Grande' },
     // el producto pasó a llamarse "Agua saborizada 280 ml"
     'agua saborizada personal': { producto: 'bd2' },
+    // esta foto dice "Mango piña" y el sabor del menu es "Naranja piña":
+    // no se usa hasta tener la correcta
+    'Jugo hit personal naranja piña': false,
   },
 
   // ---------- IDENTIDAD ----------
@@ -349,33 +352,64 @@ const acompChuzoDesgranado = {
   ],
 };
 
-const saboresPostobon = {
+/*
+ * Cada envase tiene su propia foto por sabor, asi que el grupo se arma con
+ * las fotos que le correspondan. 'fotos' va por id de sabor; los sabores sin
+ * foto (el econolitro todavia no tiene) salen solo con el nombre.
+ * La foto de portada del producto sigue siendo la del nombre solo.
+ */
+const saboresPostobon = (fotos = {}) => ({
   id: 'grp_sabor_postobon',
   titulo: 'Elige el sabor',
   min: 1,
   max: 1,
   reparto: true,
   opciones: [
-    { id: 'pb_kola', nombre: 'Kola', precio: 0, incluida: true },
-    { id: 'pb_manzana', nombre: 'Manzana', precio: 0 },
-    { id: 'pb_naranja', nombre: 'Naranja', precio: 0 },
-    { id: 'pb_uva', nombre: 'Uva', precio: 0 },
-    { id: 'pb_colombiana', nombre: 'Colombiana', precio: 0 },
+    { id: 'pb_kola', nombre: 'Kola', precio: 0, incluida: true, imagenUrl: fotos.kola },
+    { id: 'pb_manzana', nombre: 'Manzana', precio: 0, imagenUrl: fotos.manzana },
+    { id: 'pb_naranja', nombre: 'Naranja', precio: 0, imagenUrl: fotos.naranja },
+    { id: 'pb_uva', nombre: 'Uva', precio: 0, imagenUrl: fotos.uva },
+    { id: 'pb_colombiana', nombre: 'Colombiana', precio: 0, imagenUrl: fotos.colombiana },
   ],
-};
+});
 
-const saboresHit = {
+const saboresHit = (fotos = {}) => ({
   id: 'grp_sabor_hit',
   titulo: 'Elige el sabor',
   min: 1,
   max: 1,
   reparto: true,
   opciones: [
-    { id: 'hit_mora', nombre: 'Mora', precio: 0, incluida: true },
-    { id: 'hit_mango', nombre: 'Mango', precio: 0 },
-    { id: 'hit_tropical', nombre: 'Tropical', precio: 0 },
-    { id: 'hit_naranja_pina', nombre: 'Naranja piña', precio: 0 },
+    { id: 'hit_mora', nombre: 'Mora', precio: 0, incluida: true, imagenUrl: fotos.mora },
+    { id: 'hit_mango', nombre: 'Mango', precio: 0, imagenUrl: fotos.mango },
+    { id: 'hit_tropical', nombre: 'Tropical', precio: 0, imagenUrl: fotos.tropical },
+    { id: 'hit_naranja_pina', nombre: 'Naranja piña', precio: 0, imagenUrl: fotos.naranjaPina },
   ],
+});
+
+const FOTOS_POSTOBON_PERSONAL = {
+  kola: 'Productos/Gaseosa Kola personal.png',
+  manzana: 'Productos/Gaseosa manzana personal.png',
+  naranja: 'Productos/Gaseosa naranja personal.png',
+  uva: 'Productos/Gaseosa uva personal.png',
+  colombiana: 'Productos/Gaseosa colombiana personal.png',
+};
+
+const FOTOS_POSTOBON_125 = {
+  kola: 'Productos/Postobón 1.25 L kola.png',
+  manzana: 'Productos/Postobón 1.25 L Manzana.png',
+  naranja: 'Productos/Postobón 1.25 L Naranja.png',
+  uva: 'Productos/Postobón 1.25 L Uva.png',
+  colombiana: 'Productos/Postobón 1.25 L Colombiana.png',
+};
+
+const FOTOS_HIT_PERSONAL = {
+  mora: 'Productos/Jugo hit personal mora.png',
+  mango: 'Productos/jugo hit personal mango.png',
+  tropical: 'Productos/Jugo hit personal tropical.png',
+  // pendiente: el archivo 'Jugo hit personal naranja piña.png' trae la
+  // botella de Mango piña, asi que este sabor va sin foto por ahora
+  naranjaPina: null,
 };
 
 export const menu = {
@@ -654,11 +688,11 @@ export const menu = {
       items: [
         { id: 'bd1', nombre: 'Agua botella cristal', descripcion: 'Agua sin gas.', precio: 2500, categoriaId: CAT.bebidas, etiquetas: [], orden: 0, disponible: true },
         { id: 'bd2', nombre: 'Agua saborizada 280 ml', descripcion: 'Agua saborizada sabor manzana, botella de 280 ml.', precio: 3000, categoriaId: CAT.bebidas, etiquetas: [], orden: 1, disponible: true },
-        { id: 'bd3', nombre: 'Postobón personal', descripcion: 'Gaseosa personal. Elige el sabor.', precio: 4000, categoriaId: CAT.bebidas, etiquetas: [], orden: 2, disponible: true, grupos: [saboresPostobon] },
+        { id: 'bd3', nombre: 'Postobón personal', descripcion: 'Gaseosa personal. Elige el sabor.', precio: 4000, categoriaId: CAT.bebidas, etiquetas: [], orden: 2, disponible: true, grupos: [saboresPostobon(FOTOS_POSTOBON_PERSONAL)] },
         { id: 'bd4', nombre: 'Coca-Cola personal', descripcion: 'Gaseosa personal.', precio: 4500, categoriaId: CAT.bebidas, etiquetas: [], orden: 3, disponible: true },
-        { id: 'bd5', nombre: 'Jugo Hit personal', descripcion: 'Jugo personal. Elige el sabor.', precio: 4500, categoriaId: CAT.bebidas, etiquetas: [], orden: 4, disponible: true, grupos: [saboresHit] },
-        { id: 'bd6', nombre: 'Postobón econolitro', descripcion: 'Gaseosa para compartir. Elige el sabor.', precio: 5500, categoriaId: CAT.bebidas, etiquetas: [], orden: 5, disponible: true, grupos: [saboresPostobon] },
-        { id: 'bd7', nombre: 'Postobón 1.25 L', descripcion: 'Gaseosa familiar. Elige el sabor.', precio: 7000, categoriaId: CAT.bebidas, etiquetas: [], orden: 6, disponible: true, grupos: [saboresPostobon] },
+        { id: 'bd5', nombre: 'Jugo Hit personal', descripcion: 'Jugo personal. Elige el sabor.', precio: 4500, categoriaId: CAT.bebidas, etiquetas: [], orden: 4, disponible: true, grupos: [saboresHit(FOTOS_HIT_PERSONAL)] },
+        { id: 'bd6', nombre: 'Postobón econolitro', descripcion: 'Gaseosa para compartir. Elige el sabor.', precio: 5500, categoriaId: CAT.bebidas, etiquetas: [], orden: 5, disponible: true, grupos: [saboresPostobon()] },
+        { id: 'bd7', nombre: 'Postobón 1.25 L', descripcion: 'Gaseosa familiar. Elige el sabor.', precio: 7000, categoriaId: CAT.bebidas, etiquetas: [], orden: 6, disponible: true, grupos: [saboresPostobon(FOTOS_POSTOBON_125)] },
         { id: 'bd8', nombre: 'Coca-Cola 1.25 L', descripcion: 'Gaseosa familiar.', precio: 9000, categoriaId: CAT.bebidas, etiquetas: [], orden: 7, disponible: true },
       ],
     },
