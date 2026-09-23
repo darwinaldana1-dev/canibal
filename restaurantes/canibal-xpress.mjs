@@ -589,10 +589,10 @@ export const menu = {
     {
       categoria: { id: CAT.chuzoDesgranado, nombre: 'Chuzo desgranado', orden: 6, emoji: '🌽' },
       items: [
-        { id: 'cd1', nombre: 'Chuzo desgranado de pollo', descripcion: 'Pollo, maíz, queso y salsas de la casa.', precio: 21000, categoriaId: CAT.chuzoDesgranado, etiquetas: [], orden: 0, disponible: true, grupos: [acompChuzoDesgranado] },
+        { id: 'cd1', nombre: 'Chuzo desgranado de pollo', descripcion: 'Pollo, queso y salsas de la casa.', precio: 21000, categoriaId: CAT.chuzoDesgranado, etiquetas: [], orden: 0, disponible: true, grupos: [acompChuzoDesgranado] },
         { id: 'cd2', nombre: 'Chuzo desgranado Caníbal', descripcion: 'Pollo, chorizo, butifarra y tocineta.', precio: 22000, categoriaId: CAT.chuzoDesgranado, etiquetas: [], orden: 1, disponible: true, grupos: [acompChuzoDesgranado] },
         { id: 'cd3', nombre: 'Chuzo desgranado combinado', descripcion: 'Pollo, chorizo y butifarra.', precio: 23000, categoriaId: CAT.chuzoDesgranado, etiquetas: [], orden: 2, disponible: true, grupos: [acompChuzoDesgranado] },
-        { id: 'cd4', nombre: 'Chuzo desgranado pollo ranchera', descripcion: 'Pollo y salchicha ranchera con maíz y queso.', precio: 25000, categoriaId: CAT.chuzoDesgranado, etiquetas: [], orden: 3, disponible: true, grupos: [acompChuzoDesgranado] },
+        { id: 'cd4', nombre: 'Chuzo desgranado pollo ranchera', descripcion: 'Pollo y salchicha ranchera con queso.', precio: 25000, categoriaId: CAT.chuzoDesgranado, etiquetas: [], orden: 3, disponible: true, grupos: [acompChuzoDesgranado] },
       ],
     },
 
