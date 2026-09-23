@@ -395,6 +395,8 @@ function menuPayload(cfg, menu, img) {
       recoger: cfg.checkout.permiteRecoger,
       direccion: cfg.checkout.pideDireccion,
       envio: sede.tarifaDomicilio || 0,
+      // sin tarifa fija, el domicilio se acuerda por WhatsApp
+      envioNota: sede.tarifaDomicilio > 0 ? '' : (sede.notaDomicilio || 'El valor del domicilio se confirma por WhatsApp al hacer el pedido.'),
       marca: cfg.brand.name,
       sug: sug ? {
         titulo: cfg.carrito.sugerir.titulo || '',

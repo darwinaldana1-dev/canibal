@@ -373,6 +373,8 @@ p{text-wrap:pretty}
 .summary h4{font-size:.8rem;letter-spacing:.08em;text-transform:uppercase;color:var(--accent);margin-bottom:.15rem}
 .sum-row{display:flex;align-items:baseline;justify-content:space-between;gap:1rem;font-size:.82rem;color:var(--tx2)}
 .sum-div{height:1px;background:var(--bd);margin-block:.3rem}
+.sum-nota span:last-child{color:var(--tx3)}
+.envio-nota{display:flex;gap:.5rem;padding:.6rem .75rem;margin-bottom:.15rem;border-radius:var(--r-md);background:var(--glow-soft);border:1px solid var(--bd-accent);color:var(--tx2);font-size:.8rem;line-height:1.4}
 .sum-total{font-family:var(--f-head);font-size:1.05rem;font-weight:800;color:var(--tx)}
 .sum-total span:last-child{color:var(--accent)}
 .ok-screen{display:grid;justify-items:center;gap:.7rem;padding:clamp(2.5rem,8vw,3.5rem) 1.5rem;text-align:center}

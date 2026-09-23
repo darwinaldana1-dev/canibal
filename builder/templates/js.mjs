@@ -135,6 +135,7 @@ function render() {
     sugerencias() +
     '<div class="drawer-foot"><div class="total-row"><span>Subtotal</span><b>' + money(sub) + '</b></div>' +
     (e.abierto && CFG.envio > 0 ? '<p class="hint">El domicilio se suma en el siguiente paso.</p>' : '') +
+    (e.abierto && !CFG.envio && CFG.envioNota ? '<p class="hint">' + esc(CFG.envioNota) + '</p>' : '') +
     (e.abierto ? '' : '<p class="cerrado-nota">' + esc(e.corto) + '. Tu pedido queda guardado.</p>') +
     '<button class="btn btn-primary btn-block" id="go-checkout"' + (e.abierto ? '' : ' disabled') + '>' +
     (e.abierto ? 'Continuar con el pedido' : 'Cerrado ahora') + '</button></div>';
@@ -966,6 +967,7 @@ function pedidoTexto() {
   L.push('', 'Subtotal: ' + money(subtotal()));
   if (envio() > 0) L.push('Domicilio: ' + money(envio()));
   L.push('*TOTAL: ' + money(subtotal() + envio()) + '*');
+  if (!envio() && datos.entrega === 'domicilio' && CFG.envioNota) L.push('(El total no incluye el domicilio: se confirma por aquí.)');
   if (datos.notas) L.push('', '*Notas:* ' + datos.notas);
   return L.join('\n');
 }
@@ -999,6 +1001,8 @@ function checkoutHtml() {
     '<div class="sum-div"></div>' +
     '<div class="sum-row"><span>Subtotal</span><span>' + money(subtotal()) + '</span></div>' +
     (envio() > 0 ? '<div class="sum-row"><span>Domicilio</span><span>' + money(envio()) + '</span></div>' : '') +
+    (!envio() && datos.entrega === 'domicilio' && CFG.envioNota
+      ? '<div class="sum-row sum-nota"><span>Domicilio</span><span>Por confirmar</span></div>' : '') +
     '<div class="sum-row sum-total"><span>Total</span><span>' + money(total) + '</span></div></div>';
 
   return '<div class="drawer-head"><h2>Datos de tu pedido</h2>' +
@@ -1010,6 +1014,8 @@ function checkoutHtml() {
     '<label class="field"><span>Notas del pedido <em>opcional</em></span><textarea class="ta" rows="2" maxlength="300" data-f="notas" placeholder="Algo más que debamos saber">' + esc(datos.notas) + '</textarea></label>' +
     resumen + '</div>' +
     '<div class="drawer-foot">' +
+    (datos.entrega === 'domicilio' && !envio() && CFG.envioNota
+      ? '<p class="envio-nota">\u{1F6F5} ' + esc(CFG.envioNota) + '</p>' : '') +
     (e.abierto ? '' : '<p class="cerrado-nota">' + esc(e.corto) + '. Tu pedido queda guardado.</p>') +
     '<button class="btn btn-wa btn-block" id="send"' + (ok ? '' : ' disabled') + '>' +
     (e.abierto ? 'Enviar por WhatsApp · ' + money(total) : 'Cerrado ahora') + '</button>' +

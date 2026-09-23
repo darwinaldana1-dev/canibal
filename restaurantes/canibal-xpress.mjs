@@ -127,6 +127,8 @@ export const config = {
       lng: 0,
       mapsUrl: '', // REVISAR: enlace de Google Maps del local
       tarifaDomicilio: 0, // REVISAR: costo del domicilio
+      // Aviso mientras no haya tarifa fija. Con tarifaDomicilio > 0 no se muestra.
+      notaDomicilio: 'El valor del domicilio se confirma por WhatsApp al hacer el pedido.',
       activa: true,
     },
   ],
