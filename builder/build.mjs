@@ -89,6 +89,16 @@ async function generar(nombre) {
   await writeFile(join(salida, 'styles.css'), css, 'utf8');
   await writeFile(join(salida, 'app.js'), js, 'utf8');
 
+  /*
+   * Dominio propio: GitHub Pages lo lee del archivo CNAME. Solo se escribe
+   * cuando el config declara seo.dominio; mientras tanto el sitio sigue
+   * publicado en la direccion de github.io.
+   */
+  if (config.seo.dominio) {
+    const host = String(config.seo.dominio).replace(/^https?:\/\//, '').replace(/\/.*$/, '').trim();
+    await writeFile(join(salida, 'CNAME'), host + '\n', 'utf8');
+  }
+
   const productos = menu.categorias.reduce((a, c) => a + c.items.length, 0);
   const total = [html, css, js].reduce((a, s) => a + Buffer.byteLength(s, 'utf8'), 0);
   const r = imagenes.reporte;

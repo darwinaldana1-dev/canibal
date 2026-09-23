@@ -245,6 +245,9 @@ export const config = {
 
   // ---------- SEO ----------
   seo: {
+    // Dominio propio. Al llenarlo, el sitio generado incluye el archivo
+    // CNAME que GitHub Pages necesita, y siteUrl debe apuntar al mismo.
+    dominio: '', // ej: canibalxpress.com
     siteUrl: 'https://canibalxpress.com', // REVISAR: dominio definitivo
     titleTemplate: '%s | Caníbal Xpress',
     defaultTitle: 'Caníbal Xpress | Más que un deleite, una verdadera sensación',
