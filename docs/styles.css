@@ -339,6 +339,9 @@ p{text-wrap:pretty}
 .sug-precio{font-size:.72rem;font-weight:700;color:var(--accent)}
 
 .drawer-foot{flex:0 0 auto;display:grid;gap:.6rem;padding:1.1rem 1.25rem calc(1.1rem + env(safe-area-inset-bottom));background:var(--s2);border-top:1px solid var(--bd)}
+/* los dos botones de un dialogo van lado a lado */
+.drawer-foot.dialog-foot{display:flex;gap:.6rem}
+.dialog-foot .btn{flex:1;padding-inline:1rem}
 .total-row{display:flex;align-items:baseline;justify-content:space-between;font-size:.9rem}
 .total-row b{font-family:var(--f-head);font-size:1.4rem;color:var(--accent)}
 .hint{color:var(--tx3);font-size:.72rem}

@@ -226,7 +226,10 @@ drawer.addEventListener('click', function (e) {
     return;
   }
   if (t.id === 'clear-cart') {
-    if (window.confirm('¿Vaciar todo el carrito?')) { cart = []; save(); render(); }
+    var n = count();
+    dialogoConfirmar('¿Vaciar el carrito?',
+      'Se quitarán ' + n + (n === 1 ? ' producto' : ' productos') + ' de tu pedido.',
+      'Vaciar', function () { cart = []; save(); render(); });
     return;
   }
   if (t.id === 'go-checkout') return openCheckout();
@@ -256,8 +259,10 @@ drawer.addEventListener('click', function (e) {
   if (nk) {
     var item = findItem(nk);
     if (!item) return;
-    var v = window.prompt('Nota para la cocina', item.nota || '');
-    if (v !== null) { item.nota = v.trim() || undefined; save(); render(); }
+    dialogoNota('Nota para la cocina', item.n, item.nota, function (v) {
+      item.nota = v.trim() || undefined;
+      save(); render();
+    });
   }
 });
 
@@ -296,6 +301,49 @@ function updateModal(html) {
     if (again && again.focus) again.focus({ preventScroll: true });
   }
 }
+/*
+ * Dialogos del sitio. Reemplazan a window.prompt y window.confirm, que el
+ * navegador dibuja a su manera y se veian ajenos a la pagina.
+ */
+function dialogoNota(titulo, texto, valor, alGuardar) {
+  var v = valor || '';
+  openModal(
+    '<div class="drawer-head"><h2>' + esc(titulo) + '</h2>' +
+    '<button class="x-btn" data-close aria-label="Cerrar">×</button></div>' +
+    '<div class="modal-body">' +
+    (texto ? '<p class="modal-desc">' + esc(texto) + '</p>' : '') +
+    '<label class="field"><span>Escríbelo aquí <em>opcional</em></span>' +
+    '<textarea class="ta" rows="3" maxlength="200" data-f="dlg" placeholder="Ej: sin cebolla, salsa aparte…">' + esc(v) + '</textarea></label></div>' +
+    '<div class="drawer-foot dialog-foot"><button class="btn btn-ghost" data-close>Cancelar</button>' +
+    '<button class="btn btn-primary" id="dlg-ok">Guardar</button></div>',
+    {
+      input: function (e) { if (e.target.getAttribute('data-f') === 'dlg') v = e.target.value; },
+      click: function (e) {
+        var b = e.target.closest('button');
+        if (b && b.id === 'dlg-ok') { closeModal(); alGuardar(v); }
+      },
+    }
+  );
+  var ta = root.querySelector('[data-f="dlg"]');
+  if (ta) { ta.focus(); ta.setSelectionRange(ta.value.length, ta.value.length); }
+}
+
+function dialogoConfirmar(titulo, texto, etiqueta, alConfirmar) {
+  openModal(
+    '<div class="drawer-head"><h2>' + esc(titulo) + '</h2>' +
+    '<button class="x-btn" data-close aria-label="Cerrar">×</button></div>' +
+    '<div class="modal-body"><p class="modal-desc">' + esc(texto) + '</p></div>' +
+    '<div class="drawer-foot dialog-foot"><button class="btn btn-ghost" data-close>Cancelar</button>' +
+    '<button class="btn btn-primary" id="dlg-ok">' + esc(etiqueta) + '</button></div>',
+    {
+      click: function (e) {
+        var b = e.target.closest('button');
+        if (b && b.id === 'dlg-ok') { closeModal(); alConfirmar(); }
+      },
+    }
+  );
+}
+
 function closeModal() {
   ctrl = null;
   // frena la inercia antes de quitar la ventana: en iPhone, borrar un
