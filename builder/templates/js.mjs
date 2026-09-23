@@ -139,6 +139,7 @@ function render() {
     '<button class="btn btn-primary btn-block" id="go-checkout"' + (e.abierto ? '' : ' disabled') + '>' +
     (e.abierto ? 'Continuar con el pedido' : 'Cerrado ahora') + '</button></div>';
   if (filaX) { fila = box.querySelector('.sug-row'); if (fila) fila.scrollLeft = filaX; }
+  updateSug();
 }
 
 /*
@@ -153,7 +154,10 @@ function sugerencias() {
   var faltan = CFG.sug.ids.filter(function (id) { return ITEMS[id]; });
   if (!faltan.length) return '';
 
-  return '<div class="sug"><h3>' + esc(CFG.sug.titulo) + '</h3><div class="sug-row">' +
+  return '<div class="sug"><h3>' + esc(CFG.sug.titulo) + '</h3>' +
+    '<div class="sug-wrap"><button class="row-btn row-prev sug-btn" data-sug="-1" aria-label="Ver anteriores" disabled></button>' +
+    '<button class="row-btn sug-btn sug-next" data-sug="1" aria-label="Ver más bebidas"></button>' +
+    '<div class="sug-row">' +
     faltan.map(function (id) {
       var p = ITEMS[id];
       var foto = p.img
@@ -164,8 +168,35 @@ function sugerencias() {
         '<span class="sug-foto">' + foto + (n ? '<b class="sug-n">' + n + '</b>' : '') + '</span>' +
         '<span class="sug-nombre">' + esc(p.n) + '</span>' +
         '<span class="sug-precio">' + money(p.p) + '</span></button>';
-    }).join('') + '</div></div>';
+    }).join('') + '</div></div></div>';
 }
+
+/*
+ * Flechas de la fila de bebidas: en el celular se desliza con el dedo, pero
+ * con mouse no habia forma de moverla. Solo aparecen si la fila no cabe.
+ */
+function updateSug() {
+  var fila = drawer.querySelector('.sug-row');
+  if (!fila) return;
+  var max = fila.scrollWidth - fila.clientWidth;
+  fila.closest('.sug').classList.toggle('sug-overflow', max > 2);
+  var prev = drawer.querySelector('.sug-btn[data-sug="-1"]');
+  var next = drawer.querySelector('.sug-btn[data-sug="1"]');
+  if (prev) prev.disabled = fila.scrollLeft <= 2;
+  if (next) next.disabled = fila.scrollLeft >= max - 2;
+}
+drawer.addEventListener('scroll', function (e) {
+  if (e.target.classList && e.target.classList.contains('sug-row')) updateSug();
+}, true);
+// con mouse, la rueda vertical mueve la fila de lado
+drawer.addEventListener('wheel', function (e) {
+  var fila = e.target.closest && e.target.closest('.sug-row');
+  if (!fila || fila.scrollWidth <= fila.clientWidth) return;
+  var d = Math.abs(e.deltaY) > Math.abs(e.deltaX) ? e.deltaY : e.deltaX;
+  if (!d) return;
+  e.preventDefault();
+  fila.scrollLeft += d;
+}, { passive: false });
 
 /*
  * El scroll de la pagina se bloquea solo mientras hay una ventana o el
@@ -201,6 +232,18 @@ drawer.addEventListener('click', function (e) {
     return;
   }
   if (t.id === 'go-checkout') return openCheckout();
+
+  var dir = t.getAttribute('data-sug');
+  if (dir) {
+    var fila = drawer.querySelector('.sug-row');
+    var item = fila && fila.querySelector('.sug-item');
+    if (!item) return;
+    // avanza de a tarjetas completas
+    var paso = item.offsetWidth + (parseFloat(getComputedStyle(fila).gap) || 0);
+    var n = Math.max(1, Math.floor(fila.clientWidth / paso) - 1);
+    fila.scrollBy({ left: Number(dir) * paso * n, behavior: reduceMotion ? 'auto' : 'smooth' });
+    return;
+  }
 
   var k = t.getAttribute('data-q');
   if (k) {

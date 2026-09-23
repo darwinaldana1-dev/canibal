@@ -320,7 +320,13 @@ p{text-wrap:pretty}
 /* sugerencias dentro del carrito */
 .sug{display:grid;gap:.5rem;padding:.9rem 1.25rem .25rem;border-top:1px solid var(--bd)}
 .sug h3{font-size:.72rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--tx3)}
-.sug-row{display:flex;gap:.5rem;overflow-x:auto;scrollbar-width:none;padding-bottom:.35rem;margin-inline:-.25rem;padding-inline:.25rem}
+.sug-wrap{position:relative;min-width:0}
+.sug-row{display:flex;gap:.5rem;overflow-x:auto;overscroll-behavior-x:contain;scrollbar-width:none;padding-bottom:.35rem;margin-inline:-.25rem;padding-inline:.25rem;scroll-padding-inline:.25rem}
+.sug-item{scroll-snap-align:start}
+.sug-btn{display:none;position:absolute;top:calc(50% - 17px);z-index:2;left:-.35rem;background:rgb(0 0 0 / 78%);backdrop-filter:blur(4px)}
+.sug-next{left:auto;right:-.35rem}
+/* solo con mouse: en el celular la fila se desliza con el dedo */
+@media (hover:hover) and (pointer:fine){.sug-overflow .sug-btn{display:grid}}
 .sug-row::-webkit-scrollbar{display:none}
 .sug-item{flex:0 0 auto;width:94px;display:grid;gap:.3rem;padding:.4rem;border-radius:var(--r-md);background:var(--s2);border:1px solid var(--bd);text-align:center;transition:border-color var(--t-fast),transform var(--t-fast)}
 .sug-item:hover{border-color:var(--accent);transform:translateY(-2px)}
