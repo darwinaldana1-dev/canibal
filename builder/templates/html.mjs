@@ -402,7 +402,11 @@ function menuPayload(cfg, menu, img) {
         titulo: cfg.carrito.sugerir.titulo || '',
         ids: sug.items.filter((p) => p.disponible !== false).slice(0, cfg.carrito.sugerir.max || 8).map((p) => p.id),
       } : null,
-      horario: sede.horarios ? { tz: cfg.zonaHoraria || 'America/Bogota', dias: aDatos(sede.horarios), cerradoEn: sede.cerradoEn || [] } : null,
+      // con horarioActivo en false el sitio recibe pedidos a cualquier hora,
+      // aunque el horario siga mostrandose en contacto y en el pie
+      horario: sede.horarios && sede.horarioActivo !== false
+        ? { tz: cfg.zonaHoraria || 'America/Bogota', dias: aDatos(sede.horarios), cerradoEn: sede.cerradoEn || [] }
+        : null,
       sede: sede.nombre || '',
     },
   };
