@@ -39,6 +39,8 @@ export const config = {
   fotos: {
     'Medio canibal': { producto: 'pr8', tamanio: 'Medio' },
     'Canibal grande': { producto: 'pr8', tamanio: 'Grande' },
+    // el producto pasó a llamarse "Agua saborizada 280 ml"
+    'agua saborizada personal': { producto: 'bd2' },
   },
 
   // ---------- IDENTIDAD ----------
@@ -335,6 +337,18 @@ const adicionalesPizza = {
  * 'reparto' el cliente pide varias unidades y las reparte entre sabores
  * (ej: 2 Uva + 1 Kola); cada sabor llega como una linea del pedido.
  */
+/* El chuzo desgranado se sirve con bollo o con papas: el cliente elige uno. */
+const acompChuzoDesgranado = {
+  id: 'grp_acomp_desgranado',
+  titulo: '¿Con bollo o papas?',
+  min: 1,
+  max: 1,
+  opciones: [
+    { id: 'acd_bollo', nombre: 'Bollo', precio: 0, incluida: true },
+    { id: 'acd_papas', nombre: 'Papas', precio: 0 },
+  ],
+};
+
 const saboresPostobon = {
   id: 'grp_sabor_postobon',
   titulo: 'Elige el sabor',
@@ -544,10 +558,10 @@ export const menu = {
     {
       categoria: { id: CAT.chuzoDesgranado, nombre: 'Chuzo desgranado', orden: 6, emoji: '🌽' },
       items: [
-        { id: 'cd1', nombre: 'Chuzo desgranado de pollo', descripcion: 'Pollo, maíz, queso y salsas de la casa.', precio: 21000, categoriaId: CAT.chuzoDesgranado, etiquetas: [], orden: 0, disponible: true },
-        { id: 'cd2', nombre: 'Chuzo desgranado Caníbal', descripcion: 'Pollo, chorizo, butifarra y tocineta.', precio: 22000, categoriaId: CAT.chuzoDesgranado, etiquetas: [], orden: 1, disponible: true },
-        { id: 'cd3', nombre: 'Chuzo desgranado combinado', descripcion: 'Pollo, chorizo y butifarra.', precio: 23000, categoriaId: CAT.chuzoDesgranado, etiquetas: [], orden: 2, disponible: true },
-        { id: 'cd4', nombre: 'Chuzo desgranado pollo ranchera', descripcion: 'Pollo y salchicha ranchera con maíz y queso.', precio: 25000, categoriaId: CAT.chuzoDesgranado, etiquetas: [], orden: 3, disponible: true },
+        { id: 'cd1', nombre: 'Chuzo desgranado de pollo', descripcion: 'Pollo, maíz, queso y salsas de la casa.', precio: 21000, categoriaId: CAT.chuzoDesgranado, etiquetas: [], orden: 0, disponible: true, grupos: [acompChuzoDesgranado] },
+        { id: 'cd2', nombre: 'Chuzo desgranado Caníbal', descripcion: 'Pollo, chorizo, butifarra y tocineta.', precio: 22000, categoriaId: CAT.chuzoDesgranado, etiquetas: [], orden: 1, disponible: true, grupos: [acompChuzoDesgranado] },
+        { id: 'cd3', nombre: 'Chuzo desgranado combinado', descripcion: 'Pollo, chorizo y butifarra.', precio: 23000, categoriaId: CAT.chuzoDesgranado, etiquetas: [], orden: 2, disponible: true, grupos: [acompChuzoDesgranado] },
+        { id: 'cd4', nombre: 'Chuzo desgranado pollo ranchera', descripcion: 'Pollo y salchicha ranchera con maíz y queso.', precio: 25000, categoriaId: CAT.chuzoDesgranado, etiquetas: [], orden: 3, disponible: true, grupos: [acompChuzoDesgranado] },
       ],
     },
 
@@ -639,7 +653,7 @@ export const menu = {
       categoria: { id: CAT.bebidas, nombre: 'Bebidas', orden: 13, emoji: '🥤' },
       items: [
         { id: 'bd1', nombre: 'Agua botella cristal', descripcion: 'Agua sin gas.', precio: 2500, categoriaId: CAT.bebidas, etiquetas: [], orden: 0, disponible: true },
-        { id: 'bd2', nombre: 'Agua saborizada personal', descripcion: 'Agua saborizada sabor manzana.', precio: 3000, categoriaId: CAT.bebidas, etiquetas: [], orden: 1, disponible: true },
+        { id: 'bd2', nombre: 'Agua saborizada 280 ml', descripcion: 'Agua saborizada sabor manzana, botella de 280 ml.', precio: 3000, categoriaId: CAT.bebidas, etiquetas: [], orden: 1, disponible: true },
         { id: 'bd3', nombre: 'Postobón personal', descripcion: 'Gaseosa personal. Elige el sabor.', precio: 4000, categoriaId: CAT.bebidas, etiquetas: [], orden: 2, disponible: true, grupos: [saboresPostobon] },
         { id: 'bd4', nombre: 'Coca-Cola personal', descripcion: 'Gaseosa personal.', precio: 4500, categoriaId: CAT.bebidas, etiquetas: [], orden: 3, disponible: true },
         { id: 'bd5', nombre: 'Jugo Hit personal', descripcion: 'Jugo personal. Elige el sabor.', precio: 4500, categoriaId: CAT.bebidas, etiquetas: [], orden: 4, disponible: true, grupos: [saboresHit] },
