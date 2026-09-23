@@ -351,7 +351,7 @@ function openProduct(id, tamInicial) {
     if (rg) total = rg.o.reduce(function (s, o) { return s + (cuenta[o.id] || 0) * (unit + o.p); }, 0);
 
     var tamHtml = p.t ? '<section class="group"><h4>Elige el tamaño <span class="pill pill-req">Obligatorio</span></h4>' +
-      '<div class="opt-grid">' + p.t.map(function (t, i) {
+      '<div class="opt-grid' + (tamFotos ? ' opt-grid-uno' : '') + '">' + p.t.map(function (t, i) {
         var mini = tamFotos ? (t.img || p.img) : '';
         return '<button class="opt' + (tamFotos ? ' opt-foto' : '') + (i === tamIdx ? ' active' : '') + '" data-tam="' + i + '" aria-pressed="' + (i === tamIdx) + '">' +
           (tamFotos ? '<span class="opt-thumb">' + (mini ? '<img src="' + esc(mini) + '" alt="" loading="lazy">' : '') + '</span>' : '') +
@@ -367,7 +367,7 @@ function openProduct(id, tamInicial) {
         return '<section class="group"><h4>' + esc(g.t) + ' <span class="pill pill-req">Obligatorio</span>' +
           (n ? '<span class="pill pill-opt">' + n + (n === 1 ? ' unidad' : ' unidades') + '</span>' : '') + '</h4>' +
           '<p class="group-hint">Puedes mezclar sabores: suma las que quieras de cada uno.</p>' +
-          '<div class="opt-grid">' + g.o.map(function (o) {
+          '<div class="opt-grid' + (conFoto ? ' opt-grid-uno' : '') + '">' + g.o.map(function (o) {
             var c = cuenta[o.id] || 0;
             return '<div class="opt opt-rep' + (conFoto ? ' opt-foto' : '') + (c ? ' active' : '') + '" data-sabor="' + esc(o.id) + '">' +
               (conFoto ? '<span class="opt-thumb">' + (o.img ? '<img src="' + esc(o.img) + '" alt="" loading="lazy">' : '') + '</span>' : '') +
@@ -383,7 +383,7 @@ function openProduct(id, tamInicial) {
         (g.min > 0 ? '<span class="pill pill-req">Obligatorio</span>'
                    : '<span class="pill pill-opt">Opcional · máx ' + g.max + '</span>') +
         (g.max > 1 && cur.length ? '<span class="pill pill-opt">' + cur.length + '/' + g.max + '</span>' : '') + '</h4>' +
-        '<div class="opt-grid">' + g.o.map(function (o) {
+        '<div class="opt-grid' + (conFoto ? ' opt-grid-uno' : '') + '">' + g.o.map(function (o) {
           var on = cur.some(function (c) { return c.id === o.id; });
           var off = !on && lleno && g.max > 1;
           return '<button class="opt' + (conFoto ? ' opt-foto' : '') + (on ? ' active' : '') + '" data-g="' + esc(g.id) +

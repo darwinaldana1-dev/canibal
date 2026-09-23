@@ -41,9 +41,6 @@ export const config = {
     'Canibal grande': { producto: 'pr8', tamanio: 'Grande' },
     // el producto pasó a llamarse "Agua saborizada 280 ml"
     'agua saborizada personal': { producto: 'bd2' },
-    // esta foto dice "Mango piña" y el sabor del menu es "Naranja piña":
-    // no se usa hasta tener la correcta
-    'Jugo hit personal naranja piña': false,
   },
 
   // ---------- IDENTIDAD ----------
@@ -407,9 +404,7 @@ const FOTOS_HIT_PERSONAL = {
   mora: 'Productos/Jugo hit personal mora.png',
   mango: 'Productos/jugo hit personal mango.png',
   tropical: 'Productos/Jugo hit personal tropical.png',
-  // pendiente: el archivo 'Jugo hit personal naranja piña.png' trae la
-  // botella de Mango piña, asi que este sabor va sin foto por ahora
-  naranjaPina: null,
+  naranjaPina: 'Productos/Jugo hit personal naranja piña.png',
 };
 
 export const menu = {

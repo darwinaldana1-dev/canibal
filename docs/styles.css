@@ -253,6 +253,8 @@ p{text-wrap:pretty}
 .pill-req{background:var(--glow-soft);border:1px solid var(--bd-accent);color:var(--accent)}
 .pill-opt{background:var(--s3);color:var(--tx3)}
 .opt-grid{display:grid;gap:.5rem;grid-template-columns:repeat(auto-fill,minmax(min(100%,200px),1fr))}
+/* con miniatura, una opcion por fila: en dos columnas quedaba despareja */
+.opt-grid-uno{grid-template-columns:1fr}
 .opt{display:flex;align-items:center;justify-content:space-between;gap:.75rem;padding:.75rem .9rem;border-radius:var(--r-md);background:var(--s2);border:1px solid var(--bd);text-align:left;transition:all var(--t-fast)}
 .opt:hover:not(:disabled){border-color:var(--bd-accent)}
 .opt:disabled{opacity:.4;cursor:not-allowed}
