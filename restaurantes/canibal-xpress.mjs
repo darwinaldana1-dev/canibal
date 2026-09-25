@@ -112,13 +112,12 @@ export const config = {
       // Lista vacia = cerrado ese dia. Se pueden poner dos franjas si algun
       // dia cierran al mediodia: mie: [['12:00','15:00'], ['18:00','22:30']]
       // El texto que ve el cliente se arma solo con estos datos.
-      // PRUEBAS: en false la pagina recibe pedidos a cualquier hora.
-      // Ponlo en true para volver a bloquear fuera del horario.
-      horarioActivo: false,
+      // En false la pagina recibe pedidos a cualquier hora (para pruebas).
+      horarioActivo: true,
       horarios: {
         dom: [['18:00', '23:30']],
         lun: [['18:00', '23:30']],
-        mar: [['18:00', '23:30']],
+        mar: [], // cerrado
         mie: [['18:00', '23:30']],
         jue: [['18:00', '23:30']],
         vie: [['18:00', '23:30']],
