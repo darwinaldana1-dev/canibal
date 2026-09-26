@@ -429,7 +429,7 @@ export const menu = {
         emoji: '🍕',
       },
       items: [
-        { id: 'pz1', nombre: 'Napolitana', descripcion: 'Salsa napolitana, queso mozarella y orégano.', precio: 21000, categoriaId: CAT.pizzas, etiquetas: [], orden: 0, disponible: true, grupos: [adicionalesPizza] },
+        { id: 'pz1', nombre: 'Napolitana', descripcion: 'Salsa napolitana y queso mozarella.', precio: 21000, categoriaId: CAT.pizzas, etiquetas: [], orden: 0, disponible: true, grupos: [adicionalesPizza] },
         { id: 'pz2', nombre: 'Salami', descripcion: 'Salami, queso mozarella y salsa de la casa.', precio: 23000, categoriaId: CAT.pizzas, etiquetas: [], orden: 1, disponible: true, grupos: [adicionalesPizza] },
         { id: 'pz3', nombre: 'Butifarra', descripcion: 'Butifarra, queso mozarella y salsa de la casa.', precio: 23000, categoriaId: CAT.pizzas, etiquetas: [], orden: 2, disponible: true, grupos: [adicionalesPizza] },
         { id: 'pz4', nombre: 'Pollo', descripcion: 'Pollo desmechado y queso mozarella.', precio: 23000, categoriaId: CAT.pizzas, etiquetas: [], orden: 3, disponible: true, grupos: [adicionalesPizza] },
