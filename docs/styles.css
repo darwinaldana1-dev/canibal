@@ -231,7 +231,7 @@ p{text-wrap:pretty}
 .modal-close:hover{background:var(--accent);color:#0a0a0a}
 /* min-height:0 y overflow evitan que la foto imponga su altura natural
    y rompa la proporcion 16:9 dentro del modal */
-.modal-hero{position:relative;aspect-ratio:1/1;max-height:min(52dvh,460px);flex-shrink:0;min-height:0;overflow:hidden;clip-path:inset(0);background:var(--s2);display:grid;place-items:center}
+.modal-hero{position:relative;width:100%;height:min(100vw,560px,52dvh,460px);flex-shrink:0;min-height:0;overflow:hidden;clip-path:inset(0);background:var(--s2);display:grid;place-items:center}
 .modal-hero.con-foto::before{content:'';position:absolute;inset:-12%;background:var(--foto) center/cover no-repeat;filter:blur(26px) brightness(.45) saturate(1.1)}
 .modal-hero img{position:absolute;inset:0;z-index:1;width:100%;height:100%;object-fit:contain}
 .modal-hero .ph{width:100%;height:100%;display:grid;place-items:center;background:linear-gradient(135deg,var(--s2),var(--s3));color:var(--accent);font-family:var(--f-display);font-size:4rem;opacity:.5}
