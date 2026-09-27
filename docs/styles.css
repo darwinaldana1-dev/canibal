@@ -345,6 +345,13 @@ p{text-wrap:pretty}
 .dialog-foot .btn{flex:1;padding-inline:1rem}
 .total-row{display:flex;align-items:baseline;justify-content:space-between;font-size:.9rem}
 .total-row b{font-family:var(--f-head);font-size:1.4rem;color:var(--accent)}
+.faltan{display:grid;gap:.4rem}
+.faltan-t{font-size:.78rem;color:var(--tx3)}
+.faltan-chips{display:flex;flex-wrap:wrap;gap:.35rem}
+.falta-chip{padding:.3rem .7rem;border-radius:var(--r-full);background:var(--s3);border:1px solid var(--bd);color:var(--tx2);font-size:.75rem;font-weight:600;transition:border-color var(--t-fast),color var(--t-fast)}
+.falta-chip:hover{border-color:var(--accent);color:var(--accent)}
+.field.falta .inp,.field.falta .toggle{border-color:var(--accent)}
+.field.falta>span{color:var(--accent)}
 .hint-mal{color:var(--accent-2,#ff6b6b)}
 .hint{color:var(--tx3);font-size:.72rem}
 .drawer-empty{flex:1;display:grid;align-content:center;justify-items:center;gap:.6rem;padding:2rem 1.5rem;text-align:center}

@@ -1041,6 +1041,38 @@ function textoEfectivo() {
 }
 
 function envio() { return datos.entrega === 'domicilio' ? (CFG.envio || 0) : 0; }
+/*
+ * Lo que falta por llenar, con el nombre del campo al que hay que ir.
+ * Se muestra debajo del boton y sirve de atajo: tocar un pendiente lleva
+ * al campo y lo resalta.
+ */
+function faltantes() {
+  var f = [];
+  if (datos.nombre.trim().length < 3) f.push({ ir: 'nombre', t: 'Tu nombre' });
+  if (datos.tel.replace(/\D/g, '').length < 7) f.push({ ir: 'tel', t: 'Tu teléfono' });
+  if (datos.entrega === 'domicilio') {
+    if (datos.dir.trim().length < 5) f.push({ ir: 'dir', t: 'La dirección' });
+    if (datos.barrio.trim().length < 3) f.push({ ir: 'barrio', t: 'El barrio' });
+  }
+  if (esEfectivo()) {
+    if (!datos.efectivo) f.push({ ir: 'ef', t: 'Si necesitas vuelto' });
+    else if (datos.efectivo === 'vuelto' && montoPagaCon() < subtotal() + envio()) {
+      f.push({ ir: 'pagaCon', t: montoPagaCon() ? 'Un monto que alcance' : 'Con cuánto pagas' });
+    }
+  }
+  return f;
+}
+
+/* Lista de pendientes debajo del boton de enviar */
+function faltantesHtml() {
+  var f = faltantes();
+  if (!f.length) return '';
+  return '<p class="faltan-t">Para enviar tu pedido falta:</p><div class="faltan-chips">' +
+    f.map(function (x) {
+      return '<button class="falta-chip" data-ir="' + esc(x.ir) + '">' + esc(x.t) + '</button>';
+    }).join('') + '</div>';
+}
+
 function valido() {
   return estado().abierto &&
     datos.nombre.trim().length >= 3 &&
@@ -1140,7 +1172,7 @@ function checkoutHtml() {
     (e.abierto ? '' : '<p class="cerrado-nota">' + esc(e.corto) + '. Tu pedido queda guardado.</p>') +
     '<button class="btn btn-wa btn-block" id="send"' + (ok ? '' : ' disabled') + '>' +
     (e.abierto ? 'Enviar por WhatsApp · ' + money(total) : 'Cerrado ahora') + '</button>' +
-    '<p class="hint" id="send-hint"' + (ok || !e.abierto ? ' hidden' : '') + '>Completa los campos con * para continuar.</p></div>';
+    '<div class="faltan" id="faltan"' + (ok || !e.abierto ? ' hidden' : '') + '>' + faltantesHtml() + '</div></div>';
 }
 
 function openCheckout() {
@@ -1165,9 +1197,15 @@ function openCheckout() {
       }
       var ok = valido();
       var btn = document.getElementById('send');
-      var hint = document.getElementById('send-hint');
+      var lista = document.getElementById('faltan');
       if (btn) btn.disabled = !ok;
-      if (hint) hint.hidden = ok;
+      if (lista) {
+        lista.hidden = ok || !estado().abierto;
+        lista.innerHTML = faltantesHtml();
+      }
+      // el campo deja de estar marcado en cuanto queda bien
+      var campo = e.target.closest('.field');
+      if (campo && !faltantes().some(function (x) { return x.ir === f; })) campo.classList.remove('falta');
     },
     click: function (e) {
       var b = e.target.closest('button');
@@ -1177,6 +1215,20 @@ function openCheckout() {
         datos.pago = b.getAttribute('data-p');
         if (!esEfectivo()) { datos.efectivo = ''; datos.pagaCon = ''; }
         return updateModal(checkoutHtml());
+      }
+      if (b.hasAttribute('data-ir')) {
+        var destino = b.getAttribute('data-ir');
+        var el = destino === 'ef'
+          ? document.querySelector('[data-ef]')
+          : document.querySelector('[data-f="' + destino + '"]');
+        var campo = el && el.closest('.field');
+        if (campo) {
+          campo.classList.add('falta');
+          campo.scrollIntoView({ block: 'center', behavior: reduceMotion ? 'auto' : 'smooth' });
+          var inp = campo.querySelector('input, textarea');
+          if (inp) setTimeout(function () { inp.focus(); }, reduceMotion ? 0 : 320);
+        }
+        return;
       }
       if (b.hasAttribute('data-ef')) {
         datos.efectivo = b.getAttribute('data-ef');
