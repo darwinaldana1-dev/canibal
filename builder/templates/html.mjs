@@ -357,10 +357,18 @@ function jsonLd(cfg, img) {
 
 /** Datos minimos que el JS necesita para modales y carrito */
 function menuPayload(cfg, menu, img) {
+  // categoria que se puede pedir con dos sabores (media y media)
+  const catMitades = cfg.mitades?.categoria || '';
+  const mitadIds = [];
   const items = {};
   for (const b of menu.categorias) {
+    const combinable = Boolean(catMitades) && b.categoria.nombre === catMitades;
     for (const p of b.items) {
       const o = { n: p.nombre, p: p.precio };
+      if (combinable && p.disponible !== false && !p.tamanios?.length) {
+        o.mit = 1;
+        mitadIds.push(p.id);
+      }
       const src = img(p.imagenUrl);
       if (src) o.img = src;
       if (p.descripcion) o.d = p.descripcion;
@@ -395,6 +403,8 @@ function menuPayload(cfg, menu, img) {
       recoger: cfg.checkout.permiteRecoger,
       direccion: cfg.checkout.pideDireccion,
       envio: sede.tarifaDomicilio || 0,
+      // productos que se pueden pedir mitad y mitad (dos sabores)
+      mitad: mitadIds.length ? { ids: mitadIds, titulo: cfg.mitades.titulo || '¿Mitad y mitad?' } : null,
       // sin tarifa fija, el domicilio se acuerda por WhatsApp
       envioNota: sede.tarifaDomicilio > 0 ? '' : (sede.notaDomicilio || 'El valor del domicilio se confirma por WhatsApp al hacer el pedido.'),
       marca: cfg.brand.name,

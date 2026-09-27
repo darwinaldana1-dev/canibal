@@ -245,6 +245,15 @@ export const config = {
     permiteRecoger: true,
   },
 
+  // ---------- MITAD Y MITAD ----------
+  // Los productos de esta categoria se pueden pedir con dos sabores, mitad
+  // y mitad. El precio sale de sumar la mitad de cada uno y subir al
+  // siguiente mil (26.000 + 26.000 -> 26.000 -> 27.000).
+  mitades: {
+    categoria: 'Pizzas',
+    titulo: '¿Un sabor o mitad y mitad?',
+  },
+
   // ---------- SEO ----------
   seo: {
     // Dominio propio. Al llenarlo, el sitio generado incluye el archivo
@@ -689,7 +698,7 @@ export const menu = {
       categoria: { id: CAT.bebidas, nombre: 'Bebidas', orden: 13, emoji: '🥤' },
       items: [
         { id: 'bd1', nombre: 'Agua botella cristal', descripcion: 'Agua sin gas.', precio: 2500, categoriaId: CAT.bebidas, etiquetas: [], orden: 0, disponible: true },
-        { id: 'bd2', nombre: 'Agua saborizada 280 ml', descripcion: 'Agua saborizada sabor manzana, botella de 280 ml.', precio: 3000, categoriaId: CAT.bebidas, etiquetas: [], orden: 1, disponible: true },
+        { id: 'bd2', nombre: 'Agua saborizada 280 ml', descripcion: 'Agua saborizada sabor manzana, botella de 280 ml.', precio: 2000, categoriaId: CAT.bebidas, etiquetas: [], orden: 1, disponible: true },
         { id: 'bd3', nombre: 'Postobón personal', descripcion: 'Gaseosa personal. Elige el sabor.', precio: 4000, categoriaId: CAT.bebidas, etiquetas: [], orden: 2, disponible: true, grupos: [saboresPostobon(FOTOS_POSTOBON_PERSONAL)] },
         { id: 'bd4', nombre: 'Coca-Cola personal', descripcion: 'Gaseosa personal.', precio: 4500, categoriaId: CAT.bebidas, etiquetas: [], orden: 3, disponible: true },
         { id: 'bd5', nombre: 'Jugo Hit personal', descripcion: 'Jugo personal. Elige el sabor.', precio: 4500, categoriaId: CAT.bebidas, etiquetas: [], orden: 4, disponible: true, grupos: [saboresHit(FOTOS_HIT_PERSONAL)] },

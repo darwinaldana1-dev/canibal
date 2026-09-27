@@ -57,6 +57,13 @@ function subtotal() {
 function count() {
   return cart.reduce(function (a, i) { return a + i.cant; }, 0);
 }
+/*
+ * Pizza de dos sabores: la mitad de cada precio, y el resultado sube al
+ * siguiente mil. Dos pizzas de 26.000 dan 26.000 y se cobran 27.000.
+ */
+function precioMitades(a, b) {
+  return (Math.floor((a / 2 + b / 2) / 1000) + 1) * 1000;
+}
 function keyOf(it) {
   return [it.id, it.tam || '', (it.ops || []).map(function (o) { return o.n; }).sort().join('|'), it.nota || ''].join('::');
 }
@@ -421,8 +428,14 @@ function openProduct(id, tamInicial) {
   }
   // miniaturas en los tamaños solo si alguno tiene su propia foto
   var tamFotos = p.t && p.t.some(function (t) { return t.img; });
+  // mitad y mitad: id del segundo sabor, o null si va de un solo sabor
+  var mitad = null;
+  var puedeMitad = Boolean(p.mit && CFG.mitad && CFG.mitad.ids.length > 1);
 
-  function base() { return p.t ? p.t[tamIdx].p : p.p; }
+  function base() {
+    if (mitad && ITEMS[mitad]) return precioMitades(p.p, ITEMS[mitad].p);
+    return p.t ? p.t[tamIdx].p : p.p;
+  }
   function fotoActual() { return (p.t && p.t[tamIdx].img) || p.img || ''; }
   function extras() {
     var s = 0;
@@ -430,6 +443,7 @@ function openProduct(id, tamInicial) {
     return s;
   }
   function falta() {
+    if (mitad === '') return [{ t: 'la otra mitad' }];
     return (p.g || []).filter(function (g) {
       return g === rg ? unidades() < 1 : (sel[g.id] || []).length < g.min;
     });
@@ -448,6 +462,25 @@ function openProduct(id, tamInicial) {
           (t.pr ? '<em>' + t.pr + (t.pr === 1 ? ' persona' : ' personas') + '</em>' : '') + '</span>' +
           '<span class="opt-price">' + money(t.p) + '</span></button>';
       }).join('') + '</div></section>' : '';
+
+    var mitadHtml = '';
+    if (puedeMitad) {
+      var otras = CFG.mitad.ids.filter(function (x) { return x !== id && ITEMS[x]; });
+      mitadHtml = '<section class="group"><h4>' + esc(CFG.mitad.titulo) +
+        (mitad === null ? '<span class="pill pill-opt">Opcional</span>' : '') + '</h4>' +
+        '<div class="toggle"><button data-mit="0" class="' + (mitad === null ? 'active' : '') + '">Un solo sabor</button>' +
+        '<button data-mit="1" class="' + (mitad === null ? '' : 'active') + '">Mitad y mitad</button></div>' +
+        (mitad === null ? '' :
+          '<p class="group-hint">La otra mitad, y cuánto queda la pizza:</p>' +
+          '<div class="opt-grid opt-grid-uno">' + otras.map(function (x) {
+            var o = ITEMS[x], on = mitad === x;
+            return '<button class="opt opt-foto' + (on ? ' active' : '') + '" data-mit2="' + esc(x) + '" aria-pressed="' + on + '">' +
+              '<span class="opt-thumb">' + (o.img ? '<img src="' + esc(o.img) + '" alt="" loading="lazy">' : '') + '</span>' +
+              '<span class="opt-name">' + esc(o.n) + '</span>' +
+              '<span class="opt-price">' + money(precioMitades(p.p, o.p)) + '</span></button>';
+          }).join('') + '</div>') +
+        '</section>';
+    }
 
     var gruposHtml = (p.g || []).map(function (g) {
       var conFoto = g.o.some(function (o) { return o.img; });
@@ -499,7 +532,7 @@ function openProduct(id, tamInicial) {
       (p.d ? '<p class="modal-desc">' + esc(p.d) + '</p>' : '') +
       // "Que lleva": texto largo del producto, si el restaurante lo cargo
       (p.ing ? '<section class="group"><h4>Qué lleva</h4><p class="modal-lleva">' + esc(p.ing).replace(/\n+/g, '</p><p class="modal-lleva">') + '</p></section>' : '') +
-      tamHtml + gruposHtml +
+      tamHtml + mitadHtml + gruposHtml +
       '<section class="group"><h4>Nota para la cocina <span class="pill pill-opt">Opcional</span></h4>' +
       '<textarea class="ta" data-f="nota" rows="2" maxlength="200" placeholder="Ej: sin cebolla, salsa aparte…">' + esc(nota) + '</textarea></section>' +
       '</div></div>' +
@@ -519,6 +552,16 @@ function openProduct(id, tamInicial) {
       if (!b || b.disabled) return;
 
       if (b.hasAttribute('data-tam')) { tamIdx = Number(b.getAttribute('data-tam')); return updateModal(html()); }
+      if (b.hasAttribute('data-mit')) {
+        // '' = mitad y mitad pero sin elegir todavia el segundo sabor
+        mitad = b.getAttribute('data-mit') === '1' ? (mitad || '') : null;
+        return updateModal(html());
+      }
+      if (b.hasAttribute('data-mit2')) {
+        var otro = b.getAttribute('data-mit2');
+        mitad = mitad === otro ? '' : otro;
+        return updateModal(html());
+      }
       if (b.hasAttribute('data-rg')) {
         var oid = b.getAttribute('data-o');
         cuenta[oid] = Math.max(0, (cuenta[oid] || 0) + Number(b.getAttribute('data-rg')));
@@ -542,6 +585,7 @@ function openProduct(id, tamInicial) {
       if (b.id === 'p-add') {
         if (falta().length) return;
         var ops = [];
+        if (mitad && ITEMS[mitad]) ops.push({ n: 'Mitad y mitad con ' + ITEMS[mitad].n, p: 0 });
         (p.g || []).forEach(function (g) {
           (sel[g.id] || []).forEach(function (o) { ops.push({ n: o.n, p: o.p }); });
         });
@@ -980,15 +1024,36 @@ function revisarHorario(inicial) {
 /* ============ checkout ============ */
 var datos = {
   nombre: '', tel: '', entrega: CFG.direccion ? 'domicilio' : 'recoger',
-  dir: '', barrio: '', ind: '', pago: CFG.pagos[0] || 'Efectivo', notas: ''
+  dir: '', barrio: '', ind: '', pago: CFG.pagos[0] || 'Efectivo', notas: '',
+  // pago en efectivo: 'completo' o 'vuelto', y con cuanto paga
+  efectivo: '', pagaCon: ''
 };
+
+function esEfectivo() { return /efectivo/i.test(datos.pago || ''); }
+function montoPagaCon() { return Number(String(datos.pagaCon).replace(/\D/g, '')) || 0; }
+/* Aviso debajo del monto: si alcanza, cuanto vuelto hay que llevar */
+function avisoVuelto(total) {
+  var m = montoPagaCon();
+  if (!m) return 'Escribe con cuánto vas a pagar.';
+  if (m < total) return 'Ese monto es menor que el total (' + money(total) + ').';
+  return 'Vuelto: ' + money(m - total) + (envio() ? '' : ', sin contar el domicilio') + '.';
+}
+/* La respuesta del vuelto, en una linea, para el pedido */
+function textoEfectivo() {
+  if (!esEfectivo() || !datos.efectivo) return '';
+  if (datos.efectivo === 'completo') return 'Paga completo, no necesita vuelto';
+  return 'Paga con ' + money(montoPagaCon()) + ' — llevar vuelto';
+}
 
 function envio() { return datos.entrega === 'domicilio' ? (CFG.envio || 0) : 0; }
 function valido() {
   return estado().abierto &&
     datos.nombre.trim().length >= 3 &&
     datos.tel.replace(/\D/g, '').length >= 7 &&
-    (datos.entrega === 'recoger' || (datos.dir.trim().length >= 5 && datos.barrio.trim().length >= 3));
+    (datos.entrega === 'recoger' || (datos.dir.trim().length >= 5 && datos.barrio.trim().length >= 3)) &&
+    // en efectivo hay que decir si paga completo o con cuanto paga
+    (!esEfectivo() || datos.efectivo === 'completo' ||
+      (datos.efectivo === 'vuelto' && montoPagaCon() >= subtotal() + envio()));
 }
 
 function pedidoTexto() {
@@ -1003,7 +1068,10 @@ function pedidoTexto() {
     L.push('*Barrio:* ' + datos.barrio);
     if (datos.ind) L.push('*Indicaciones:* ' + datos.ind);
   }
-  L.push('*Pago:* ' + datos.pago, '', '*PEDIDO*');
+  L.push('*Pago:* ' + datos.pago);
+  var ef = textoEfectivo();
+  if (ef) L.push('*Vuelto:* ' + ef);
+  L.push('', '*PEDIDO*');
   cart.forEach(function (i) {
     L.push('• ' + i.cant + 'x ' + i.n + (i.tam ? ' (' + i.tam + ')' : '') + ' — ' + money(i.precio * i.cant));
     (i.ops || []).forEach(function (o) { L.push('   + ' + o.n + (o.p > 0 ? ' (' + money(o.p) + ')' : '')); });
@@ -1038,6 +1106,19 @@ function checkoutHtml() {
       return '<button class="pay' + (datos.pago === m ? ' active' : '') + '" data-p="' + esc(m) + '">' + esc(m) + '</button>';
     }).join('') + '</div></div>';
 
+  // pagando en efectivo: paga completo o hay que llevarle vuelto
+  var falta = esEfectivo() && datos.efectivo === 'vuelto' && montoPagaCon() > 0 && montoPagaCon() < total;
+  var efectivoHtml = !esEfectivo() ? '' :
+    '<div class="field"><span>¿Necesitas vuelto? *</span>' +
+    '<div class="toggle"><button data-ef="completo" class="' + (datos.efectivo === 'completo' ? 'active' : '') + '">Pago completo</button>' +
+    '<button data-ef="vuelto" class="' + (datos.efectivo === 'vuelto' ? 'active' : '') + '">Necesito vuelto</button></div>' +
+    (datos.efectivo === 'vuelto'
+      ? '<label class="field" style="margin-top:.6rem"><span>¿Con cuánto vas a pagar? *</span>' +
+        '<input class="inp" data-f="pagaCon" inputmode="numeric" value="' + esc(datos.pagaCon) + '" placeholder="Ej: 50000"></label>' +
+        '<p class="hint' + (falta ? ' hint-mal' : '') + '" id="vuelto-hint">' + esc(avisoVuelto(total)) + '</p>'
+      : '') +
+    '</div>';
+
   var resumen = '<div class="summary"><h4>Resumen</h4>' +
     cart.map(function (i) {
       return '<div class="sum-row"><span>' + i.cant + 'x ' + esc(i.n) + (i.tam ? ' (' + esc(i.tam) + ')' : '') +
@@ -1055,7 +1136,7 @@ function checkoutHtml() {
     '<div class="modal-body">' + toggle +
     '<label class="field"><span>Nombre completo *</span><input class="inp" data-f="nombre" value="' + esc(datos.nombre) + '" placeholder="Tu nombre" autocomplete="name"></label>' +
     '<label class="field"><span>Teléfono *</span><input class="inp" type="tel" data-f="tel" value="' + esc(datos.tel) + '" placeholder="300 000 0000" autocomplete="tel" inputmode="tel"></label>' +
-    dirFields + pagos +
+    dirFields + pagos + efectivoHtml +
     '<label class="field"><span>Notas del pedido <em>opcional</em></span><textarea class="ta" rows="2" maxlength="300" data-f="notas" placeholder="Algo más que debamos saber">' + esc(datos.notas) + '</textarea></label>' +
     resumen + '</div>' +
     '<div class="drawer-foot">' +
@@ -1079,6 +1160,14 @@ function openCheckout() {
       var f = e.target.getAttribute('data-f');
       if (!f) return;
       datos[f] = e.target.value;
+      if (f === 'pagaCon') {
+        var av = document.getElementById('vuelto-hint');
+        if (av) {
+          var tot = subtotal() + envio();
+          av.textContent = avisoVuelto(tot);
+          av.classList.toggle('hint-mal', montoPagaCon() > 0 && montoPagaCon() < tot);
+        }
+      }
       var ok = valido();
       var btn = document.getElementById('send');
       var hint = document.getElementById('send-hint');
@@ -1089,7 +1178,16 @@ function openCheckout() {
       var b = e.target.closest('button');
       if (!b) return;
       if (b.hasAttribute('data-e')) { datos.entrega = b.getAttribute('data-e'); return updateModal(checkoutHtml()); }
-      if (b.hasAttribute('data-p')) { datos.pago = b.getAttribute('data-p'); return updateModal(checkoutHtml()); }
+      if (b.hasAttribute('data-p')) {
+        datos.pago = b.getAttribute('data-p');
+        if (!esEfectivo()) { datos.efectivo = ''; datos.pagaCon = ''; }
+        return updateModal(checkoutHtml());
+      }
+      if (b.hasAttribute('data-ef')) {
+        datos.efectivo = b.getAttribute('data-ef');
+        if (datos.efectivo === 'completo') datos.pagaCon = '';
+        return updateModal(checkoutHtml());
+      }
       if (b.id === 'send') {
         if (!valido()) return;
         window.open('https://wa.me/' + CFG.wa + '?text=' + encodeURIComponent(pedidoTexto()), '_blank', 'noopener');
