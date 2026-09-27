@@ -349,6 +349,34 @@ const adicionalesPizza = {
 };
 
 /*
+ * Adicionales del resto de la carta (las pizzas tienen los suyos, con
+ * otros precios). Se marcan, no se piden por cantidad.
+ */
+const adicionalesGenerales = {
+  id: 'grp_adic_general',
+  titulo: 'Adicionales',
+  min: 0,
+  max: 6,
+  opciones: [
+    { id: 'adg_pimenton', nombre: 'Pimentón 100g', precio: 1000 },
+    { id: 'adg_cebolla', nombre: 'Cebolla 100g', precio: 1000 },
+    { id: 'adg_chongo', nombre: 'Chongo 100g', precio: 1000 },
+    { id: 'adg_papa', nombre: 'Papa 100g', precio: 1400 },
+    { id: 'adg_chorizo', nombre: 'Chorizo (unidad)', precio: 1500 },
+    { id: 'adg_costeno', nombre: 'Queso costeño 100g', precio: 2400 },
+    { id: 'adg_mozarella', nombre: 'Queso mozarella', precio: 3000 },
+    { id: 'adg_pina', nombre: 'Piña', precio: 3000 },
+    { id: 'adg_tartara', nombre: 'Tártara', precio: 3000 },
+    { id: 'adg_maiz', nombre: 'Maíz dulce 100g', precio: 3000 },
+    { id: 'adg_ranchera', nombre: 'Ranchera (unidad)', precio: 3500 },
+    { id: 'adg_tocineta', nombre: 'Tocineta (unidad)', precio: 4000 },
+    { id: 'adg_pollo', nombre: 'Pollo 100g', precio: 4600 },
+    { id: 'adg_suiza', nombre: 'Suiza (unidad)', precio: 8000 },
+    { id: 'adg_carne', nombre: 'Carne 100g', precio: 9000 },
+  ],
+};
+
+/*
  * Sabores de bebida. Son obligatorios y no cambian el precio. Con
  * 'reparto' el cliente pide varias unidades y las reparte entre sabores
  * (ej: 2 Uva + 1 Kola); cada sabor llega como una linea del pedido.
@@ -473,11 +501,11 @@ export const menu = {
     {
       categoria: { id: CAT.hamburguesas, nombre: 'Hamburguesas', orden: 1, emoji: '🍔' },
       items: [
-        { id: 'hb1', nombre: 'Hamburguesa de carne', descripcion: 'Carne de res, queso y vegetales frescos.', precio: 18000, categoriaId: CAT.hamburguesas, etiquetas: [], orden: 0, disponible: true },
-        { id: 'hb2', nombre: 'Hamburguesa de pollo', descripcion: 'Pechuga de pollo, queso y vegetales frescos.', precio: 18000, categoriaId: CAT.hamburguesas, etiquetas: [], orden: 1, disponible: true },
-        { id: 'hb3', nombre: 'Apanada de pollo', descripcion: 'Pollo apanado crocante, queso y vegetales.', precio: 18000, categoriaId: CAT.hamburguesas, etiquetas: [], orden: 2, disponible: true },
-        { id: 'hb4', nombre: 'Doble carne', descripcion: 'Doble carne de res, queso y vegetales frescos.', precio: 26000, categoriaId: CAT.hamburguesas, etiquetas: [], orden: 3, disponible: true },
-        { id: 'hb5', nombre: 'Doble apanada de pollo', descripcion: 'Doble pollo apanado, queso y vegetales.', precio: 26000, categoriaId: CAT.hamburguesas, etiquetas: [], orden: 4, disponible: true },
+        { id: 'hb1', nombre: 'Hamburguesa de carne', descripcion: 'Carne de res, queso y vegetales frescos.', precio: 18000, categoriaId: CAT.hamburguesas, etiquetas: [], orden: 0, disponible: true, grupos: [adicionalesGenerales] },
+        { id: 'hb2', nombre: 'Hamburguesa de pollo', descripcion: 'Pechuga de pollo, queso y vegetales frescos.', precio: 18000, categoriaId: CAT.hamburguesas, etiquetas: [], orden: 1, disponible: true, grupos: [adicionalesGenerales] },
+        { id: 'hb3', nombre: 'Apanada de pollo', descripcion: 'Pollo apanado crocante, queso y vegetales.', precio: 18000, categoriaId: CAT.hamburguesas, etiquetas: [], orden: 2, disponible: true, grupos: [adicionalesGenerales] },
+        { id: 'hb4', nombre: 'Doble carne', descripcion: 'Doble carne de res, queso y vegetales frescos.', precio: 26000, categoriaId: CAT.hamburguesas, etiquetas: [], orden: 3, disponible: true, grupos: [adicionalesGenerales] },
+        { id: 'hb5', nombre: 'Doble apanada de pollo', descripcion: 'Doble pollo apanado, queso y vegetales.', precio: 26000, categoriaId: CAT.hamburguesas, etiquetas: [], orden: 4, disponible: true, grupos: [adicionalesGenerales] },
         {
           id: 'hb6',
           nombre: 'Hamburguesa Caníbal',
@@ -487,6 +515,7 @@ export const menu = {
           etiquetas: ['La de la casa'],
           orden: 5,
           disponible: true,
+          grupos: [adicionalesGenerales],
           destacado: true,
         },
       ],
@@ -496,17 +525,17 @@ export const menu = {
     {
       categoria: { id: CAT.salchipapas, nombre: 'Salchipapas', orden: 2, emoji: '🍟' },
       items: [
-        { id: 'sp1', nombre: 'Porción de papa', descripcion: 'Papa a la francesa.', precio: 7000, categoriaId: CAT.salchipapas, etiquetas: [], orden: 0, disponible: true },
-        { id: 'sp2', nombre: 'Salchipapa sencilla', descripcion: 'Papa a la francesa con salchicha.', precio: 15000, categoriaId: CAT.salchipapas, etiquetas: [], orden: 1, disponible: true },
-        { id: 'sp3', nombre: 'Butipapa', descripcion: 'Papa a la francesa con butifarra.', precio: 16000, categoriaId: CAT.salchipapas, etiquetas: [], orden: 2, disponible: true },
-        { id: 'sp4', nombre: 'Choripapa', descripcion: 'Papa a la francesa con chorizo.', precio: 17000, categoriaId: CAT.salchipapas, etiquetas: [], orden: 3, disponible: true },
-        { id: 'sp5', nombre: 'Papipollo', descripcion: 'Papa a la francesa con pollo.', precio: 19000, categoriaId: CAT.salchipapas, etiquetas: [], orden: 4, disponible: true },
-        { id: 'sp6', nombre: 'Salchipollo', descripcion: 'Papa a la francesa con salchicha y pollo.', precio: 19000, categoriaId: CAT.salchipapas, etiquetas: [], orden: 5, disponible: true },
-        { id: 'sp7', nombre: 'Mixta', descripcion: 'Pollo, chorizo y butifarra.', precio: 20000, categoriaId: CAT.salchipapas, etiquetas: [], orden: 6, disponible: true },
-        { id: 'sp8', nombre: 'Suiza', descripcion: 'Papa a la francesa con salchicha suiza.', precio: 21000, categoriaId: CAT.salchipapas, etiquetas: [], orden: 7, disponible: true },
-        { id: 'sp9', nombre: 'Ranchera', descripcion: 'Papa a la francesa con salchicha ranchera.', precio: 21000, categoriaId: CAT.salchipapas, etiquetas: [], orden: 8, disponible: true },
-        { id: 'sp10', nombre: 'Ranchipollo', descripcion: 'Papa a la francesa con ranchera y pollo.', precio: 22000, categoriaId: CAT.salchipapas, etiquetas: [], orden: 9, disponible: true },
-        { id: 'sp11', nombre: 'Pollo-suiza', descripcion: 'Papa a la francesa con pollo y salchicha suiza.', precio: 26000, categoriaId: CAT.salchipapas, etiquetas: [], orden: 10, disponible: true },
+        { id: 'sp1', nombre: 'Porción de papa', descripcion: 'Papa a la francesa.', precio: 7000, categoriaId: CAT.salchipapas, etiquetas: [], orden: 0, disponible: true, grupos: [adicionalesGenerales] },
+        { id: 'sp2', nombre: 'Salchipapa sencilla', descripcion: 'Papa a la francesa con salchicha.', precio: 15000, categoriaId: CAT.salchipapas, etiquetas: [], orden: 1, disponible: true, grupos: [adicionalesGenerales] },
+        { id: 'sp3', nombre: 'Butipapa', descripcion: 'Papa a la francesa con butifarra.', precio: 16000, categoriaId: CAT.salchipapas, etiquetas: [], orden: 2, disponible: true, grupos: [adicionalesGenerales] },
+        { id: 'sp4', nombre: 'Choripapa', descripcion: 'Papa a la francesa con chorizo.', precio: 17000, categoriaId: CAT.salchipapas, etiquetas: [], orden: 3, disponible: true, grupos: [adicionalesGenerales] },
+        { id: 'sp5', nombre: 'Papipollo', descripcion: 'Papa a la francesa con pollo.', precio: 19000, categoriaId: CAT.salchipapas, etiquetas: [], orden: 4, disponible: true, grupos: [adicionalesGenerales] },
+        { id: 'sp6', nombre: 'Salchipollo', descripcion: 'Papa a la francesa con salchicha y pollo.', precio: 19000, categoriaId: CAT.salchipapas, etiquetas: [], orden: 5, disponible: true, grupos: [adicionalesGenerales] },
+        { id: 'sp7', nombre: 'Mixta', descripcion: 'Pollo, chorizo y butifarra.', precio: 20000, categoriaId: CAT.salchipapas, etiquetas: [], orden: 6, disponible: true, grupos: [adicionalesGenerales] },
+        { id: 'sp8', nombre: 'Suiza', descripcion: 'Papa a la francesa con salchicha suiza.', precio: 21000, categoriaId: CAT.salchipapas, etiquetas: [], orden: 7, disponible: true, grupos: [adicionalesGenerales] },
+        { id: 'sp9', nombre: 'Ranchera', descripcion: 'Papa a la francesa con salchicha ranchera.', precio: 21000, categoriaId: CAT.salchipapas, etiquetas: [], orden: 8, disponible: true, grupos: [adicionalesGenerales] },
+        { id: 'sp10', nombre: 'Ranchipollo', descripcion: 'Papa a la francesa con ranchera y pollo.', precio: 22000, categoriaId: CAT.salchipapas, etiquetas: [], orden: 9, disponible: true, grupos: [adicionalesGenerales] },
+        { id: 'sp11', nombre: 'Pollo-suiza', descripcion: 'Papa a la francesa con pollo y salchicha suiza.', precio: 26000, categoriaId: CAT.salchipapas, etiquetas: [], orden: 10, disponible: true, grupos: [adicionalesGenerales] },
         {
           id: 'sp12',
           nombre: 'Salchipapa Caníbal',
@@ -516,6 +545,7 @@ export const menu = {
           etiquetas: ['Para compartir'],
           orden: 11,
           disponible: true,
+          grupos: [adicionalesGenerales],
           tamanios: [
             { nombre: 'Personal', precio: 22000, porciones: 1 },
             { nombre: 'Mediana', precio: 35000, porciones: 2 },
@@ -531,13 +561,13 @@ export const menu = {
     {
       categoria: { id: CAT.perros, nombre: 'Perros', orden: 3, emoji: '🌭' },
       items: [
-        { id: 'pr1', nombre: 'Perro sencillo', descripcion: 'Salchicha, salsas y papa ripio.', precio: 9000, categoriaId: CAT.perros, etiquetas: [], orden: 0, disponible: true },
-        { id: 'pr2', nombre: 'Butiperro', descripcion: 'Butifarra, salsas y papa ripio.', precio: 10000, categoriaId: CAT.perros, etiquetas: [], orden: 1, disponible: true },
-        { id: 'pr3', nombre: 'Choriperro', descripcion: 'Chorizo, salsas y papa ripio.', precio: 11000, categoriaId: CAT.perros, etiquetas: [], orden: 2, disponible: true },
-        { id: 'pr4', nombre: 'Perro ranchero', descripcion: 'Salchicha ranchera, salsas y papa ripio.', precio: 13000, categoriaId: CAT.perros, etiquetas: [], orden: 3, disponible: true },
-        { id: 'pr5', nombre: 'Perro combinado', descripcion: 'Pollo, chorizo y butifarra.', precio: 16000, categoriaId: CAT.perros, etiquetas: [], orden: 4, disponible: true },
-        { id: 'pr6', nombre: 'Perro suizo', descripcion: 'Salchicha suiza, salsas y papa ripio.', precio: 16000, categoriaId: CAT.perros, etiquetas: [], orden: 5, disponible: true },
-        { id: 'pr7', nombre: 'Ítalo-suizo', descripcion: 'Salchicha italiana y suiza con salsas de la casa.', precio: 18000, categoriaId: CAT.perros, etiquetas: [], orden: 6, disponible: true },
+        { id: 'pr1', nombre: 'Perro sencillo', descripcion: 'Salchicha, salsas y papa ripio.', precio: 9000, categoriaId: CAT.perros, etiquetas: [], orden: 0, disponible: true, grupos: [adicionalesGenerales] },
+        { id: 'pr2', nombre: 'Butiperro', descripcion: 'Butifarra, salsas y papa ripio.', precio: 10000, categoriaId: CAT.perros, etiquetas: [], orden: 1, disponible: true, grupos: [adicionalesGenerales] },
+        { id: 'pr3', nombre: 'Choriperro', descripcion: 'Chorizo, salsas y papa ripio.', precio: 11000, categoriaId: CAT.perros, etiquetas: [], orden: 2, disponible: true, grupos: [adicionalesGenerales] },
+        { id: 'pr4', nombre: 'Perro ranchero', descripcion: 'Salchicha ranchera, salsas y papa ripio.', precio: 13000, categoriaId: CAT.perros, etiquetas: [], orden: 3, disponible: true, grupos: [adicionalesGenerales] },
+        { id: 'pr5', nombre: 'Perro combinado', descripcion: 'Pollo, chorizo y butifarra.', precio: 16000, categoriaId: CAT.perros, etiquetas: [], orden: 4, disponible: true, grupos: [adicionalesGenerales] },
+        { id: 'pr6', nombre: 'Perro suizo', descripcion: 'Salchicha suiza, salsas y papa ripio.', precio: 16000, categoriaId: CAT.perros, etiquetas: [], orden: 5, disponible: true, grupos: [adicionalesGenerales] },
+        { id: 'pr7', nombre: 'Ítalo-suizo', descripcion: 'Salchicha italiana y suiza con salsas de la casa.', precio: 18000, categoriaId: CAT.perros, etiquetas: [], orden: 6, disponible: true, grupos: [adicionalesGenerales] },
         {
           id: 'pr8',
           nombre: 'Perro Caníbal',
@@ -547,6 +577,7 @@ export const menu = {
           etiquetas: ['Hasta 75 cm'],
           orden: 7,
           disponible: true,
+          grupos: [adicionalesGenerales],
           destacado: true,
           tamanios: [
             { nombre: 'Medio', codigo: '35 cm', precio: 25000 },
@@ -576,6 +607,7 @@ export const menu = {
           etiquetas: ['Para compartir'],
           orden: 0,
           disponible: true,
+          grupos: [adicionalesGenerales],
           destacado: true,
           tamanios: [
             { nombre: 'Personal', precio: 26000, porciones: 1 },
@@ -592,10 +624,10 @@ export const menu = {
     {
       categoria: { id: CAT.burritos, nombre: 'Burritos', orden: 5, emoji: '🌯' },
       items: [
-        { id: 'bu1', nombre: 'Burrito de pollo', descripcion: 'Pollo, queso y vegetales en tortilla de trigo.', precio: 18000, categoriaId: CAT.burritos, etiquetas: [], orden: 0, disponible: true },
-        { id: 'bu2', nombre: 'Burrito combinado', descripcion: 'Pollo, chorizo y butifarra.', precio: 19000, categoriaId: CAT.burritos, etiquetas: [], orden: 1, disponible: true },
-        { id: 'bu3', nombre: 'Burrito pollo ranchera', descripcion: 'Pollo y salchicha ranchera con queso.', precio: 21000, categoriaId: CAT.burritos, etiquetas: [], orden: 2, disponible: true },
-        { id: 'bu4', nombre: 'Burrito Caníbal', descripcion: 'Carne, pollo, chorizo, butifarra y tocineta.', precio: 21000, categoriaId: CAT.burritos, etiquetas: [], orden: 3, disponible: true },
+        { id: 'bu1', nombre: 'Burrito de pollo', descripcion: 'Pollo, queso y vegetales en tortilla de trigo.', precio: 18000, categoriaId: CAT.burritos, etiquetas: [], orden: 0, disponible: true, grupos: [adicionalesGenerales] },
+        { id: 'bu2', nombre: 'Burrito combinado', descripcion: 'Pollo, chorizo y butifarra.', precio: 19000, categoriaId: CAT.burritos, etiquetas: [], orden: 1, disponible: true, grupos: [adicionalesGenerales] },
+        { id: 'bu3', nombre: 'Burrito pollo ranchera', descripcion: 'Pollo y salchicha ranchera con queso.', precio: 21000, categoriaId: CAT.burritos, etiquetas: [], orden: 2, disponible: true, grupos: [adicionalesGenerales] },
+        { id: 'bu4', nombre: 'Burrito Caníbal', descripcion: 'Carne, pollo, chorizo, butifarra y tocineta.', precio: 21000, categoriaId: CAT.burritos, etiquetas: [], orden: 3, disponible: true, grupos: [adicionalesGenerales] },
       ],
     },
 
@@ -603,10 +635,10 @@ export const menu = {
     {
       categoria: { id: CAT.chuzoDesgranado, nombre: 'Chuzo desgranado', orden: 6, emoji: '🌽' },
       items: [
-        { id: 'cd1', nombre: 'Chuzo desgranado de pollo', descripcion: 'Pollo, queso y salsas de la casa.', precio: 21000, categoriaId: CAT.chuzoDesgranado, etiquetas: [], orden: 0, disponible: true, grupos: [acompChuzoDesgranado] },
-        { id: 'cd2', nombre: 'Chuzo desgranado Caníbal', descripcion: 'Pollo, chorizo, butifarra y tocineta.', precio: 22000, categoriaId: CAT.chuzoDesgranado, etiquetas: [], orden: 1, disponible: true, grupos: [acompChuzoDesgranado] },
-        { id: 'cd3', nombre: 'Chuzo desgranado combinado', descripcion: 'Pollo, chorizo y butifarra.', precio: 23000, categoriaId: CAT.chuzoDesgranado, etiquetas: [], orden: 2, disponible: true, grupos: [acompChuzoDesgranado] },
-        { id: 'cd4', nombre: 'Chuzo desgranado pollo ranchera', descripcion: 'Pollo y salchicha ranchera con queso.', precio: 25000, categoriaId: CAT.chuzoDesgranado, etiquetas: [], orden: 3, disponible: true, grupos: [acompChuzoDesgranado] },
+        { id: 'cd1', nombre: 'Chuzo desgranado de pollo', descripcion: 'Pollo, queso y salsas de la casa.', precio: 21000, categoriaId: CAT.chuzoDesgranado, etiquetas: [], orden: 0, disponible: true, grupos: [acompChuzoDesgranado, adicionalesGenerales] },
+        { id: 'cd2', nombre: 'Chuzo desgranado Caníbal', descripcion: 'Pollo, chorizo, butifarra y tocineta.', precio: 22000, categoriaId: CAT.chuzoDesgranado, etiquetas: [], orden: 1, disponible: true, grupos: [acompChuzoDesgranado, adicionalesGenerales] },
+        { id: 'cd3', nombre: 'Chuzo desgranado combinado', descripcion: 'Pollo, chorizo y butifarra.', precio: 23000, categoriaId: CAT.chuzoDesgranado, etiquetas: [], orden: 2, disponible: true, grupos: [acompChuzoDesgranado, adicionalesGenerales] },
+        { id: 'cd4', nombre: 'Chuzo desgranado pollo ranchera', descripcion: 'Pollo y salchicha ranchera con queso.', precio: 25000, categoriaId: CAT.chuzoDesgranado, etiquetas: [], orden: 3, disponible: true, grupos: [acompChuzoDesgranado, adicionalesGenerales] },
       ],
     },
 
@@ -614,10 +646,10 @@ export const menu = {
     {
       categoria: { id: CAT.mazorca, nombre: 'Mazorca desgranada', orden: 7, emoji: '🌽' },
       items: [
-        { id: 'md1', nombre: 'Mazorca desgranada de pollo', descripcion: 'Maíz tierno, pollo, queso y salsas.', precio: 20000, categoriaId: CAT.mazorca, etiquetas: [], orden: 0, disponible: true },
-        { id: 'md2', nombre: 'Mazorca desgranada combinada', descripcion: 'Pollo, chorizo y butifarra.', precio: 21000, categoriaId: CAT.mazorca, etiquetas: [], orden: 1, disponible: true },
-        { id: 'md3', nombre: 'Mazorca desgranada pollo ranchera', descripcion: 'Pollo y salchicha ranchera con maíz y queso.', precio: 22000, categoriaId: CAT.mazorca, etiquetas: [], orden: 2, disponible: true },
-        { id: 'md4', nombre: 'Mazorca desgranada Caníbal', descripcion: 'Pollo, chorizo, butifarra y tocineta.', precio: 23000, categoriaId: CAT.mazorca, etiquetas: [], orden: 3, disponible: true },
+        { id: 'md1', nombre: 'Mazorca desgranada de pollo', descripcion: 'Maíz tierno, pollo, queso y salsas.', precio: 20000, categoriaId: CAT.mazorca, etiquetas: [], orden: 0, disponible: true, grupos: [adicionalesGenerales] },
+        { id: 'md2', nombre: 'Mazorca desgranada combinada', descripcion: 'Pollo, chorizo y butifarra.', precio: 21000, categoriaId: CAT.mazorca, etiquetas: [], orden: 1, disponible: true, grupos: [adicionalesGenerales] },
+        { id: 'md3', nombre: 'Mazorca desgranada pollo ranchera', descripcion: 'Pollo y salchicha ranchera con maíz y queso.', precio: 22000, categoriaId: CAT.mazorca, etiquetas: [], orden: 2, disponible: true, grupos: [adicionalesGenerales] },
+        { id: 'md4', nombre: 'Mazorca desgranada Caníbal', descripcion: 'Pollo, chorizo, butifarra y tocineta.', precio: 23000, categoriaId: CAT.mazorca, etiquetas: [], orden: 3, disponible: true, grupos: [adicionalesGenerales] },
       ],
     },
 
@@ -625,13 +657,13 @@ export const menu = {
     {
       categoria: { id: CAT.chuzoPan, nombre: 'Chuzo pan', orden: 8, emoji: '🥖' },
       items: [
-        { id: 'cp1', nombre: 'Chuzo pan de butifarra', descripcion: 'Butifarra en pan con salsas de la casa.', precio: 16000, categoriaId: CAT.chuzoPan, etiquetas: [], orden: 0, disponible: true },
-        { id: 'cp2', nombre: 'Chuzo pan de chorizo', descripcion: 'Chorizo en pan con salsas de la casa.', precio: 17000, categoriaId: CAT.chuzoPan, etiquetas: [], orden: 1, disponible: true },
-        { id: 'cp3', nombre: 'Chuzo pan de pollo', descripcion: 'Pollo en pan con salsas de la casa.', precio: 19000, categoriaId: CAT.chuzoPan, etiquetas: [], orden: 2, disponible: true },
-        { id: 'cp4', nombre: 'Chuzo pan mixto', descripcion: 'Pollo, chorizo y butifarra en pan.', precio: 20000, categoriaId: CAT.chuzoPan, etiquetas: [], orden: 3, disponible: true },
-        { id: 'cp5', nombre: 'Chuzo pan ranchera', descripcion: 'Salchicha ranchera en pan con salsas.', precio: 20000, categoriaId: CAT.chuzoPan, etiquetas: [], orden: 4, disponible: true },
-        { id: 'cp6', nombre: 'Chuzo pan pollo ranchera', descripcion: 'Pollo y salchicha ranchera en pan.', precio: 22000, categoriaId: CAT.chuzoPan, etiquetas: [], orden: 5, disponible: true },
-        { id: 'cp7', nombre: 'Chuzo pan Caníbal', descripcion: 'Pollo, chorizo, butifarra y tocineta.', precio: 24000, categoriaId: CAT.chuzoPan, etiquetas: [], orden: 6, disponible: true },
+        { id: 'cp1', nombre: 'Chuzo pan de butifarra', descripcion: 'Butifarra en pan con salsas de la casa.', precio: 16000, categoriaId: CAT.chuzoPan, etiquetas: [], orden: 0, disponible: true, grupos: [adicionalesGenerales] },
+        { id: 'cp2', nombre: 'Chuzo pan de chorizo', descripcion: 'Chorizo en pan con salsas de la casa.', precio: 17000, categoriaId: CAT.chuzoPan, etiquetas: [], orden: 1, disponible: true, grupos: [adicionalesGenerales] },
+        { id: 'cp3', nombre: 'Chuzo pan de pollo', descripcion: 'Pollo en pan con salsas de la casa.', precio: 19000, categoriaId: CAT.chuzoPan, etiquetas: [], orden: 2, disponible: true, grupos: [adicionalesGenerales] },
+        { id: 'cp4', nombre: 'Chuzo pan mixto', descripcion: 'Pollo, chorizo y butifarra en pan.', precio: 20000, categoriaId: CAT.chuzoPan, etiquetas: [], orden: 3, disponible: true, grupos: [adicionalesGenerales] },
+        { id: 'cp5', nombre: 'Chuzo pan ranchera', descripcion: 'Salchicha ranchera en pan con salsas.', precio: 20000, categoriaId: CAT.chuzoPan, etiquetas: [], orden: 4, disponible: true, grupos: [adicionalesGenerales] },
+        { id: 'cp6', nombre: 'Chuzo pan pollo ranchera', descripcion: 'Pollo y salchicha ranchera en pan.', precio: 22000, categoriaId: CAT.chuzoPan, etiquetas: [], orden: 5, disponible: true, grupos: [adicionalesGenerales] },
+        { id: 'cp7', nombre: 'Chuzo pan Caníbal', descripcion: 'Pollo, chorizo, butifarra y tocineta.', precio: 24000, categoriaId: CAT.chuzoPan, etiquetas: [], orden: 6, disponible: true, grupos: [adicionalesGenerales] },
       ],
     },
 
@@ -639,12 +671,12 @@ export const menu = {
     {
       categoria: { id: CAT.arepaPicada, nombre: 'Arepa picada', orden: 9, emoji: '🫓' },
       items: [
-        { id: 'ap1', nombre: 'Arepa picada de butifarra', descripcion: 'Arepa con butifarra, queso y salsas.', precio: 16000, categoriaId: CAT.arepaPicada, etiquetas: [], orden: 0, disponible: true },
-        { id: 'ap2', nombre: 'Arepa picada de chorizo', descripcion: 'Arepa con chorizo, queso y salsas.', precio: 17000, categoriaId: CAT.arepaPicada, etiquetas: [], orden: 1, disponible: true },
-        { id: 'ap3', nombre: 'Arepa picada ranchera', descripcion: 'Arepa con salchicha ranchera y queso.', precio: 19000, categoriaId: CAT.arepaPicada, etiquetas: [], orden: 2, disponible: true },
-        { id: 'ap4', nombre: 'Arepa picada mixta', descripcion: 'Pollo, chorizo y butifarra.', precio: 21000, categoriaId: CAT.arepaPicada, etiquetas: [], orden: 3, disponible: true },
-        { id: 'ap5', nombre: 'Arepa picada pollo ranchera', descripcion: 'Pollo y salchicha ranchera con queso.', precio: 22000, categoriaId: CAT.arepaPicada, etiquetas: [], orden: 4, disponible: true },
-        { id: 'ap6', nombre: 'Arepa picada Caníbal', descripcion: 'Pollo, chorizo, butifarra y tocineta.', precio: 23000, categoriaId: CAT.arepaPicada, etiquetas: [], orden: 5, disponible: true },
+        { id: 'ap1', nombre: 'Arepa picada de butifarra', descripcion: 'Arepa con butifarra, queso y salsas.', precio: 16000, categoriaId: CAT.arepaPicada, etiquetas: [], orden: 0, disponible: true, grupos: [adicionalesGenerales] },
+        { id: 'ap2', nombre: 'Arepa picada de chorizo', descripcion: 'Arepa con chorizo, queso y salsas.', precio: 17000, categoriaId: CAT.arepaPicada, etiquetas: [], orden: 1, disponible: true, grupos: [adicionalesGenerales] },
+        { id: 'ap3', nombre: 'Arepa picada ranchera', descripcion: 'Arepa con salchicha ranchera y queso.', precio: 19000, categoriaId: CAT.arepaPicada, etiquetas: [], orden: 2, disponible: true, grupos: [adicionalesGenerales] },
+        { id: 'ap4', nombre: 'Arepa picada mixta', descripcion: 'Pollo, chorizo y butifarra.', precio: 21000, categoriaId: CAT.arepaPicada, etiquetas: [], orden: 3, disponible: true, grupos: [adicionalesGenerales] },
+        { id: 'ap5', nombre: 'Arepa picada pollo ranchera', descripcion: 'Pollo y salchicha ranchera con queso.', precio: 22000, categoriaId: CAT.arepaPicada, etiquetas: [], orden: 4, disponible: true, grupos: [adicionalesGenerales] },
+        { id: 'ap6', nombre: 'Arepa picada Caníbal', descripcion: 'Pollo, chorizo, butifarra y tocineta.', precio: 23000, categoriaId: CAT.arepaPicada, etiquetas: [], orden: 5, disponible: true, grupos: [adicionalesGenerales] },
       ],
     },
 
@@ -652,9 +684,9 @@ export const menu = {
     {
       categoria: { id: CAT.sandwichs, nombre: 'Sándwiches', orden: 10, emoji: '🥪' },
       items: [
-        { id: 'sw1', nombre: 'Sándwich de jamón', descripcion: 'Jamón, queso y vegetales frescos.', precio: 11000, categoriaId: CAT.sandwichs, etiquetas: [], orden: 0, disponible: true },
-        { id: 'sw2', nombre: 'Sándwich de pollo', descripcion: 'Pollo, queso y vegetales frescos.', precio: 16000, categoriaId: CAT.sandwichs, etiquetas: [], orden: 1, disponible: true },
-        { id: 'sw3', nombre: 'Sándwich combinado', descripcion: 'Pollo, jamón, queso y tocineta.', precio: 17000, categoriaId: CAT.sandwichs, etiquetas: [], orden: 2, disponible: true },
+        { id: 'sw1', nombre: 'Sándwich de jamón', descripcion: 'Jamón, queso y vegetales frescos.', precio: 11000, categoriaId: CAT.sandwichs, etiquetas: [], orden: 0, disponible: true, grupos: [adicionalesGenerales] },
+        { id: 'sw2', nombre: 'Sándwich de pollo', descripcion: 'Pollo, queso y vegetales frescos.', precio: 16000, categoriaId: CAT.sandwichs, etiquetas: [], orden: 1, disponible: true, grupos: [adicionalesGenerales] },
+        { id: 'sw3', nombre: 'Sándwich combinado', descripcion: 'Pollo, jamón, queso y tocineta.', precio: 17000, categoriaId: CAT.sandwichs, etiquetas: [], orden: 2, disponible: true, grupos: [adicionalesGenerales] },
         {
           id: 'sw4',
           nombre: 'Sándwich Caníbal',
@@ -664,6 +696,7 @@ export const menu = {
           etiquetas: [],
           orden: 3,
           disponible: true,
+          grupos: [adicionalesGenerales],
           tamanios: [
             { nombre: 'Medio', precio: 25000 },
             { nombre: 'Grande', precio: 40000 },
@@ -676,10 +709,10 @@ export const menu = {
     {
       categoria: { id: CAT.pinchos, nombre: 'Pinchos', orden: 11, emoji: '🍡' },
       items: [
-        { id: 'pn1', nombre: 'Pincho de chorizo', descripcion: 'Chorizo a la parrilla con salsas.', precio: 14000, categoriaId: CAT.pinchos, etiquetas: [], orden: 0, disponible: true },
-        { id: 'pn2', nombre: 'Pincho de butifarra', descripcion: 'Butifarra a la parrilla con salsas.', precio: 14000, categoriaId: CAT.pinchos, etiquetas: [], orden: 1, disponible: true },
-        { id: 'pn3', nombre: 'Pincho combinado', descripcion: 'Pollo, chorizo y butifarra.', precio: 15000, categoriaId: CAT.pinchos, etiquetas: [], orden: 2, disponible: true },
-        { id: 'pn4', nombre: 'Pincho de pollo', descripcion: 'Pollo a la parrilla con salsas.', precio: 20000, categoriaId: CAT.pinchos, etiquetas: [], orden: 3, disponible: true },
+        { id: 'pn1', nombre: 'Pincho de chorizo', descripcion: 'Chorizo a la parrilla con salsas.', precio: 14000, categoriaId: CAT.pinchos, etiquetas: [], orden: 0, disponible: true, grupos: [adicionalesGenerales] },
+        { id: 'pn2', nombre: 'Pincho de butifarra', descripcion: 'Butifarra a la parrilla con salsas.', precio: 14000, categoriaId: CAT.pinchos, etiquetas: [], orden: 1, disponible: true, grupos: [adicionalesGenerales] },
+        { id: 'pn3', nombre: 'Pincho combinado', descripcion: 'Pollo, chorizo y butifarra.', precio: 15000, categoriaId: CAT.pinchos, etiquetas: [], orden: 2, disponible: true, grupos: [adicionalesGenerales] },
+        { id: 'pn4', nombre: 'Pincho de pollo', descripcion: 'Pollo a la parrilla con salsas.', precio: 20000, categoriaId: CAT.pinchos, etiquetas: [], orden: 3, disponible: true, grupos: [adicionalesGenerales] },
       ],
     },
 
@@ -687,9 +720,9 @@ export const menu = {
     {
       categoria: { id: CAT.asados, nombre: 'Asados', orden: 12, emoji: '🍗' },
       items: [
-        { id: 'as1', nombre: 'Pechuga asada', descripcion: 'Pechuga de pollo a la parrilla.', precio: 23000, categoriaId: CAT.asados, etiquetas: [], orden: 0, disponible: true },
-        { id: 'as2', nombre: 'Pechuga gratinada', descripcion: 'Pechuga de pollo gratinada con queso.', precio: 27000, categoriaId: CAT.asados, etiquetas: [], orden: 1, disponible: true },
-        { id: 'as3', nombre: 'Asado Caníbal', descripcion: 'El asado de la casa, cargado y a la parrilla.', precio: 30000, categoriaId: CAT.asados, etiquetas: [], orden: 2, disponible: true },
+        { id: 'as1', nombre: 'Pechuga asada', descripcion: 'Pechuga de pollo a la parrilla.', precio: 23000, categoriaId: CAT.asados, etiquetas: [], orden: 0, disponible: true, grupos: [adicionalesGenerales] },
+        { id: 'as2', nombre: 'Pechuga gratinada', descripcion: 'Pechuga de pollo gratinada con queso.', precio: 27000, categoriaId: CAT.asados, etiquetas: [], orden: 1, disponible: true, grupos: [adicionalesGenerales] },
+        { id: 'as3', nombre: 'Asado Caníbal', descripcion: 'El asado de la casa, cargado y a la parrilla.', precio: 30000, categoriaId: CAT.asados, etiquetas: [], orden: 2, disponible: true, grupos: [adicionalesGenerales] },
       ],
     },
 
