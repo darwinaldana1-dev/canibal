@@ -246,9 +246,9 @@ export const config = {
   },
 
   // ---------- MITAD Y MITAD ----------
-  // Los productos de esta categoria se pueden pedir con dos sabores, mitad
-  // y mitad. El precio sale de sumar la mitad de cada uno y subir al
-  // siguiente mil (26.000 + 26.000 -> 26.000 -> 27.000).
+  // Los productos de esta categoria que tengan 'precioMitad' se pueden pedir
+  // con dos sabores: el precio es la suma de las dos mitades, tal como en la
+  // lista del negocio. Sin 'precioMitad', la pizza solo se vende entera.
   mitades: {
     categoria: 'Pizzas',
     titulo: '¿Un sabor o mitad y mitad?',
@@ -438,20 +438,20 @@ export const menu = {
         emoji: '🍕',
       },
       items: [
-        { id: 'pz1', nombre: 'Napolitana', descripcion: 'Salsa napolitana y queso mozarella.', precio: 21000, categoriaId: CAT.pizzas, etiquetas: [], orden: 0, disponible: true, grupos: [adicionalesPizza] },
-        { id: 'pz2', nombre: 'Salami', descripcion: 'Salami, queso mozarella y salsa de la casa.', precio: 23000, categoriaId: CAT.pizzas, etiquetas: [], orden: 1, disponible: true, grupos: [adicionalesPizza] },
-        { id: 'pz3', nombre: 'Butifarra', descripcion: 'Butifarra, queso mozarella y salsa de la casa.', precio: 23000, categoriaId: CAT.pizzas, etiquetas: [], orden: 2, disponible: true, grupos: [adicionalesPizza] },
-        { id: 'pz4', nombre: 'Pollo', descripcion: 'Pollo desmechado y queso mozarella.', precio: 23000, categoriaId: CAT.pizzas, etiquetas: [], orden: 3, disponible: true, grupos: [adicionalesPizza] },
-        { id: 'pz5', nombre: 'Hawaiana', descripcion: 'Jamón, piña y queso mozarella.', precio: 24000, categoriaId: CAT.pizzas, etiquetas: [], orden: 4, disponible: true, grupos: [adicionalesPizza] },
-        { id: 'pz6', nombre: 'Jamón y queso', descripcion: 'Jamón y doble queso mozarella.', precio: 25000, categoriaId: CAT.pizzas, etiquetas: [], orden: 5, disponible: true, grupos: [adicionalesPizza] },
-        { id: 'pz7', nombre: 'Chorizo', descripcion: 'Chorizo, queso mozarella y salsa de la casa.', precio: 26000, categoriaId: CAT.pizzas, etiquetas: [], orden: 6, disponible: true, grupos: [adicionalesPizza] },
-        { id: 'pz8', nombre: 'Peperoni', descripcion: 'Peperoni y queso mozarella.', precio: 26000, categoriaId: CAT.pizzas, etiquetas: [], orden: 7, disponible: true, grupos: [adicionalesPizza] },
-        { id: 'pz9', nombre: 'Pollo con pimentón', descripcion: 'Pollo desmechado, pimentón y queso mozarella.', precio: 26000, categoriaId: CAT.pizzas, etiquetas: [], orden: 8, disponible: true, grupos: [adicionalesPizza] },
-        { id: 'pz10', nombre: 'Pollo con champiñón', descripcion: 'Pollo desmechado, champiñones y queso mozarella.', precio: 26000, categoriaId: CAT.pizzas, etiquetas: [], orden: 9, disponible: true, grupos: [adicionalesPizza] },
-        { id: 'pz11', nombre: 'Con bocadillo', descripcion: 'Bocadillo y queso mozarella, el dulce de la casa.', precio: 26000, categoriaId: CAT.pizzas, etiquetas: [], orden: 10, disponible: true, grupos: [adicionalesPizza] },
-        { id: 'pz12', nombre: 'Tocineta', descripcion: 'Tocineta crocante y queso mozarella.', precio: 31000, categoriaId: CAT.pizzas, etiquetas: [], orden: 11, disponible: true, grupos: [adicionalesPizza] },
-        { id: 'pz13', nombre: 'Ciruela con tocineta', descripcion: 'Ciruela, tocineta y queso mozarella.', precio: 31000, categoriaId: CAT.pizzas, etiquetas: [], orden: 12, disponible: true, grupos: [adicionalesPizza] },
-        { id: 'pz14', nombre: 'Ranchera', descripcion: 'Salchicha ranchera y queso mozarella.', precio: 32000, categoriaId: CAT.pizzas, etiquetas: [], orden: 13, disponible: true, grupos: [adicionalesPizza] },
+        { id: 'pz1', nombre: 'Napolitana', descripcion: 'Salsa napolitana y queso mozarella.', precio: 21000, precioMitad: 11000, categoriaId: CAT.pizzas, etiquetas: [], orden: 0, disponible: true, grupos: [adicionalesPizza] },
+        { id: 'pz2', nombre: 'Salami', descripcion: 'Salami, queso mozarella y salsa de la casa.', precio: 23000, precioMitad: 12000, categoriaId: CAT.pizzas, etiquetas: [], orden: 1, disponible: true, grupos: [adicionalesPizza] },
+        { id: 'pz3', nombre: 'Butifarra', descripcion: 'Butifarra, queso mozarella y salsa de la casa.', precio: 23000, precioMitad: 12000, categoriaId: CAT.pizzas, etiquetas: [], orden: 2, disponible: true, grupos: [adicionalesPizza] },
+        { id: 'pz4', nombre: 'Pollo', descripcion: 'Pollo desmechado y queso mozarella.', precio: 23000, precioMitad: 12000, categoriaId: CAT.pizzas, etiquetas: [], orden: 3, disponible: true, grupos: [adicionalesPizza] },
+        { id: 'pz5', nombre: 'Hawaiana', descripcion: 'Jamón, piña y queso mozarella.', precio: 24000, precioMitad: 13000, categoriaId: CAT.pizzas, etiquetas: [], orden: 4, disponible: true, grupos: [adicionalesPizza] },
+        { id: 'pz6', nombre: 'Jamón y queso', descripcion: 'Jamón y doble queso mozarella.', precio: 25000, precioMitad: 13000, categoriaId: CAT.pizzas, etiquetas: [], orden: 5, disponible: true, grupos: [adicionalesPizza] },
+        { id: 'pz7', nombre: 'Chorizo', descripcion: 'Chorizo, queso mozarella y salsa de la casa.', precio: 26000, precioMitad: 13000, categoriaId: CAT.pizzas, etiquetas: [], orden: 6, disponible: true, grupos: [adicionalesPizza] },
+        { id: 'pz8', nombre: 'Peperoni', descripcion: 'Peperoni y queso mozarella.', precio: 26000, precioMitad: 14000, categoriaId: CAT.pizzas, etiquetas: [], orden: 7, disponible: true, grupos: [adicionalesPizza] },
+        { id: 'pz9', nombre: 'Pollo con pimentón', descripcion: 'Pollo desmechado, pimentón y queso mozarella.', precio: 26000, precioMitad: 13000, categoriaId: CAT.pizzas, etiquetas: [], orden: 8, disponible: true, grupos: [adicionalesPizza] },
+        { id: 'pz10', nombre: 'Pollo con champiñón', descripcion: 'Pollo desmechado, champiñones y queso mozarella.', precio: 26000, precioMitad: 13000, categoriaId: CAT.pizzas, etiquetas: [], orden: 9, disponible: true, grupos: [adicionalesPizza] },
+        { id: 'pz11', nombre: 'Con bocadillo', descripcion: 'Bocadillo y queso mozarella, el dulce de la casa.', precio: 26000, precioMitad: 13000, categoriaId: CAT.pizzas, etiquetas: [], orden: 10, disponible: true, grupos: [adicionalesPizza] },
+        { id: 'pz12', nombre: 'Tocineta', descripcion: 'Tocineta crocante y queso mozarella.', precio: 31000, precioMitad: 16000, categoriaId: CAT.pizzas, etiquetas: [], orden: 11, disponible: true, grupos: [adicionalesPizza] },
+        { id: 'pz13', nombre: 'Ciruela con tocineta', descripcion: 'Ciruela, tocineta y queso mozarella.', precio: 31000, precioMitad: 16000, categoriaId: CAT.pizzas, etiquetas: [], orden: 12, disponible: true, grupos: [adicionalesPizza] },
+        { id: 'pz14', nombre: 'Ranchera', descripcion: 'Salchicha ranchera y queso mozarella.', precio: 32000, precioMitad: 16000, categoriaId: CAT.pizzas, etiquetas: [], orden: 13, disponible: true, grupos: [adicionalesPizza] },
         {
           id: 'pz15',
           nombre: 'Súper Caníbal',

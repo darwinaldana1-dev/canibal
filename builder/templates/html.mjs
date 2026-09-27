@@ -365,8 +365,9 @@ function menuPayload(cfg, menu, img) {
     const combinable = Boolean(catMitades) && b.categoria.nombre === catMitades;
     for (const p of b.items) {
       const o = { n: p.nombre, p: p.precio };
-      if (combinable && p.disponible !== false && !p.tamanios?.length) {
-        o.mit = 1;
+      // 'mp' es el precio de media pizza; sin el, no se ofrece la combinacion
+      if (combinable && p.disponible !== false && !p.tamanios?.length && p.precioMitad > 0) {
+        o.mp = p.precioMitad;
         mitadIds.push(p.id);
       }
       const src = img(p.imagenUrl);

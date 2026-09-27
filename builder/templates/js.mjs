@@ -60,13 +60,8 @@ function subtotal() {
 function count() {
   return cart.reduce(function (a, i) { return a + i.cant; }, 0);
 }
-/*
- * Pizza de dos sabores: la mitad de cada precio, y el resultado sube al
- * siguiente mil. Dos pizzas de 26.000 dan 26.000 y se cobran 27.000.
- */
-function precioMitades(a, b) {
-  return (Math.floor((a / 2 + b / 2) / 1000) + 1) * 1000;
-}
+/* Pizza de dos sabores: se suman los dos precios de media pizza */
+function precioMitades(a, b) { return (a || 0) + (b || 0); }
 function keyOf(it) {
   return [it.id, it.tam || '', (it.ops || []).map(function (o) { return o.n; }).sort().join('|'), it.nota || ''].join('::');
 }
@@ -433,10 +428,10 @@ function openProduct(id, tamInicial) {
   var tamFotos = p.t && p.t.some(function (t) { return t.img; });
   // mitad y mitad: id del segundo sabor, o null si va de un solo sabor
   var mitad = null;
-  var puedeMitad = Boolean(p.mit && CFG.mitad && CFG.mitad.ids.length > 1);
+  var puedeMitad = Boolean(p.mp && CFG.mitad && CFG.mitad.ids.length > 1);
 
   function base() {
-    if (mitad && ITEMS[mitad]) return precioMitades(p.p, ITEMS[mitad].p);
+    if (mitad && ITEMS[mitad]) return precioMitades(p.mp, ITEMS[mitad].mp);
     return p.t ? p.t[tamIdx].p : p.p;
   }
   function fotoActual() { return (p.t && p.t[tamIdx].img) || p.img || ''; }
@@ -480,7 +475,7 @@ function openProduct(id, tamInicial) {
             return '<button class="opt opt-foto' + (on ? ' active' : '') + '" data-mit2="' + esc(x) + '" aria-pressed="' + on + '">' +
               '<span class="opt-thumb">' + (o.img ? '<img src="' + esc(o.img) + '" alt="" loading="lazy">' : '') + '</span>' +
               '<span class="opt-name">' + esc(o.n) + '</span>' +
-              '<span class="opt-price">' + money(precioMitades(p.p, o.p)) + '</span></button>';
+              '<span class="opt-price">' + money(precioMitades(p.mp, o.mp)) + '</span></button>';
           }).join('') + '</div>') +
         '</section>';
     }
