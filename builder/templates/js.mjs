@@ -60,6 +60,8 @@ function subtotal() {
 function count() {
   return cart.reduce(function (a, i) { return a + i.cant; }, 0);
 }
+/* El sabor sin la palabra "Pizza": "Pizza Ranchera" -> "Ranchera" */
+function sabor(n) { return String(n).replace(/^pizza\s+/i, ''); }
 /* Pizza de dos sabores: se suman los dos precios de media pizza */
 function precioMitades(a, b) { return (a || 0) + (b || 0); }
 function keyOf(it) {
@@ -474,7 +476,7 @@ function openProduct(id, tamInicial) {
             var o = ITEMS[x], on = mitad === x;
             return '<button class="opt opt-foto' + (on ? ' active' : '') + '" data-mit2="' + esc(x) + '" aria-pressed="' + on + '">' +
               '<span class="opt-thumb">' + (o.img ? '<img src="' + esc(o.img) + '" alt="" loading="lazy">' : '') + '</span>' +
-              '<span class="opt-name">' + esc(o.n) + '</span>' +
+              '<span class="opt-name">' + esc(sabor(o.n)) + '</span>' +
               '<span class="opt-price">' + money(precioMitades(p.mp, o.mp)) + '</span></button>';
           }).join('') + '</div>') +
         '</section>';
@@ -583,7 +585,7 @@ function openProduct(id, tamInicial) {
       if (b.id === 'p-add') {
         if (falta().length) return;
         var ops = [];
-        if (mitad && ITEMS[mitad]) ops.push({ n: 'Mitad y mitad con ' + ITEMS[mitad].n, p: 0 });
+        if (mitad && ITEMS[mitad]) ops.push({ n: 'Mitad y mitad con ' + sabor(ITEMS[mitad].n), p: 0 });
         (p.g || []).forEach(function (g) {
           (sel[g.id] || []).forEach(function (o) { ops.push({ n: o.n, p: o.p }); });
         });

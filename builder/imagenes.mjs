@@ -228,6 +228,15 @@ export async function prepararImagenes({ raiz, dirRestaurante, config, menu }) {
       if (r.empate.length !== 1) {
         const atras = unico(cands.filter((c) => c.atras), (a, b) => a.largo < b.largo);
         if (atras.empate.length === 1) r = atras;
+      } else {
+        /*
+         * Un nombre corto no debe ganarle a uno que calza con todo el archivo:
+         * "mazorca pollo ranchera.png" contiene "Ranchera" (una salchipapa),
+         * pero es de la Mazorca desgranada pollo ranchera, que comparte las
+         * tres palabras.
+         */
+        const atras = unico(cands.filter((c) => c.atras), (a, b) => a.largo < b.largo);
+        if (atras.empate.length === 1 && atras.top.p !== r.top.p && tokens.length > r.top.comunes) r = atras;
       }
       const mejor = r.empate.length === 1 ? [r.top.p] : r.empate.map((c) => c.p);
       if (mejor.length === 1) prod = mejor[0];
