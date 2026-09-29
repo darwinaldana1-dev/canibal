@@ -361,7 +361,7 @@ const adicionalesGenerales = {
     { id: 'adg_pimenton', nombre: 'Pimentón 100g', precio: 1000 },
     { id: 'adg_cebolla', nombre: 'Cebolla 100g', precio: 1000 },
     { id: 'adg_chongo', nombre: 'Chongo 100g', precio: 1000 },
-    { id: 'adg_papa', nombre: 'Papa 100g', precio: 1400 },
+    { id: 'adg_papa', nombre: 'Papa 100g', precio: 3500 },
     { id: 'adg_chorizo', nombre: 'Chorizo (unidad)', precio: 1500 },
     { id: 'adg_costeno', nombre: 'Queso costeño 100g', precio: 2400 },
     { id: 'adg_mozarella', nombre: 'Queso mozarella', precio: 3000 },

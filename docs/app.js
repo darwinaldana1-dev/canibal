@@ -1025,6 +1025,8 @@ var datos = {
 };
 
 function esEfectivo() { return /efectivo/i.test(datos.pago || ''); }
+/* El vuelto solo se pregunta en domicilios: quien recoge paga en el local */
+function pideVuelto() { return esEfectivo() && datos.entrega === 'domicilio'; }
 function montoPagaCon() { return Number(String(datos.pagaCon).replace(/\D/g, '')) || 0; }
 /* Aviso debajo del monto: si alcanza, cuanto vuelto hay que llevar */
 function avisoVuelto(total) {
@@ -1035,7 +1037,7 @@ function avisoVuelto(total) {
 }
 /* La respuesta del vuelto, en una linea, para el pedido */
 function textoEfectivo() {
-  if (!esEfectivo() || !datos.efectivo) return '';
+  if (!pideVuelto() || !datos.efectivo) return '';
   if (datos.efectivo === 'completo') return 'Paga completo, no necesita vuelto';
   return 'Paga con ' + money(montoPagaCon()) + ' — llevar vuelto';
 }
@@ -1054,7 +1056,7 @@ function faltantes() {
     if (datos.dir.trim().length < 5) f.push({ ir: 'dir', t: 'La dirección' });
     if (datos.barrio.trim().length < 3) f.push({ ir: 'barrio', t: 'El barrio' });
   }
-  if (esEfectivo()) {
+  if (pideVuelto()) {
     if (!datos.efectivo) f.push({ ir: 'ef', t: 'Si necesitas vuelto' });
     else if (datos.efectivo === 'vuelto' && montoPagaCon() < subtotal() + envio()) {
       f.push({ ir: 'pagaCon', t: montoPagaCon() ? 'Un monto que alcance' : 'Con cuánto pagas' });
@@ -1079,7 +1081,7 @@ function valido() {
     datos.tel.replace(/\D/g, '').length >= 7 &&
     (datos.entrega === 'recoger' || (datos.dir.trim().length >= 5 && datos.barrio.trim().length >= 3)) &&
     // en efectivo hay que decir si paga completo o con cuanto paga
-    (!esEfectivo() || datos.efectivo === 'completo' ||
+    (!pideVuelto() || datos.efectivo === 'completo' ||
       (datos.efectivo === 'vuelto' && montoPagaCon() >= subtotal() + envio()));
 }
 
@@ -1134,8 +1136,8 @@ function checkoutHtml() {
     }).join('') + '</div></div>';
 
   // pagando en efectivo: paga completo o hay que llevarle vuelto
-  var falta = esEfectivo() && datos.efectivo === 'vuelto' && montoPagaCon() > 0 && montoPagaCon() < total;
-  var efectivoHtml = !esEfectivo() ? '' :
+  var falta = pideVuelto() && datos.efectivo === 'vuelto' && montoPagaCon() > 0 && montoPagaCon() < total;
+  var efectivoHtml = !pideVuelto() ? '' :
     '<div class="field"><span>¿Necesitas vuelto? *</span>' +
     '<div class="toggle"><button data-ef="completo" class="' + (datos.efectivo === 'completo' ? 'active' : '') + '">Pago completo</button>' +
     '<button data-ef="vuelto" class="' + (datos.efectivo === 'vuelto' ? 'active' : '') + '">Necesito vuelto</button></div>' +
