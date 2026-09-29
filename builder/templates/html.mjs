@@ -365,6 +365,8 @@ function menuPayload(cfg, menu, img) {
     const combinable = Boolean(catMitades) && b.categoria.nombre === catMitades;
     for (const p of b.items) {
       const o = { n: p.nombre, p: p.precio };
+      // nombre con el que llega el pedido, si el de la carta se presta a confusion
+      if (p.nombrePedido) o.np = p.nombrePedido;
       // 'mp' es el precio de media pizza; sin el, no se ofrece la combinacion
       if (combinable && p.disponible !== false && !p.tamanios?.length && p.precioMitad > 0) {
         o.mp = p.precioMitad;

@@ -1104,7 +1104,9 @@ function pedidoTexto() {
   if (ef) L.push('*Vuelto:* ' + ef);
   L.push('', '*PEDIDO*');
   cart.forEach(function (i) {
-    L.push('• ' + i.cant + 'x ' + i.n + (i.tam ? ' (' + i.tam + ')' : '') + ' — ' + money(i.precio * i.cant));
+    // en la cocina "Suiza" no dice si es salchipapa o perro: se usa el nombre completo
+    var nombre = (ITEMS[i.id] && ITEMS[i.id].np) || i.n;
+    L.push('• ' + i.cant + 'x ' + nombre + (i.tam ? ' (' + i.tam + ')' : '') + ' — ' + money(i.precio * i.cant));
     (i.ops || []).forEach(function (o) { L.push('   + ' + o.n + (o.p > 0 ? ' (' + money(o.p) + ')' : '')); });
     if (i.nota) L.push('   Nota: ' + i.nota);
   });
