@@ -1226,6 +1226,39 @@ function checkoutHtml() {
     '<div class="faltan" id="faltan"' + (ok || !e.abierto ? ' hidden' : '') + '>' + faltantesHtml() + '</div></div>';
 }
 
+/*
+ * Envio del pedido. La pagina no puede saber si el cliente le dio "Enviar"
+ * en WhatsApp, asi que el carrito NO se vacia al abrirlo: se pregunta. Antes
+ * se borraba de una vez y, si WhatsApp no llegaba a abrirse (señal, bloqueo
+ * del navegador), el cliente creia haber pedido y perdia todo el carrito.
+ */
+function abrirWhatsApp(url) {
+  var w = null;
+  try { w = window.open(url, '_blank'); } catch (e) { w = null; }
+  if (w) { try { w.opener = null; } catch (e) {} }
+  // el navegador bloqueo la ventana: se abre en esta misma pestaña. El
+  // carrito y los datos quedan guardados para cuando el cliente vuelva.
+  else location.href = url;
+}
+
+function pantallaEnviado(url) {
+  ctrl = {
+    click: function (e) {
+      var b = e.target.closest('button');
+      if (!b) return;
+      if (b.id === 'ya-enviado') { cart = []; save(); render(); closeModal(); }
+      else if (b.id === 'reabrir') abrirWhatsApp(url);
+    },
+  };
+  updateModal('<div class="ok-screen"><span aria-hidden="true">\u{1F4F2}</span>' +
+    '<h2>¡Ya casi!</h2>' +
+    '<p class="muted">Se abrió WhatsApp con tu pedido escrito. <b>Dale Enviar allá</b> para que nos llegue.</p>' +
+    '<div class="ok-acciones">' +
+    '<button class="btn btn-primary btn-block" id="ya-enviado">Ya lo envié</button>' +
+    '<button class="btn btn-ghost btn-block" id="reabrir">No se abrió WhatsApp</button></div>' +
+    '<p class="hint">Tu pedido queda guardado hasta que confirmes que lo enviaste.</p></div>');
+}
+
 function openCheckout() {
   if (!cart.length) return;
   drawer.classList.remove('open');
@@ -1290,12 +1323,9 @@ function openCheckout() {
       }
       if (b.id === 'send') {
         if (!valido()) return;
-        window.open('https://wa.me/' + CFG.wa + '?text=' + encodeURIComponent(pedidoTexto()), '_blank', 'noopener');
-        cart = []; save(); render();
-        ctrl = null;
-        updateModal('<div class="ok-screen"><span aria-hidden="true">✅</span>' +
-          '<h2>¡Pedido enviado!</h2><p class="muted">Continúa la conversación en WhatsApp para confirmarlo.</p>' +
-          '<button class="btn btn-primary" data-close>Listo</button></div>');
+        var url = 'https://wa.me/' + CFG.wa + '?text=' + encodeURIComponent(pedidoTexto());
+        abrirWhatsApp(url);
+        pantallaEnviado(url);
       }
     }
   });

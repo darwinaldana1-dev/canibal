@@ -379,6 +379,8 @@ p{text-wrap:pretty}
 .sum-total span:last-child{color:var(--accent)}
 .ok-screen{display:grid;justify-items:center;gap:.7rem;padding:clamp(2.5rem,8vw,3.5rem) 1.5rem;text-align:center}
 .ok-screen span{font-size:3rem}
+.ok-screen b{color:var(--tx)}
+.ok-acciones{display:grid;gap:.5rem;width:100%;max-width:320px;margin-top:.4rem}
 
 /* ---------- flotantes ---------- */
 .wa-fab{position:fixed;right:max(1rem,env(safe-area-inset-right));bottom:max(1rem,env(safe-area-inset-bottom));z-index:200;display:grid;place-items:center;width:54px;height:54px;border-radius:var(--r-full);background:#25d366;color:#06251a;box-shadow:0 8px 28px rgb(37 211 102 / 35%);transition:transform var(--t-fast)}
