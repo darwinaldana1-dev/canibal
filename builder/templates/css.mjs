@@ -365,7 +365,8 @@ p{text-wrap:pretty}
 .falta-chip:hover{border-color:var(--accent);color:var(--accent)}
 .field.falta .inp,.field.falta .toggle{border-color:var(--accent)}
 .field.falta>span{color:var(--accent)}
-.hint-mal{color:var(--accent-2,#ff6b6b)}
+.field+.hint-mal{margin-top:-.45rem}
+.hint.hint-mal{color:var(--accent-2,#f2b705);font-size:.78rem}
 .hint{color:var(--tx3);font-size:.72rem}
 .drawer-empty{flex:1;display:grid;align-content:center;justify-items:center;gap:.6rem;padding:2rem 1.5rem;text-align:center}
 .drawer-empty span{font-size:2.75rem;opacity:.6}

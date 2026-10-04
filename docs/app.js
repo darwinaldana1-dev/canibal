@@ -1050,13 +1050,55 @@ function envio() { return datos.entrega === 'domicilio' ? (CFG.envio || 0) : 0; 
  * Se muestra debajo del boton y sirve de atajo: tocar un pendiente lleva
  * al campo y lo resalta.
  */
+/*
+ * Validacion de los datos del cliente. Antes solo se pedia un largo minimo
+ * y "0000000" pasaba como telefono y como barrio.
+ */
+function letras(s) { return (String(s).match(/[a-záéíóúñü]/gi) || []).length; }
+function repetido(s) { var t = String(s).replace(/[\s\W_]/g, ''); return t.length > 0 && /^(.)\1*$/i.test(t); }
+// celular de 10 digitos que empieza por 3, o fijo nuevo de 10 que empieza por 60
+function telValido(t) {
+  var d = String(t).replace(/\D/g, '');
+  if (d.length === 12 && d.indexOf('57') === 0) d = d.slice(2);   // +57
+  return d.length === 10 && /^(3|60)/.test(d) && !repetido(d);
+}
+function nombreValido(n) { return letras(n) >= 3 && !repetido(n); }
+function barrioValido(b) { return letras(b) >= 3 && !repetido(b); }
+// una direccion lleva letras (calle, carrera) y numeros
+function dirValida(d) { return String(d).trim().length >= 5 && letras(d) >= 2 && /\d/.test(d) && !repetido(d); }
+
+/* Que decirle al cliente cuando el dato esta escrito pero no sirve */
+var AYUDA = {
+  nombre: 'Escribe tu nombre.',
+  tel: 'Escribe un celular de 10 dígitos, por ejemplo 300 123 4567.',
+  dir: 'Escribe la dirección completa, por ejemplo Cra 45 # 12-30.',
+  barrio: 'Escribe el nombre del barrio.',
+};
+function campoValido(f) {
+  if (f === 'nombre') return nombreValido(datos.nombre);
+  if (f === 'tel') return telValido(datos.tel);
+  if (f === 'dir') return dirValida(datos.dir);
+  if (f === 'barrio') return barrioValido(datos.barrio);
+  return true;
+}
+/* aviso debajo del campo: solo si ya escribio algo y no sirve */
+function ayudaHtml(f) {
+  var mal = String(datos[f] || '').trim() && !campoValido(f);
+  return '<p class="hint hint-mal" id="ayuda-' + f + '"' + (mal ? '' : ' hidden') + '>' + esc(AYUDA[f]) + '</p>';
+}
+
 function faltantes() {
   var f = [];
-  if (datos.nombre.trim().length < 3) f.push({ ir: 'nombre', t: 'Tu nombre' });
-  if (datos.tel.replace(/\D/g, '').length < 7) f.push({ ir: 'tel', t: 'Tu teléfono' });
+  // vacio: "Tu telefono"; escrito pero invalido: "Un telefono valido"
+  var pide = function (campo, vacio, malo) {
+    if (campoValido(campo)) return;
+    f.push({ ir: campo, t: String(datos[campo] || '').trim() ? malo : vacio });
+  };
+  pide('nombre', 'Tu nombre', 'Un nombre válido');
+  pide('tel', 'Tu teléfono', 'Un teléfono válido');
   if (datos.entrega === 'domicilio') {
-    if (datos.dir.trim().length < 5) f.push({ ir: 'dir', t: 'La dirección' });
-    if (datos.barrio.trim().length < 3) f.push({ ir: 'barrio', t: 'El barrio' });
+    pide('dir', 'La dirección', 'Una dirección válida');
+    pide('barrio', 'El barrio', 'Un barrio válido');
   }
   if (pideVuelto()) {
     if (!datos.efectivo) f.push({ ir: 'ef', t: 'Si necesitas vuelto' });
@@ -1079,9 +1121,9 @@ function faltantesHtml() {
 
 function valido() {
   return estado().abierto &&
-    datos.nombre.trim().length >= 3 &&
-    datos.tel.replace(/\D/g, '').length >= 7 &&
-    (datos.entrega === 'recoger' || (datos.dir.trim().length >= 5 && datos.barrio.trim().length >= 3)) &&
+    nombreValido(datos.nombre) &&
+    telValido(datos.tel) &&
+    (datos.entrega === 'recoger' || (dirValida(datos.dir) && barrioValido(datos.barrio))) &&
     // en efectivo hay que decir si paga completo o con cuanto paga
     (!pideVuelto() || datos.efectivo === 'completo' ||
       (datos.efectivo === 'vuelto' && montoPagaCon() >= subtotal() + envio()));
@@ -1129,8 +1171,8 @@ function checkoutHtml() {
     : '';
 
   var dirFields = datos.entrega === 'domicilio'
-    ? '<label class="field"><span>Dirección *</span><input class="inp" data-f="dir" value="' + esc(datos.dir) + '" placeholder="Cra 00 # 00-00" autocomplete="street-address"></label>' +
-      '<label class="field"><span>Barrio *</span><input class="inp" data-f="barrio" value="' + esc(datos.barrio) + '" placeholder="Ej: Betania" autocomplete="address-level3"></label>' +
+    ? '<label class="field"><span>Dirección *</span><input class="inp" data-f="dir" value="' + esc(datos.dir) + '" placeholder="Ej: Cra 45 # 12-30" autocomplete="street-address"></label>' + ayudaHtml('dir') +
+      '<label class="field"><span>Barrio *</span><input class="inp" data-f="barrio" value="' + esc(datos.barrio) + '" placeholder="Ej: Betania" autocomplete="address-level3"></label>' + ayudaHtml('barrio') +
       '<label class="field"><span>Indicaciones <em>opcional</em></span><input class="inp" data-f="ind" value="' + esc(datos.ind) + '" placeholder="Apto, torre, punto de referencia"></label>'
     : '';
 
@@ -1167,8 +1209,8 @@ function checkoutHtml() {
   return '<div class="drawer-head"><h2>Datos de tu pedido</h2>' +
     '<button class="x-btn" data-close aria-label="Cerrar">×</button></div>' +
     '<div class="modal-body">' + toggle +
-    '<label class="field"><span>Nombre completo *</span><input class="inp" data-f="nombre" value="' + esc(datos.nombre) + '" placeholder="Tu nombre" autocomplete="name"></label>' +
-    '<label class="field"><span>Teléfono *</span><input class="inp" type="tel" data-f="tel" value="' + esc(datos.tel) + '" placeholder="300 000 0000" autocomplete="tel" inputmode="tel"></label>' +
+    '<label class="field"><span>Nombre completo *</span><input class="inp" data-f="nombre" value="' + esc(datos.nombre) + '" placeholder="Tu nombre" autocomplete="name"></label>' + ayudaHtml('nombre') +
+    '<label class="field"><span>Teléfono *</span><input class="inp" type="tel" data-f="tel" value="' + esc(datos.tel) + '" placeholder="Ej: 300 123 4567" autocomplete="tel" inputmode="tel"></label>' + ayudaHtml('tel') +
     dirFields + pagos + efectivoHtml +
     '<label class="field"><span>Notas del pedido <em>opcional</em></span><textarea class="ta" rows="2" maxlength="300" data-f="notas" placeholder="Algo más que debamos saber">' + esc(datos.notas) + '</textarea></label>' +
     resumen + '</div>' +
@@ -1209,6 +1251,8 @@ function openCheckout() {
         lista.hidden = ok || !estado().abierto;
         lista.innerHTML = faltantesHtml();
       }
+      var ayuda = document.getElementById('ayuda-' + f);
+      if (ayuda) ayuda.hidden = !String(datos[f] || '').trim() || campoValido(f);
       // el campo deja de estar marcado en cuanto queda bien
       var campo = e.target.closest('.field');
       if (campo && !faltantes().some(function (x) { return x.ir === f; })) campo.classList.remove('falta');
