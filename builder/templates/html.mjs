@@ -220,8 +220,10 @@ function contacto(cfg) {
       s.telefono ? ['📞', `<a href="tel:${esc(s.telefono)}">${esc(s.telefono)}</a>`] : null,
     ].filter(Boolean);
 
+    // con un solo local no hace falta el nombre de la sede: va el del negocio
+    const titulo = sedes.length > 1 ? s.nombre : cfg.brand.name;
     return `<article class="sede-card">
-<h3>${esc(s.nombre)}</h3>
+<h3>${esc(titulo)}</h3>
 <dl class="sede-info">${filas.map(([i, v]) =>
       `<div class="sede-row"><dt aria-hidden="true">${i}</dt><dd>${v}</dd></div>`).join('')}</dl>
 <div class="sede-acts">
@@ -258,7 +260,7 @@ ${b.categoria.descripcion ? `<p class="cat-desc">${esc(b.categoria.descripcion)}
 
   return `<section class="menu-sec" id="menu"><div class="container">
 <header class="menu-head"><span class="eyebrow">Nuestra carta</span><h2 class="display">Menú</h2>
-${sede ? `<p class="menu-sede">${esc(sede.nombre)} · ${esc(sede.direccion)}${horarioTexto(sede) ? ' · ' + esc(horarioTexto(sede)) : ''}</p>` : ''}</header>
+${sede && cfg.sedes.filter((x) => x.activa).length > 1 ? `<p class="menu-sede">${esc(sede.nombre)} · ${esc(sede.direccion)}${horarioTexto(sede) ? ' · ' + esc(horarioTexto(sede)) : ''}</p>` : ''}</header>
 <div class="cerrado" id="cerrado" hidden></div>
 ${cfg.menu.enableSearch ? `<div class="search-wrap">
 <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
