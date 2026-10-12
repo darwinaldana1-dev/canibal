@@ -241,6 +241,13 @@ export const config = {
     mode: 'whatsapp',
     // Sin nombres de bancos: solo el medio. El primero queda preseleccionado.
     metodosPago: ['Efectivo', 'Tarjeta', 'Transferencia'],
+    // Textos fijos del mensaje que llega por WhatsApp
+    mensajePedido: {
+      encabezado: 'PEDIDO POR CONFIRMAR - El encargado revisará tu pedido en un momento para confirmarlo y enviarlo a cocina.',
+      // solo aparece si el cliente paga por transferencia
+      transferencia: 'Para el pago por transferencia, puedes usar nuestra llave Bancolombia: 0067354936. Ya he conectado tu pedido con nuestro equipo para que confirmen el valor del domicilio y verifiquen el pago.',
+      cierre: 'Ten en cuenta que nuestro horario de atención es todos los días (excepto martes) de 6:00 PM a 11:30 PM.',
+    },
     pideDireccion: true,
     permiteRecoger: true,
   },

@@ -1041,7 +1041,7 @@ function avisoVuelto(total) {
 function textoEfectivo() {
   if (!pideVuelto() || !datos.efectivo) return '';
   if (datos.efectivo === 'completo') return 'Paga completo, no necesita vuelto';
-  return 'Paga con ' + money(montoPagaCon()) + ' — llevar vuelto';
+  return 'Paga con $' + num(montoPagaCon()) + ', llevar vuelto';
 }
 
 function envio() { return datos.entrega === 'domicilio' ? (CFG.envio || 0) : 0; }
@@ -1129,34 +1129,59 @@ function valido() {
       (datos.efectivo === 'vuelto' && montoPagaCon() >= subtotal() + envio()));
 }
 
+/* Numero sin signo de pesos, como en el mensaje del negocio: 26.000 */
+var fmtNum = new Intl.NumberFormat(CFG.loc, { maximumFractionDigits: 0 });
+function num(n) { return fmtNum.format(n); }
+
+/*
+ * Mensaje de WhatsApp. Sigue al pie de la letra el formato que usa el
+ * negocio: datos del cliente, totales, productos, notas, y al final los
+ * textos fijos (llave de transferencia y horario).
+ */
 function pedidoTexto() {
+  var M = CFG.msj || {};
+  var dom = datos.entrega === 'domicilio';
   var L = [];
-  L.push('*NUEVO PEDIDO - ' + CFG.marca + '*', '');
-  L.push('*Cliente:* ' + datos.nombre);
-  L.push('*Teléfono:* ' + datos.tel);
-  if (CFG.sede) L.push('*Sede:* ' + CFG.sede);
-  L.push('*Entrega:* ' + (datos.entrega === 'domicilio' ? 'Domicilio' : 'Recoger en tienda'));
-  if (datos.entrega === 'domicilio') {
-    L.push('*Dirección:* ' + datos.dir);
-    L.push('*Barrio:* ' + datos.barrio);
-    if (datos.ind) L.push('*Indicaciones:* ' + datos.ind);
+  if (M.encabezado) L.push(M.encabezado, '');
+
+  L.push('Cliente: ' + datos.nombre.trim());
+  L.push('Teléfono: ' + datos.tel.trim());
+  L.push('Entrega: ' + (dom ? 'Domicilio' : 'Recoger en el local'));
+  if (dom) {
+    L.push('Dirección: ' + datos.dir.trim());
+    L.push('Barrio: ' + datos.barrio.trim());
+    if (datos.ind.trim()) L.push('Indicaciones: ' + datos.ind.trim());
   }
-  L.push('*Pago:* ' + datos.pago);
-  var ef = textoEfectivo();
-  if (ef) L.push('*Vuelto:* ' + ef);
-  L.push('', '*PEDIDO*');
+  L.push('Pago: ' + datos.pago, '');
+
+  L.push('Subtotal: ' + num(subtotal()));
+  if (dom && envio() > 0) {
+    L.push('domicilio: ' + num(envio()));
+    L.push('*TOTAL: ' + num(subtotal() + envio()));
+  } else if (dom) {
+    // el valor del domicilio lo confirma el encargado por el chat
+    L.push('domicilio: por confirmar');
+    L.push('*TOTAL: ' + num(subtotal()) + ' + domicilio');
+  } else {
+    L.push('*TOTAL: ' + num(subtotal()));
+  }
+
+  L.push('', 'PEDIDO');
   cart.forEach(function (i) {
     // en la cocina "Suiza" no dice si es salchipapa o perro: se usa el nombre completo
     var nombre = (ITEMS[i.id] && ITEMS[i.id].np) || i.n;
-    L.push('• ' + i.cant + 'x ' + nombre + (i.tam ? ' (' + i.tam + ')' : '') + ' — ' + money(i.precio * i.cant));
-    (i.ops || []).forEach(function (o) { L.push('   + ' + o.n + (o.p > 0 ? ' (' + money(o.p) + ')' : '')); });
-    if (i.nota) L.push('   Nota: ' + i.nota);
+    L.push((i.cant > 1 ? i.cant + ' ' : '') + nombre + (i.tam ? ' (' + i.tam + ')' : '') + ' $' + num(i.precio * i.cant));
+    (i.ops || []).forEach(function (o) { L.push('+ ' + o.n); });
+    if (i.nota) L.push('Nota: ' + i.nota);
   });
-  L.push('', 'Subtotal: ' + money(subtotal()));
-  if (envio() > 0) L.push('Domicilio: ' + money(envio()));
-  L.push('*TOTAL: ' + money(subtotal() + envio()) + '*');
-  if (!envio() && datos.entrega === 'domicilio' && CFG.envioNota) L.push('(El total no incluye el domicilio: se confirma por aquí.)');
-  if (datos.notas) L.push('', '*Notas:* ' + datos.notas);
+
+  // notas del cliente y, si paga en efectivo a domicilio, lo del vuelto
+  var notas = [datos.notas.trim(), textoEfectivo()].filter(Boolean)
+    .map(function (t) { return t.replace(/[.\s]+$/, ''); });
+  if (notas.length) L.push('', 'Notas: ' + notas.join('. ') + '.');
+
+  if (/transferencia/i.test(datos.pago) && M.transferencia) L.push('', M.transferencia);
+  if (M.cierre) L.push('', M.cierre);
   return L.join('\n');
 }
 

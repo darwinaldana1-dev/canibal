@@ -403,6 +403,7 @@ function menuPayload(cfg, menu, img) {
       cur: cfg.menu.currency,
       wa: sede.whatsapp || cfg.contact.whatsapp,
       pagos: cfg.checkout.metodosPago,
+      msj: cfg.checkout.mensajePedido || {},
       recoger: cfg.checkout.permiteRecoger,
       direccion: cfg.checkout.pideDireccion,
       envio: sede.tarifaDomicilio || 0,
