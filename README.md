@@ -189,7 +189,8 @@ El texto del horario que ve el cliente se arma con esas mismas franjas, igual
 que los datos que lee Google, así que no pueden contradecirse.
 
 Para festivos o cierres puntuales, agrega la fecha a `cerradoEn` sin tocar el
-horario normal.
+horario normal. Para abrir un día suelto que normalmente está cerrado, usa
+`abiertoEn: { 'AAAA-MM-DD': [['18:00', '23:30']] }`.
 
 Es un freno, no un candado: la página no tiene servidor, así que alguien con
 conocimientos técnicos podría saltárselo.

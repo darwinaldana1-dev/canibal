@@ -117,7 +117,7 @@ export const config = {
       horarios: {
         dom: [['18:00', '23:30']],
         lun: [['18:00', '23:30']],
-        mar: [['18:00', '23:30']], // TEMPORAL: abierto el martes 3 nov (normalmente cerrado)
+        mar: [], // cerrado
         mie: [['18:00', '23:30']],
         jue: [['18:00', '23:30']],
         vie: [['18:00', '23:30']],
@@ -125,6 +125,8 @@ export const config = {
       },
       // Dias sueltos cerrados, para festivos o cierres puntuales (AAAA-MM-DD)
       cerradoEn: ['2026-11-04'], // miercoles 4 nov: cerrado
+      // Dias sueltos abiertos fuera del horario normal, con sus franjas
+      abiertoEn: { '2026-11-03': [['18:00', '23:30']] }, // martes 3 nov: abierto solo hoy
       lat: 0, // REVISAR: coordenadas para el mapa
       lng: 0,
       mapsUrl: '', // REVISAR: enlace de Google Maps del local

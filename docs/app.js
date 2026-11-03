@@ -954,7 +954,8 @@ function franjas(dia) { return (HOR.dias && HOR.dias[dia]) || []; }
 
 function estaAbierto(t) {
   if (!cerradoHoy(t.fecha)) {
-    var hoy = franjas(t.dia);
+    // un dia suelto abierto fuera del horario normal (AAAA-MM-DD)
+    var hoy = (HOR.abiertoEn && HOR.abiertoEn[t.fecha]) || franjas(t.dia);
     for (var i = 0; i < hoy.length; i++) {
       var r = hoy[i];
       // si el cierre es menor que la apertura, la franja cruza la medianoche

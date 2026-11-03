@@ -421,7 +421,7 @@ function menuPayload(cfg, menu, img) {
       // con horarioActivo en false el sitio recibe pedidos a cualquier hora,
       // aunque el horario siga mostrandose en contacto y en el pie
       horario: sede.horarios && sede.horarioActivo !== false
-        ? { tz: cfg.zonaHoraria || 'America/Bogota', dias: aDatos(sede.horarios), cerradoEn: sede.cerradoEn || [] }
+        ? { tz: cfg.zonaHoraria || 'America/Bogota', dias: aDatos(sede.horarios), cerradoEn: sede.cerradoEn || [], abiertoEn: Object.fromEntries(Object.entries(sede.abiertoEn || {}).map(([f, fr]) => [f, aDatos({ dom: fr })[0]])) }
         : null,
       sede: sede.nombre || '',
     },
