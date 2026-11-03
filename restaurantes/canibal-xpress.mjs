@@ -124,7 +124,7 @@ export const config = {
         sab: [['18:00', '23:30']],
       },
       // Dias sueltos cerrados, para festivos o cierres puntuales (AAAA-MM-DD)
-      cerradoEn: ['2026-11-03'], // martes 3 nov: cerrado, abre el miercoles 4
+      cerradoEn: ['2026-11-04'], // miercoles 4 nov: cerrado
       lat: 0, // REVISAR: coordenadas para el mapa
       lng: 0,
       mapsUrl: '', // REVISAR: enlace de Google Maps del local
