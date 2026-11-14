@@ -535,16 +535,16 @@ export const menu = {
       categoria: { id: CAT.salchipapas, nombre: 'Salchipapas', orden: 2, emoji: '🍟' },
       items: [
         { id: 'sp1', nombre: 'Porción de papa', descripcion: 'Papa a la francesa.', precio: 7000, categoriaId: CAT.salchipapas, etiquetas: [], orden: 0, disponible: true, grupos: [adicionalesGenerales] },
-        { id: 'sp2', nombre: 'Salchipapa sencilla', descripcion: 'Papa a la francesa con salchicha.', precio: 15000, categoriaId: CAT.salchipapas, etiquetas: [], orden: 1, disponible: true, grupos: [adicionalesGenerales] },
-        { id: 'sp3', nombre: 'Butipapa', descripcion: 'Papa a la francesa con butifarra.', precio: 16000, categoriaId: CAT.salchipapas, etiquetas: [], orden: 2, disponible: true, grupos: [adicionalesGenerales] },
-        { id: 'sp4', nombre: 'Choripapa', descripcion: 'Papa a la francesa con chorizo.', precio: 17000, categoriaId: CAT.salchipapas, etiquetas: [], orden: 3, disponible: true, grupos: [adicionalesGenerales] },
-        { id: 'sp5', nombre: 'Papipollo', descripcion: 'Papa a la francesa con pollo.', precio: 19000, categoriaId: CAT.salchipapas, etiquetas: [], orden: 4, disponible: true, grupos: [adicionalesGenerales] },
-        { id: 'sp6', nombre: 'Salchipollo', descripcion: 'Papa a la francesa con salchicha y pollo.', precio: 19000, categoriaId: CAT.salchipapas, etiquetas: [], orden: 5, disponible: true, grupos: [adicionalesGenerales] },
+        { id: 'sp2', nombre: 'Salchipapa sencilla', descripcion: 'Papa a la francesa con salchicha.', precio: 16000, categoriaId: CAT.salchipapas, etiquetas: [], orden: 1, disponible: true, grupos: [adicionalesGenerales] },
+        { id: 'sp3', nombre: 'Butipapa', descripcion: 'Papa a la francesa con butifarra.', precio: 17000, categoriaId: CAT.salchipapas, etiquetas: [], orden: 2, disponible: true, grupos: [adicionalesGenerales] },
+        { id: 'sp4', nombre: 'Choripapa', descripcion: 'Papa a la francesa con chorizo.', precio: 18000, categoriaId: CAT.salchipapas, etiquetas: [], orden: 3, disponible: true, grupos: [adicionalesGenerales] },
+        { id: 'sp5', nombre: 'Papipollo', descripcion: 'Papa a la francesa con pollo.', precio: 20000, categoriaId: CAT.salchipapas, etiquetas: [], orden: 4, disponible: true, grupos: [adicionalesGenerales] },
+        { id: 'sp6', nombre: 'Salchipollo', descripcion: 'Papa a la francesa con salchicha y pollo.', precio: 20000, categoriaId: CAT.salchipapas, etiquetas: [], orden: 5, disponible: true, grupos: [adicionalesGenerales] },
         { id: 'sp7', nombre: 'Mixta', nombrePedido: 'Salchipapa mixta', descripcion: 'Pollo, chorizo y butifarra.', precio: 20000, categoriaId: CAT.salchipapas, etiquetas: [], orden: 6, disponible: true, grupos: [adicionalesGenerales] },
-        { id: 'sp8', nombre: 'Suiza', nombrePedido: 'Salchipapa suiza', descripcion: 'Papa a la francesa con salchicha suiza.', precio: 21000, categoriaId: CAT.salchipapas, etiquetas: [], orden: 7, disponible: true, grupos: [adicionalesGenerales] },
-        { id: 'sp9', nombre: 'Ranchera', nombrePedido: 'Salchipapa ranchera', descripcion: 'Papa a la francesa con salchicha ranchera.', precio: 21000, categoriaId: CAT.salchipapas, etiquetas: [], orden: 8, disponible: true, grupos: [adicionalesGenerales] },
+        { id: 'sp8', nombre: 'Suiza', nombrePedido: 'Salchipapa suiza', descripcion: 'Papa a la francesa con salchicha suiza.', precio: 22000, categoriaId: CAT.salchipapas, etiquetas: [], orden: 7, disponible: true, grupos: [adicionalesGenerales] },
+        { id: 'sp9', nombre: 'Ranchera', nombrePedido: 'Salchipapa ranchera', descripcion: 'Papa a la francesa con salchicha ranchera.', precio: 22000, categoriaId: CAT.salchipapas, etiquetas: [], orden: 8, disponible: true, grupos: [adicionalesGenerales] },
         { id: 'sp10', nombre: 'Ranchipollo', descripcion: 'Papa a la francesa con ranchera y pollo.', precio: 22000, categoriaId: CAT.salchipapas, etiquetas: [], orden: 9, disponible: true, grupos: [adicionalesGenerales] },
-        { id: 'sp11', nombre: 'Pollo-suiza', nombrePedido: 'Salchipapa pollo-suiza', descripcion: 'Papa a la francesa con pollo y salchicha suiza.', precio: 26000, categoriaId: CAT.salchipapas, etiquetas: [], orden: 10, disponible: true, grupos: [adicionalesGenerales] },
+        { id: 'sp11', nombre: 'Pollo-suiza', nombrePedido: 'Salchipapa pollo-suiza', descripcion: 'Papa a la francesa con pollo y salchicha suiza.', precio: 27000, categoriaId: CAT.salchipapas, etiquetas: [], orden: 10, disponible: true, grupos: [adicionalesGenerales] },
         {
           id: 'sp12',
           nombre: 'Salchipapa Caníbal',
@@ -570,7 +570,7 @@ export const menu = {
     {
       categoria: { id: CAT.perros, nombre: 'Perros', orden: 3, emoji: '🌭' },
       items: [
-        { id: 'pr1', nombre: 'Perro sencillo', descripcion: 'Salchicha, salsas y papa ripio.', precio: 9000, categoriaId: CAT.perros, etiquetas: [], orden: 0, disponible: true, grupos: [adicionalesGenerales] },
+        { id: 'pr1', nombre: 'Perro sencillo', descripcion: 'Salchicha, salsas y papa ripio.', precio: 10000, categoriaId: CAT.perros, etiquetas: [], orden: 0, disponible: true, grupos: [adicionalesGenerales] },
         { id: 'pr2', nombre: 'Butiperro', descripcion: 'Butifarra, salsas y papa ripio.', precio: 10000, categoriaId: CAT.perros, etiquetas: [], orden: 1, disponible: true, grupos: [adicionalesGenerales] },
         { id: 'pr3', nombre: 'Choriperro', descripcion: 'Chorizo, salsas y papa ripio.', precio: 11000, categoriaId: CAT.perros, etiquetas: [], orden: 2, disponible: true, grupos: [adicionalesGenerales] },
         { id: 'pr4', nombre: 'Perro ranchero', descripcion: 'Salchicha ranchera, salsas y papa ripio.', precio: 13000, categoriaId: CAT.perros, etiquetas: [], orden: 3, disponible: true, grupos: [adicionalesGenerales] },
@@ -647,7 +647,7 @@ export const menu = {
         { id: 'cd1', nombre: 'Chuzo desgranado de pollo', descripcion: 'Pollo, queso y salsas de la casa.', precio: 21000, categoriaId: CAT.chuzoDesgranado, etiquetas: [], orden: 0, disponible: true, grupos: [acompChuzoDesgranado, adicionalesGenerales] },
         { id: 'cd2', nombre: 'Chuzo desgranado Caníbal', descripcion: 'Pollo, chorizo, butifarra y tocineta.', precio: 22000, categoriaId: CAT.chuzoDesgranado, etiquetas: [], orden: 1, disponible: true, grupos: [acompChuzoDesgranado, adicionalesGenerales] },
         { id: 'cd3', nombre: 'Chuzo desgranado combinado', descripcion: 'Pollo, chorizo y butifarra.', precio: 23000, categoriaId: CAT.chuzoDesgranado, etiquetas: [], orden: 2, disponible: true, grupos: [acompChuzoDesgranado, adicionalesGenerales] },
-        { id: 'cd4', nombre: 'Chuzo desgranado pollo ranchera', descripcion: 'Pollo y salchicha ranchera con queso.', precio: 25000, categoriaId: CAT.chuzoDesgranado, etiquetas: [], orden: 3, disponible: true, grupos: [acompChuzoDesgranado, adicionalesGenerales] },
+        { id: 'cd4', nombre: 'Chuzo desgranado pollo ranchera', descripcion: 'Pollo y salchicha ranchera con queso.', precio: 26000, categoriaId: CAT.chuzoDesgranado, etiquetas: [], orden: 3, disponible: true, grupos: [acompChuzoDesgranado, adicionalesGenerales] },
       ],
     },
 
@@ -655,8 +655,8 @@ export const menu = {
     {
       categoria: { id: CAT.mazorca, nombre: 'Mazorca desgranada', orden: 7, emoji: '🌽' },
       items: [
-        { id: 'md1', nombre: 'Mazorca desgranada de pollo', descripcion: 'Maíz tierno, pollo, queso y salsas.', precio: 20000, categoriaId: CAT.mazorca, etiquetas: [], orden: 0, disponible: true, grupos: [adicionalesGenerales] },
-        { id: 'md2', nombre: 'Mazorca desgranada combinada', descripcion: 'Pollo, chorizo y butifarra.', precio: 21000, categoriaId: CAT.mazorca, etiquetas: [], orden: 1, disponible: true, grupos: [adicionalesGenerales] },
+        { id: 'md1', nombre: 'Mazorca desgranada de pollo', descripcion: 'Maíz tierno, pollo, queso y salsas.', precio: 21000, categoriaId: CAT.mazorca, etiquetas: [], orden: 0, disponible: true, grupos: [adicionalesGenerales] },
+        { id: 'md2', nombre: 'Mazorca desgranada combinada', descripcion: 'Pollo, chorizo y butifarra.', precio: 22000, categoriaId: CAT.mazorca, etiquetas: [], orden: 1, disponible: true, grupos: [adicionalesGenerales] },
         { id: 'md3', nombre: 'Mazorca desgranada pollo ranchera', descripcion: 'Pollo y salchicha ranchera con maíz y queso.', precio: 22000, categoriaId: CAT.mazorca, etiquetas: [], orden: 2, disponible: true, grupos: [adicionalesGenerales] },
         { id: 'md4', nombre: 'Mazorca desgranada Caníbal', descripcion: 'Pollo, chorizo, butifarra y tocineta.', precio: 23000, categoriaId: CAT.mazorca, etiquetas: [], orden: 3, disponible: true, grupos: [adicionalesGenerales] },
       ],
